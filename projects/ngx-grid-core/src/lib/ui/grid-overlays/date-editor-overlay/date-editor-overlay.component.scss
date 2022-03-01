@@ -1,0 +1,35 @@
+.input {
+  font-size: 18px;
+  position: relative;
+  input {
+    outline: none;
+    padding: none;
+    border: none;
+    position: relative;
+    z-index: 1;
+    background-color: transparent;
+  }
+  input, .sep {
+    font-size: inherit;
+    font-family: inherit;
+  }
+  .sep {
+    position: absolute;
+    pointer-events: none;
+    top: 2px;
+    opacity: 0.85;
+    z-index: 0;
+  }
+  .sep-1 {
+    left: 45px;
+  }
+  .sep-2 {
+    left: 80px;
+  }
+}
+
+.invalid-date {
+  padding: 5px;
+  color: red;
+  font-size: 13px;
+}

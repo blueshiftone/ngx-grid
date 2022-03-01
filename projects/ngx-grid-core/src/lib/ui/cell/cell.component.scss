@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  &.focused:not(.multi-cells).is-editable {
+    ::ng-deep {
+      .single-select-readonly {
+        &:after {
+          content: url(/assets/icons/dropdown-arrow.svg);
+          position: absolute;
+          right: 5px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.3em;
+          width: 15px;
+          height: 13px;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .dark-theme {
+    .cell.focused:not(.multi-cells).is-editable {
+      .single-select-readonly {
+        &:after {
+          filter: invert(1);
+        }
+      }
+    }
+  }
+}

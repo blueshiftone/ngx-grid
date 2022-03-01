@@ -1,0 +1,3 @@
+<button #buttons *ngFor="let action of editor.actions" (click)="run(action)" [ngClass]="{ active: editor.isActive(action), disabled: !editor.isEnabled(action) }">
+  <mat-icon [svgIcon]="action.name"></mat-icon>
+</button>

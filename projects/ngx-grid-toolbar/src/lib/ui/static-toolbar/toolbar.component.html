@@ -1,0 +1,17 @@
+<div class="toolbar">
+  <div class="primary" #primary></div>
+  <div class="secondary" #secondary></div>
+  <div class="dropdown">
+    <button class="secondary" matRipple [matMenuTriggerFor]="dropdownMenu" #dropDownTrigger>
+      <span class="material-icons-outlined">more_horiz</span>
+    </button>
+    <mat-menu #dropdownMenu="matMenu" [hasBackdrop]="false">
+      <div class="dropdown-menu" #dropdown></div>
+    </mat-menu>
+  </div>
+</div>
+<div class="item-factory">
+  <ng-template #itemFactory></ng-template>
+</div>
+
+<data-grid-toolbar-floating-toolbar></data-grid-toolbar-floating-toolbar>

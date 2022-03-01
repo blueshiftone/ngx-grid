@@ -1,0 +1,20 @@
+:host {
+  position: absolute;
+  mat-icon {
+    width: 14px;
+    height: 14px;
+    transform: translateY(1px);
+  } 
+  .EditPen {
+    color: orange;
+  }
+  .Asterisk {
+    color: #00bd00;
+  }
+  .Cross {
+    color: rgb(255, 49, 49);
+  }
+  .CheckBox {
+    opacity: 0.5;
+  }
+}

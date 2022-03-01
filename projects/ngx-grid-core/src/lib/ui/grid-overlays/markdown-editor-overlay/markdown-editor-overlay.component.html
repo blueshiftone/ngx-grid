@@ -1,0 +1,4 @@
+<app-floating-window (closed)="close()">
+  <markdown-editor *ngIf="value !== undefined && editable" [value]="value" [autoFocus]="true" (valueChanged)="updateValue($event)"></markdown-editor>
+  <div class="readonly" [innerHTML]="value" *ngIf="!editable"></div>
+</app-floating-window>

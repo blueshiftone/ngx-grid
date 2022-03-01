@@ -1,0 +1,11 @@
+<div class="title">{{ previewDescription }}</div>
+<div class="cells">
+  <data-grid-record-selector-cell #cells [columnKey]="c" [rowComponent]="rowComponent" *ngFor="let c of columns; trackBy:cellColumnKey" class="cell"></data-grid-record-selector-cell>
+</div>
+<button class="action" mat-icon-button (click)="$event.stopPropagation(); selected.emit({ rowKey, originatedFrom: 'ActionButton' })" *ngIf="!disabled">
+  <span class="outer material-icons-outlined mat-app-background">
+    <span class="inner">
+      <span class="icon">{{ iconStr }}</span>
+    </span>
+  </span>
+</button>

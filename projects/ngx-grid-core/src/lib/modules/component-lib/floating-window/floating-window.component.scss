@@ -1,0 +1,57 @@
+.wrapper {
+  height: 100%;
+  width: 450px;
+  position: relative;
+  box-sizing: border-box;
+  max-height: 80vh;
+  padding-right: 16px;
+  .inner {
+    border-radius: 4px;
+    height: 100%;
+  }
+  .mat-app-background {
+    border-radius: 4px;
+    padding: 14px 16px;
+    cursor: grab;
+    height: 100%;
+    box-sizing: border-box;
+    max-height: 80vh;
+    .content {
+      max-height: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+    &:active {
+      cursor: grabbing;
+    }
+    ::ng-deep {
+      & > * {
+        cursor: auto;
+      }
+    }
+  }
+}
+
+.close {
+  cursor: pointer;
+  transform: translate(50%, -50%);
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  border: none;
+  padding: 3px;
+  line-height: 0;
+  border-radius: 12px;
+  background-color: var(--text-color);
+  fill: var(--app-bg);
+  opacity: 0.8;
+  transition: opacity 100ms linear;
+  z-index: 5;
+  &:hover {
+    opacity: 1;
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}

@@ -1,0 +1,25 @@
+button {
+  &.main {
+    color: var(--green-themed)!important;
+    border: 1px solid var(--green-themed);
+  }
+  &.arrow {
+    border-left: none;
+    position: relative;
+    &:before {
+      content: ' ';
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      width: 1px;
+      background-color: var(--green-themed);
+      opacity: 0.5;
+    }
+    margin-left: 0;
+  }  
+  &.text {
+    border-right: none;
+    margin-right: 0!important;
+  }
+}

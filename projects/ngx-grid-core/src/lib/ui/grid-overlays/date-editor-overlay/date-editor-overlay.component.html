@@ -1,0 +1,9 @@
+<app-floating-window (closed)="close()" [width]="300">
+  <div class="input">
+    <div class="sep sep-1">/</div>
+    <div class="sep sep-2">/</div>
+    <input type="text" placeholder="Year    M.   Day" name="date" [formControl]="inputCtrl" #input>
+  </div>
+  <div class="invalid-date" *ngIf="invalidDate">Invalid Date!</div>
+  <mat-calendar *ngIf="calendarInitialised" [selected]="date" [startAt]="date" (selectedChange)="calendarChanged($event)"></mat-calendar>
+</app-floating-window>

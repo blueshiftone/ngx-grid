@@ -1,0 +1,64 @@
+:host {
+  display: block;
+  background-color: var(--app-bg);
+}
+
+div.item {
+  display: flex;
+}
+
+button.item {
+  background-color: transparent;
+  display: flex;
+  padding: 3px 12px;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  position: relative;
+  flex-wrap: nowrap;
+  border: none;
+  outline: none;
+  place-items: center;
+  font-size: 13px;
+  .mat-icon {
+    flex-grow: 0;
+    margin-right: 10px;
+    &.Copy, &.Paste, &.Delete {
+      transform: scale(0.7);
+    }
+  }
+  .label {
+    flex-grow: 1;
+  }
+  &:after {
+    content: ' ';
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: var(--highlight-color);
+    opacity: 0;
+    transition: opacity 120ms ease-in;
+    position: absolute;
+  }
+  &:hover:after {
+    opacity: 1;
+  }
+}
+
+button.more {
+  justify-content: center;
+  color: var(--sub-icon-color);
+  span {
+    transform: rotate(-90deg);
+    transition: transform 150ms ease-in-out;
+  }
+  &.open span {
+    transform: rotate(0deg);
+  }
+}
+
+.mat-menu-item.sub-menu {
+  height: 32px;
+  line-height: 32px;
+}

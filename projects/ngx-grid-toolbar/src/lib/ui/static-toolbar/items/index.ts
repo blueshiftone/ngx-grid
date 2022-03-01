@@ -1,0 +1,6 @@
+export * from './insert-record/insert-record.component'
+export * from './copy-selection/copy-selection.component'
+export * from './delete-records/delete-records.component'
+export * from './revert-records/revert-records.component'
+export * from './commit-changes/commit-records.component'
+export * from './paste/paste.component'

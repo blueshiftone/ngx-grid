@@ -1,0 +1,80 @@
+:host {  
+  ::ng-deep {
+    @import "../cell/cell-types/styles/cell-type-styles";
+  }
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-rows: 1fr;
+  border-top: 1px solid var(--divider-color);
+  border-left: 1px solid var(--divider-color);
+  &.ctrl-or-shift-modifier {
+    ::ng-deep {
+      .cell > * {
+        pointer-events: none;
+      }
+    }
+  }
+  &.Disabled {
+    pointer-events: none!important;
+  }
+}
+
+.row-thumb {
+  height: 24px;
+  width: 21px;
+  border-right: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--app-bg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.grid {
+  display: grid;
+  grid-template-rows: 25px 1fr;
+  width: 100%;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity ease-out 250ms;
+  &.initialised {
+    opacity: 1;
+  }
+  &.SelectMode {
+    ::ng-deep {
+      .cell {
+        &:not(.display) {
+          &:not(.selected):hover {
+            outline: none;
+            cursor: pointer;
+          }
+        }
+        > * {
+          pointer-events: none;
+        }
+      }
+      data-grid-body {
+        .row:hover {
+          background-color: var(--highlight-color-10);
+        }
+      }
+    }
+  }
+}
+
+data-grid-body:focus {
+  outline: none;
+}
+
+::ng-deep {
+  .cdk-overlay-pane.grid-overlay.Centered {
+    align-items: center;
+  }
+}

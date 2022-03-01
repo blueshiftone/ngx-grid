@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.row {
+  height: 84px;
+  box-sizing: border-box;
+  display: block;
+  margin: 16px 0px 0px 16px;
+  border: 2px solid var(--divider-color);
+  border-radius: 6px;
+  max-width: 430px;
+  cursor: pointer;
+  transition: all 150ms ease-in;
+  padding: 8px;
+  &:hover {
+    border-color: var(--divider-color-30);
+  }
+  &:last-child {
+    margin-bottom: 16px;
+  }
+}
+
+.virtual-scroll, .selector {
+  height: 100%;
+}

@@ -1,0 +1,27 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor {
+  white-space: pre-wrap;
+  flex-grow: 1;
+  ::ng-deep {
+    .ProseMirror {
+      outline: none;
+      overflow: hidden;
+      blockquote {
+        border-left: 5px solid var(--primary-color-contrast-30);
+        margin-left: 20px;
+        padding-left: 13px;
+      }
+      code {
+        background-color: var(--highlight-color-10);
+        padding: 1px;
+        margin: -1px;
+        display: inline-block;
+      }
+    }
+  }
+}

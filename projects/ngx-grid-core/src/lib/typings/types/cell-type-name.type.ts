@@ -1,0 +1,1 @@
+export type TCellTypeName = "DropDownMultiSelect" | "RichText" | "Boolean" | "Text" | "Money" | "Number" | "Date" | "Percent" | "DropdownSingleSelect" | "File"

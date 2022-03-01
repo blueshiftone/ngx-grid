@@ -1,0 +1,38 @@
+:host {
+  position: absolute;
+  pointer-events: none;
+  &.y {
+    width: 2px;
+    top: 0px;
+    &.after {
+      transform: translateX(50%);
+      right: 0px;
+    }
+    &.before {
+      transform: translateX(-50%);
+      left: 0px;
+    }
+    height: 100vh;
+    background: var(--contrasting-color);
+  }
+  &.x {
+    height: 2px;
+    left: 22px;
+    &.after {
+      transform: translateY(50%);
+      bottom: 0px;
+    }
+    &.before {
+      transform: translateY(-50%);
+      top: 0px;
+    }
+    width: 100vw;
+    background: var(--contrasting-color);
+  }
+}
+
+::ng-deep {
+  .cdk-drag-preview data-grid-seperator {
+    display: none;
+  }
+}

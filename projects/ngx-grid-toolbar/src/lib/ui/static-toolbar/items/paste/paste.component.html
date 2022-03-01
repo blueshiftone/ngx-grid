@@ -1,0 +1,5 @@
+<button matRipple matTooltip="{{ accessDenied ? 'Access to the clipboard was denied' : null }}" (click)="action()" [ngClass]="{ denied: accessDenied }">
+  <mat-icon svgIcon="Paste"></mat-icon>
+  <span class="label">Paste</span>
+  <span class="material-icons-outlined denied-icon" *ngIf="accessDenied">priority_high</span>
+</button>

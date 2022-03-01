@@ -1,0 +1,22 @@
+.actions {
+  button {
+    font-size: 13px;
+    padding: 0 10px;
+    height: 30px;
+    line-height: 14px;
+    background-color: var(--neutral-highlight);
+    .material-icons-outlined {
+      font-size: 17px;
+      margin-left: -4px;
+      margin-right: 2px;
+    }
+    .material-icons-outlined,
+    .label {
+      vertical-align: middle;
+    }
+  }
+}
+
+.chip {
+  border-radius: 15px;
+}

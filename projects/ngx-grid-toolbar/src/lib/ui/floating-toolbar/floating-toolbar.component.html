@@ -1,0 +1,29 @@
+<div class="wrapper">
+  <div class="pill mat-elevation-z5" [ngClass]="{ visible: toolbarService.recordCount > 1 }">
+    <div class="selected">
+      {{ toolbarService.recordStr }} selected
+    </div>
+    <div class="actions start">
+      <div class="btn-group dropdown" *ngIf="canSetValues" #multiEditButton>
+        <button class="label multi-edit" matRipple (click)="setValues()">
+          <mat-icon svgIcon="MultiEdit" style="transform: scale(0.9) translateY(-3px);"></mat-icon>
+          <div class="label">Set values</div>
+        </button>
+        <button class="icon-button arrow" matRipple [matMenuTriggerFor]="multiEditors" #multiEditMenuTrigger *ngIf="multiEditorLabels.length">
+          <span style="transform: scale(0.9);" class="material-icons-outlined">expand_more</span>
+        </button>
+      </div>
+      <button matTooltip="Copy selection" class="copy icon-button" matRipple (click)="copySelection()"><span style="transform: scale(0.9);" class="material-icons-outlined">copy</span></button>
+      <button matTooltip="Delete records" *ngIf="canDelete" class="copy icon-button" matRipple (click)="deleteRecords()"><span class="material-icons-outlined">delete</span></button>
+    </div>
+    <div class="actions end">
+      <button class="more icon-button" matRipple><span class="material-icons-outlined">more_horiz</span></button>
+      <button matTooltip="Clear Selection" class="close icon-button" matRipple (click)="clearSelection()"><span class="material-icons-outlined">close</span></button>
+    </div>
+  </div>
+</div>
+<div>
+  <mat-menu #multiEditors="matMenu">
+    <button mat-menu-item *ngFor="let label of multiEditorLabels" (click)="runMultiEditor(label)">{{ label }}</button>
+  </mat-menu>
+</div>

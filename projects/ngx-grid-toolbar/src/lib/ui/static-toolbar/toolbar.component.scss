@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  height: 100%;
+  place-items: center;
+  padding: 0;
+  .primary, .secondary {
+    flex-grow: 1;
+    display: flex;
+    place-items: center;
+  }
+  .primary {
+    ::ng-deep {
+      > * {
+        display: block;
+        margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  .secondary {
+    place-content: end;
+    ::ng-deep {
+      > * {
+        display: block;
+        margin-left: 10px;
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+  button {
+    background-color: transparent;
+    transition: all 150ms linear;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    padding: 0px;
+    margin: 0px;
+    line-height: 18px;
+    font-size: 18px;
+    display: block;
+    height: 24px;
+    padding: 3px;
+    span {
+      font-size: inherit;
+      line-height: inherit;
+    }
+    &:hover, &:focus {
+      background-color: var(--divider-color);
+    }
+    &.secondary {
+      border: none;
+    }
+  }
+  .dropdown, div.secondary {
+    & > * {
+      margin-left: var(--default-spacing);
+    }
+  }
+  .dropdown {
+    margin-right: var(--default-spacing);
+  }
+}
+
+.item-factory {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropdown-menu {
+  padding: 5px 0;
+  width: 230px;
+  ::ng-deep {
+    button:not(.mat-menu-item) {
+      display: flex;
+      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 14px;
+      border-radius: 0;
+      .mat-icon {
+        margin-right: 5px;
+      }
+    }
+  }
+}

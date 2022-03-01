@@ -1,0 +1,24 @@
+button {
+  &.main {
+    border: 1px solid var(--divider-color-30);
+  }
+  &.arrow {
+    border-left: none;
+    position: relative;
+    &:before {
+      content: ' ';
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      bottom: 0px;
+      width: 1px;
+      background-color: var(--divider-color-30);
+      opacity: 0.5;
+    }
+    margin-left: 0;
+  }  
+  &.text {
+    border-right: none;
+    margin-right: 0!important;
+  }
+}

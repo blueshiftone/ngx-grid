@@ -1,0 +1,268 @@
+.text-readonly,
+.number-readonly,
+.rich-text-readonly,
+.date-readonly,
+.file-cell-type {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  padding: 4.5px 7px;
+  box-sizing: border-box;
+  line-height: 1.2;
+}
+
+.text-editable,
+.money-editable,
+.number-editable,
+.percent-editable {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  font-size: inherit;
+  input {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    padding: 7px;
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+  }
+}
+
+.boolean {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  input {
+    margin: 0;
+  }
+}
+
+.rich-text-readonly {
+  .value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    * {
+      margin: 0 !important;
+      padding: 0 !important;
+      font-family: inherit !important;
+      font-size: inherit !important;
+      line-height: inherit !important;
+      display: inline !important;
+    }
+  }
+}
+
+.money-readonly,
+.percent-readonly {
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 0 7px;
+  box-sizing: border-box;
+  .value {
+    flex-grow: 1;
+    text-align: right;
+  }
+  & > *:last-child {
+    margin-left: 4px;
+  }
+  .value,
+  .sign {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+input[type="number"] {
+  text-align: right;
+  /* Remove arrows/spinners */
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.number-readonly {
+  text-align: right;
+  padding-left: 10px;
+}
+
+.file-cell-type,
+.single-select-readonly,
+.multi-select-readonly {
+  display: flex;
+  align-items: center;
+  padding: 0 5px 0 7px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  .chip {
+    display: block;
+    padding: 2px 4px;
+    margin: 1.5px 0;
+    background: var(--primary-color-40);
+
+    width: fit-content;
+    max-width: 100%;
+    &.dark {
+      color: var(--light-text);
+    }
+    &.light {
+      color: var(--dark-text);
+    }
+    .label {
+      width: calc(100%);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      height: 14px;
+      line-height: 14px;
+    }
+  }
+
+  &.static .chip {
+    border-radius: 20px;
+  }
+  &.related .chip {
+    border-radius: 4px;
+  }
+
+  &.empty .chip {
+    opacity: 0;
+  }
+}
+
+.single-select-readonly,
+.single-select-editable {
+  padding-right: 30px;
+  box-sizing: border-box;
+}
+
+.multi-select-readonly {
+  overflow: hidden;
+  .chip {
+    margin-right: 4px;
+    background-color: rgba($color: rgb(255, 136, 0), $alpha: 0.4);
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.file-cell-type {
+  position: relative;
+  min-width: 80px;
+  .chip {
+    display: inline-flex;
+    place-items: center;
+    border-radius: 4px;
+    margin-right: 3px;
+    svg {
+      width: 19px;
+      margin-right: 2px;
+    }
+    .progressBar {
+      --size: 11px;
+      width: var(--size);
+      height: var(--size);
+      min-width: var(--size);
+      min-height: var(--size);
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      margin: 0 3px 0 5px;
+    }
+    .progressTxt {
+      font-size: 9px;
+    }
+  }
+}
+
+@mixin marching-ants-init($ant-size, $ant-width, $speed, $id) {
+  padding: $ant-width;
+  background-size: $ant-size $ant-width, $ant-size $ant-width, $ant-width $ant-size, $ant-width $ant-size;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  animation: marching-ants-#{$id} $speed;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+}
+
+@mixin marching-ants-color($a, $b) {
+  background-image: linear-gradient(to right, $a 50%, $b 50%), linear-gradient(to right, $a 50%, $b 50%),
+    linear-gradient(to bottom, $a 50%, $b 50%), linear-gradient(to bottom, $a 50%, $b 50%);
+}
+
+@mixin marching-ants-animation($ant-size, $id) {
+  @keyframes marching-ants-#{$id} {
+    0% {
+      background-position: 0 0, 0 100%, 0 0, 100% 0;
+    }
+    100% {
+      background-position: 2 * $ant-size 0, -2 * $ant-size 100%, 0 -2 * $ant-size, 100% 2 * $ant-size;
+    }
+  }
+}
+
+@include marching-ants-animation(8px, 1);
+
+.file-cell-type {
+  .file-dropzone {
+    @include marching-ants-init(8px, 1px, 2s, 1);
+    @include marching-ants-color(var(--primary-color-themed), transparent);
+    animation-play-state: running;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    z-index: 1;
+    background-color: var(--highlight-color);
+    &:before {
+      content: " ";
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      bottom: 0px;
+      background-color: var(--app-bg-contrasted);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 100ms linear;
+    }
+    &:after {
+      content: "drop-zone";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--primary-color-themed);
+      font-size: 10px;
+    }
+  }
+
+  &.dropzone-active {
+    .inner {
+      opacity: 0.2;
+    }
+  }
+
+  &.hover {
+    .file-dropzone {
+      &:before {
+        opacity: 0.2;
+      }
+    }
+  }
+}

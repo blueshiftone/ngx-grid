@@ -1,0 +1,15 @@
+<div class="item" *ngFor="let item of items; let index = index" >
+  <button (click)="item.action ? item.action($event) : trigger.toggleMenu()" class="item mat-menu-item" matRipple [ngClass]="{'stop-propagation': !item.action }">
+    <mat-icon [svgIcon]="iconValue(item.icon)" [ngClass]="iconValue(item.icon)" *ngIf="item.icon"></mat-icon>
+    <div class="label">{{ item.label }}</div>
+  </button>
+  <button class="item more stop-propagation" matRipple [hidden]="!item.children?.length" #trigger="matMenuTrigger" [matMenuTriggerFor]="more" [ngClass]="{ open: trigger.menuOpen }">
+    <span class="material-icons-outlined">expand_more</span>
+  </button>
+  <mat-menu #more="matMenu" xPosition="after" [hasBackdrop]="false">
+    <button class="item mat-menu-item sub-menu" mat-menu-item *ngFor="let child of (item.children ?? [])" (click)="child?.action($event)">
+      <mat-icon [svgIcon]="iconValue(child.icon)" [ngClass]="iconValue(child.icon)" *ngIf="child.icon"></mat-icon>
+      <div class="label">{{ child.label }}</div>
+    </button>
+  </mat-menu>
+</div>

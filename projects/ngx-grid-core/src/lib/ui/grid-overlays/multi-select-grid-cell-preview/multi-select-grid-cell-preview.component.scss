@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 4px;
+  margin: 0px 0px 1.5px 0px;
+  border-radius: 4px;
+  margin-right: 4px;
+  background-color: rgba($color: rgb(255, 136, 0), $alpha: 0.4);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  .label {
+    width: calc(100%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 14px;
+    flex-grow: 1;
+  }
+  .close {
+    cursor: pointer;
+    padding: 2px;
+    line-height: 15px;
+    height: 15px;
+    svg {
+      fill: currentColor;
+      opacity: 0.7;
+      width: 15px;
+      height: 15px;
+    }
+  }
+}
+
+button.action {
+  border: none;
+  margin: 1.5px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.9;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  place-items: center;
+  place-content: center;
+  line-height: 0;
+  padding: 0;
+  background: var(--light-contrasting-15);
+  transition: background-color 100ms linear;
+  &:hover, &.close:hover { background: var(--light-contrasting-25); }
+  svg {
+    width: 10px;
+    height: 10px;
+    fill: currentColor;
+  }
+  &.close {
+    margin-right: -3px;
+    margin-left: -1px;
+    background: transparent;
+    color: currentColor;
+  }
+}

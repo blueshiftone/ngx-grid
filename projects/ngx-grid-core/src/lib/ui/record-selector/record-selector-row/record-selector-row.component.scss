@@ -1,0 +1,58 @@
+:host {
+  user-select: none;
+  position: relative;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  margin-top: 2px;
+}
+
+.cells {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.cell {
+  margin-right: 8px;
+  display: inline-block!important;
+  white-space: nowrap;
+  width: 110px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 16px 25px;
+  grid-gap: 5px;
+  vertical-align: top;
+}
+
+button.action {
+  position: absolute;
+  z-index: 1;
+  top: -20px;
+  right: -20px;
+  .outer {
+    border-radius: 9px;
+    display: inline-block;
+    font-size: 15px;
+    overflow: hidden;
+  }
+  .inner {
+    background-color: var(--divider-color-20);
+    transition: all 150ms ease-in;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    place-items: center;
+    place-content: center;
+  }
+  .icon {
+    color: var(--mat-card-bg);
+  }
+  &:hover {
+    .inner {
+      background-color: var(--divider-color-50);
+    }
+  }
+}

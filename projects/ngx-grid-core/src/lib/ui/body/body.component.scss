@@ -1,0 +1,11 @@
+:host {
+  height: 100%;
+  overflow: auto;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+  .virtual-scroll {
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -1,0 +1,16 @@
+<div class="button-group">
+  <button class="main text" matRipple (click)="commitAll(); toolbarService.setItems()">
+    <mat-icon [svgIcon]="hasInvalidValues ? 'ExclamationMark' : 'Check'" [style.color]="hasInvalidValues ? 'var(--red-themed)' : null"></mat-icon>
+    <span class="label">Commit {{ toolbarService.dirtyRecordsStr }}</span>
+  </button>
+  <button class="main arrow icon-button" matRipple [matMenuTriggerFor]="dropdownMenu">
+    <span class="material-icons-outlined icon">keyboard_arrow_down</span>
+  </button>
+</div>
+<mat-menu #dropdownMenu="matMenu">
+  <button mat-menu-item [disabled]="!selectionDirtyRecordsCount" (click)="commitSelected(); toolbarService.setItems()">
+    <mat-icon svgIcon="Check" style="transform: scale(0.7);"></mat-icon>
+    Commit selected record{{ selectionDirtyRecordsCount === 1 ? '' :'s' }}
+    <span *ngIf="selectionDirtyRecordsCount > 0">({{ selectionDirtyRecordsCount + ' of ' + toolbarService.dirtyRecordsCount }})</span>
+  </button>
+</mat-menu>

@@ -1,0 +1,21 @@
+<div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="setValues(); dragStopped();"
+  (cdkDropListSorted)="changeColumnOrder($event)" class="row header" [ngClass]="{Dragging: isDragging}">
+  <div class="cell row-thumb display"></div>
+  <div #columns
+    (click)="sortColumn(index)"
+    (cdkDragStarted)="dragStarted()"
+    cdkDrag
+    cdkDragLockAxis="x"
+    [cdkDragDisabled]="dragDisabled"
+    [ngClass]="{ 'col-selected': columnsSelected[columnKey] }"
+    Type="Text"
+    *ngFor="let columnKey of columns; let index = index"
+    class="cell display">
+    <app-resizer (output)="resizeColumn($event.x, columnKey)" (resizeStart)="startResize()"
+      (ResizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
+    <span class="material-icons-outlined sort-icon" *ngIf="columnKey === sortingBy">{{ sortingByDirection ? 'north'
+      : 'south' }}</span>
+    <data-grid-seperator *ngFor="let s of seperators(columnKey)" Axis="y" [seperator]="s"></data-grid-seperator>
+    <div class="text-readonly">{{ columnKey }}</div>
+    </div>
+</div>

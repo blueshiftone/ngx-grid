@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  ::ng-deep {
+    .multi-select-readonly, .single-select-readonly, .date-readonly, .rich-text-readonly {
+      opacity: 0;
+      pointer-events: none;
+    }
+    input {
+      border: 2px solid var(--primary-color-themed);
+      padding: 3px 6px;
+      outline: none;
+      transform: translateY(-10px);
+    }
+  }
+}

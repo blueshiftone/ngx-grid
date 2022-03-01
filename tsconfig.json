@@ -11,6 +11,15 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "paths": {
+      "ngx-grid-core": [
+        "dist/ngx-grid-core"
+      ],
+      "ngx-grid-toolbar": [
+        "dist/ngx-grid-toolbar/ngx-grid-toolbar",
+        "dist/ngx-grid-toolbar"
+      ]
+    },
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
@@ -20,7 +29,8 @@
     "module": "es2020",
     "lib": [
       "es2020",
-      "dom"
+      "dom",
+      "dom.iterable"
     ]
   },
   "angularCompilerOptions": {

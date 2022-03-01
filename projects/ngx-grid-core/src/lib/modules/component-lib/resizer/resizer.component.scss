@@ -1,0 +1,42 @@
+@use "sass:math";
+$HandleSize: 8px;
+$CornerHandleSize: $HandleSize * 2;
+$HandleOffset: math.div($HandleSize, 2) + 0.5;
+
+:host {
+  position: absolute;
+  z-index: 3;
+
+  &.Right,
+  &.Left {
+    cursor: ew-resize;
+    width: $HandleSize;
+    top: 0px;
+    bottom: 0px;
+  }
+
+  &.Top,
+  &.Bottom {
+    cursor: ns-resize;
+    height: $HandleSize;
+    left: 0px;
+    right: 0px;
+  }
+
+  &.Right, &.CornerBR, &.CornerTR { right: -$HandleOffset; }
+  &.Left, &.CornerBL, &.CornerTL { left: -$HandleOffset; }
+  &.Top, &.CornerTR, &.CornerTL { top: -$HandleOffset; }
+  &.Bottom, &.CornerBR, &.CornerBL { bottom: -$HandleOffset; }
+
+  &.CornerBR, &.CornerBL, &.CornerTL, &.CornerTR {
+    cursor: nw-resize;
+    height: $CornerHandleSize;
+    width: $CornerHandleSize;
+    z-index: 4;
+  }
+
+  &.CornerBL, &.CornerTR {
+    cursor: sw-resize
+  }
+
+}

@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  padding-bottom: 15px;
+}
+
+.wrapper {
+  background: var(--app-bg);
+  display: flex;
+  place-items: center;
+  padding: 5px 15px;
+  border-radius: 20px;
+  input {
+    border: none;
+    outline: none;
+    margin-left: 3px;
+    background: transparent;
+  }
+  label {
+    white-space: nowrap;
+  }
+}

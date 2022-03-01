@@ -1,0 +1,16 @@
+<app-floating-window (closed)="close()" [width]="550">
+  <div class="wrapper mat-elevation-z2" [ngClass]="{editable: editable}">
+
+    <div class="grid" [style.height.px]="height" *ngIf="hasSelectedRows && dataSource">
+      <data-grid-record-selector icon="remove" (selected)="removeRow($event)" [source]="dataSource"></data-grid-record-selector>
+    </div>
+
+    <div class="actions" [style.marginTop]="hasSelectedRows ? '14px' : ''" *ngIf="editable">
+      <button mat-button color="primary" (click)="selected.emit()" class="link">
+        <span class="material-icons-outlined">add</span>
+        <span class="label">Link to a record from {{ dataSetName }}</span>
+      </button>
+    </div>
+
+  </div>
+</app-floating-window>

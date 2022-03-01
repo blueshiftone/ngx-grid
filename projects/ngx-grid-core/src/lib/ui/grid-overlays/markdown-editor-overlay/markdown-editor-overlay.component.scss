@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.wrapper {
+  position: relative;
+  box-sizing: border-box;
+  border: 1.5px solid var(--primary-color-contrast-30);
+  border-radius: 4px;
+  .mat-app-background {
+    border-radius: 4px;
+    padding: 14px 16px;
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+    & > * {
+      cursor: auto;
+    }
+  }
+}
+
+.close {
+  cursor: pointer;
+  transform: translate(50%, -50%);
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  border: none;
+  padding: 3px;
+  line-height: 0;
+  border-radius: 12px;
+  background-color: var(--text-color);
+  fill: var(--app-bg);
+  opacity: 0.8;
+  transition: opacity 100ms linear;
+  &:hover {
+    opacity: 1;
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
