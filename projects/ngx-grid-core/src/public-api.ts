@@ -2,8 +2,6 @@
  * Public API Surface of ngx-grid-core
  */
 
-
-export * from './lib/ngx-grid-core.service';
 export * from './lib/ngx-grid-core.module';
 
 export * from './lib/ui/data-grid/data-grid.component';

@@ -65,7 +65,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     private readonly elRef         : ElementRef<HTMLElement>,
     public  readonly gridController: GridControllerService,
     private readonly overlays      : GridOverlayService,
-    private readonly events        : GridEventsService,
+    public  readonly events        : GridEventsService,
     private readonly ctxService    : GridContextMenuService,
     public  readonly multiEdit     : GridMultiCellEditService
   ) { super() }

@@ -1,6 +1,11 @@
 {
   "name": "@blueshiftone/ngx-grid-core",
-  "version": "0.0.2",
+  "version": "0.0.10",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blueshiftone/ngx-grid",
+    "directory": "projects/ngx-grid-core"
+  },
   "peerDependencies": {
     "@angular/common": "^13.0.0",
     "@angular/core": "^13.0.0",

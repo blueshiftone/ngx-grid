@@ -6,6 +6,7 @@ import { filter, take } from 'rxjs/operators'
 
 import { GridEventsService } from '../events/grid-events.service'
 import { GridFileUploadService } from '../services/grid-file-upload.service'
+import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
 import { DeleteFromArray } from '../utils/array-delete'
@@ -37,7 +38,10 @@ export class GridControllerService {
     public  readonly datePipe: DatePipe,
     public  readonly dialogs : MatDialog,
     public  readonly uploads : GridFileUploadService,
+    icons: IconsService,
   ) {
+
+    icons.init();
 
     const { gridEvents } = this
     const addSubscription = (s: Subscription) => this._subs.add(s)

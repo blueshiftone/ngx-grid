@@ -28,7 +28,7 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
 
   public focus                         = new BehaviorSubject<any>(false)
   public destroyed                     = new Subject<void>()
-  public typeComponent : IGridCellType = new CELL_TYPES['Text'](this.gridController, this.overlays, this)
+  public typeComponent?: IGridCellType
 
   private _lastSeenType?: IGridDataType
 
@@ -47,7 +47,7 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
 
   public detectChanges() {
     const newValue = this._getValue()
-    if (newValue !== this.typeComponent.value) this.setValue(newValue)
+    if (newValue !== this.typeComponent?.value) this.setValue(newValue)
   }
 
   public renderCellType(): void {
@@ -59,7 +59,7 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
     this._lastSeenType = this.type
   }
 
-  public setValue    = (value: any)                =>  this.typeComponent.receiveValue(value) 
+  public setValue    = (value: any)                =>  this.typeComponent?.receiveValue(value) 
   public toggleClass = (c: string, state: boolean) => this.element.classList.toggle(c, state)
   public startEdit   = ()                          => {}
   public stopEdit    = ()                          => {}

@@ -1,6 +1,7 @@
 import { OverlayModule } from '@angular/cdk/overlay'
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { CommonModule, DatePipe } from '@angular/common'
+import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatNativeDateModule } from '@angular/material/core'
@@ -107,6 +108,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.CellValidationMessage, CellValidationMessage
     MarkdownEditorModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    HttpClientModule,
   ],
   providers: [
     DatePipe

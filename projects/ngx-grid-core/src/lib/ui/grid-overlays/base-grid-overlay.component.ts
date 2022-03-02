@@ -21,6 +21,8 @@ export class BaseOverlayComponent extends AutoUnsubscribe implements OnInit {
 
     if (!this.cell) throw new Error('Current cell is not defined in GridOverlayService')
 
+    this.value = this.cell.value
+
     this.addSubscription(this.cell.valueChanged.subscribe(_ => {
       this.value = this.cell.value
       this.cd.detectChanges()

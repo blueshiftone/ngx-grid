@@ -9,8 +9,7 @@ import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type
 
 export class RichTextCellType extends BaseExpandableCellType {
 
-  public mode                = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
-
+  public mode                    = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
   public expandableComponentType = EGridOverlayTypes.RichTextCellPreview
 
   private readonly readonlyCssClassName = 'rich-text-readonly'

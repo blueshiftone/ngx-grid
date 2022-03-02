@@ -35,14 +35,9 @@ export class DateEditorOverlayComponent extends BaseOverlayComponent implements 
 
     if (!this.cell) return
 
-    this.addSubscription(this.cell.valueChanged.subscribe(_ => {
-      if (this._internalUpdate) return this._internalUpdate = false
-      this.date = ParseDate(this.cell.value) ?? this.date
-      this.calendarInitialised = true
-      this._setInput()
-      this.cd.detectChanges()
-      return true
-    }))
+    this.addSubscription(this.cell.valueChanged.subscribe(_ => this._initCalendar()))
+
+    this._initCalendar()
 
     // Arrow key bindings to increment/decrement values
     this.addSubscription(fromEvent<KeyboardEvent>(this.inputEl.nativeElement, 'keydown').subscribe(e => {
@@ -91,6 +86,15 @@ export class DateEditorOverlayComponent extends BaseOverlayComponent implements 
       this._conformDateInput((e.target as HTMLInputElement).value)
       this._validateDateInput()
     }))
+  }
+
+  private _initCalendar() {
+    if (this._internalUpdate) return this._internalUpdate = false
+    this.date = ParseDate(this.cell.value) ?? this.date
+    this.calendarInitialised = true
+    this._setInput()
+    this.cd.detectChanges()
+    return
   }
 
   public calendarChanged(d: Date): void {
