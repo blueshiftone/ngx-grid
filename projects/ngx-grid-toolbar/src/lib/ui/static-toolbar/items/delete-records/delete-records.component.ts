@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef } from '@angular/core'
-import { TPrimaryKey } from 'ngx-grid-core'
+import { TPrimaryKey } from '@blueshiftone/ngx-grid-core'
 
 import { ToolbarService } from '../../../../toolbar.service'
 import { EToolbarItemPlacement } from '../../../../typings/enums/toolbar-item-placement.enum'

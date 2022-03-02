@@ -9,7 +9,7 @@ import {
   IGridSelectionSlice,
   TColumnKey,
   TPrimaryKey,
-} from 'ngx-grid-core'
+} from '@blueshiftone/ngx-grid-core'
 import { BehaviorSubject, merge, Subscription } from 'rxjs'
 
 import { EToolbarItemPlacement } from './typings/enums/toolbar-item-placement.enum'

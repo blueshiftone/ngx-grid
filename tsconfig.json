@@ -12,11 +12,10 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "ngx-grid-core": [
+      "@blueshiftone/ngx-grid-core": [
         "dist/ngx-grid-core"
       ],
-      "ngx-grid-toolbar": [
-        "dist/ngx-grid-toolbar/ngx-grid-toolbar",
+      "@blueshiftone/ngx-grid-toolbar": [
         "dist/ngx-grid-toolbar"
       ]
     },

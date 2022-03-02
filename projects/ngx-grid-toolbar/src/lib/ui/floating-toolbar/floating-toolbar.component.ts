@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { MatMenuTrigger } from '@angular/material/menu'
-import { TPrimaryKey } from 'ngx-grid-core'
+import { TPrimaryKey } from '@blueshiftone/ngx-grid-core'
 
 import { ToolbarService } from '../../toolbar.service'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'

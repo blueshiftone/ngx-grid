@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core'
-import { IGridCellValue } from 'ngx-grid-core'
+import { IGridCellValue } from '@blueshiftone/ngx-grid-core'
 
 import { ToolbarService } from '../../../../toolbar.service'
 import { EToolbarItemPlacement } from '../../../../typings/enums/toolbar-item-placement.enum'

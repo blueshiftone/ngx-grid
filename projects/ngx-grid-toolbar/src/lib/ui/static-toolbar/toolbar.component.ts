@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
 import { MatMenuTrigger } from '@angular/material/menu'
-import { DataGridComponent } from 'ngx-grid-core'
+import { DataGridComponent } from '@blueshiftone/ngx-grid-core'
 import { fromEvent } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 
