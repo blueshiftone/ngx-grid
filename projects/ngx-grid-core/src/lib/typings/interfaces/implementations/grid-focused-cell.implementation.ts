@@ -24,6 +24,6 @@ export class GridFocusedCell implements IGridCellFocused {
     return this.coords.columnKey
   }
   public equals(other: IGridCellFocused): boolean {
-    return this.coords.equals(other)
+    return this.isCell(other)
   }
 }

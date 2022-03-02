@@ -1,24 +1,7 @@
 # NgxGridCore
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.0.
+A professional Angular data grid. [See demo](https://blueshiftone.github.io/dist/blueshift-demos/).
 
-## Code scaffolding
+See [demo source code](https://github.com/blueshiftone/blueshiftone.github.io/tree/main/src/app/data-grid-demo) for how to use the grid.
 
-Run `ng generate component component-name --project ngx-grid-core` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-grid-core`.
-> Note: Don't forget to add `--project ngx-grid-core` or else it will be added to the default project in your `angular.json` file. 
-
-## Build
-
-Run `ng build ngx-grid-core` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ngx-grid-core`, go to the dist folder `cd dist/ngx-grid-core` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-grid-core` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+More documentation coming soon.

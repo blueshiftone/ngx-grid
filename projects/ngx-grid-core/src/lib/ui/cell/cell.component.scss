@@ -4,7 +4,7 @@
     ::ng-deep {
       .single-select-readonly {
         &:after {
-          content: url(/assets/icons/dropdown-arrow.svg);
+          content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M0,0H24V24H0Z' style='fill:none'/%3E%3Cpath style='fill: currentColor' d='M6.52,10.21l5.1,5.11a.54.54,0,0,0,.76,0l5.1-5.11a.53.53,0,0,0-.37-.91H6.89A.53.53,0,0,0,6.52,10.21Z'/%3E%3C/svg%3E");
           position: absolute;
           right: 5px;
           top: 50%;
