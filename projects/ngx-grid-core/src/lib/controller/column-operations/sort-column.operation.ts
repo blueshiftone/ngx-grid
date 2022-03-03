@@ -18,15 +18,15 @@ export class SortColumn extends BaseColumnOperation {
     let   rowsSorted: IGridRow[] | null    = null
 
     if (this.sortBy) {
-      if (typeof this._rows[0].getValue(columnKey) === 'string') {
+      if (typeof this._rows[0].getValue(columnKey).value === 'string') {
         rowsSorted = [...this._rows].sort((a, b) => {
-          if (this.sortBy!.sortOrder === ESortDirection.ASC) return a.getValue(columnKey)?.value.localeCompare(b.getValue(columnKey)?.value)
-          else return b.getValue(columnKey)?.value.localeCompare(a.getValue(columnKey)?.value)
+          if (this.sortBy!.sortOrder === ESortDirection.ASC) return (a.getValue(columnKey)?.value ?? '').localeCompare(b.getValue(columnKey)?.value ?? '')
+          else return (b.getValue(columnKey)?.value ?? '').localeCompare(a.getValue(columnKey)?.value ?? '')
         })
       } else {
         rowsSorted = [...this._rows].sort((a, b) => {
-          if (this.sortBy!.sortOrder === ESortDirection.ASC) return a.getValue(columnKey)?.value - b.getValue(columnKey)?.value
-          else return b.getValue(columnKey)?.value - a.getValue(columnKey)?.value
+          if (this.sortBy!.sortOrder === ESortDirection.ASC) return (a.getValue(columnKey)?.value ?? 0) - (b.getValue(columnKey)?.value ?? 0)
+          else return (b.getValue(columnKey)?.value ?? 0) - (a.getValue(columnKey)?.value ?? 0)
         })
       }
       this.sortBy.rows = rowsSorted
