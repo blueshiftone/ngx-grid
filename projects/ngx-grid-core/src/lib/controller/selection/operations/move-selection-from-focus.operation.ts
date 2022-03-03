@@ -115,8 +115,8 @@ export class MoveSelectionFromFocusOperation extends BaseSelectionOperation {
       }
       return [focused, new GridCellCoordinates(newRowKey, newColumnKey)]
     } else {
-      newColumnKey     = utils.incrementColumn(focused.columnKey, incrementX)
-      newRowKey = utils.incrementRow(focused.rowKey, incrementY)
+      newColumnKey = utils.incrementColumn(focused.columnKey, incrementX)
+      newRowKey    = utils.incrementRow(focused.rowKey, incrementY)
     }
     return [new GridCellCoordinates(newRowKey, newColumnKey), new GridCellCoordinates(newRowKey, newColumnKey)]
   }

@@ -19,16 +19,19 @@ export class ChangeColumnOrder extends BaseColumnOperation {
       columnKey: this._visibleColumns[i]
     }))
 
-    const newOrder = columns.map(i => i.order)
+    const newOrderIndexes = columns.map(i => i.order)
 
-    newOrder.unshift(newOrder.pop() as number)
-    columns.forEach((el, i) => el.order = newOrder[i])
+    newOrderIndexes.unshift(newOrderIndexes.pop() as number)
+    columns.forEach((el, i) => el.order = newOrderIndexes[i])
 
-    const savedOrder = [...this._savedOrder.filter(o => !columns.map(c => c.columnKey).includes(o.columnKey)), ...columns]
+    const savedColumnKeys = this._savedOrder.map(c => c.columnKey)
+    const currentOrder = [...this._savedOrder, ...this._visibleColumns.map((c, i) => ({ order: i, columnKey: c })).filter(itm => !savedColumnKeys.includes(itm.columnKey))]
 
-    this.columnOperations.prefsService.set(this._prefsKey, savedOrder)
+    const newOrder = currentOrder.map(c => columns.find(itm => itm.columnKey === c.columnKey) ?? c)
+
+    this.columnOperations.prefsService.set(this._prefsKey, newOrder)
     
-    this.gridEvents.ColumnOrderSavedEvent.emit(savedOrder)
+    this.gridEvents.ColumnOrderSavedEvent.emit(newOrder)
     this.gridEvents.ColumnOrderChangedEvent.emit(columns)
   }
 

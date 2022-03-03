@@ -144,9 +144,8 @@ export class GridMultiCellEditService {
       const values     = cells.map(cellCoordinates => this.gridController.cell.GetCellValue.run(cellCoordinates)).filter(v => v) as IGridCellValue[]
 
       const isDistinctValue = DistinctValues(values.map(v => {
-        if (typeof v?.value !== 'string') v.value = JSON.stringify(v)
-        return v
-      })).length === 1        
+        return typeof v?.value !== 'string' ? JSON.stringify(v.value) : v.value
+      })).length === 1
 
       const initialValue = isDistinctValue ? values[0] : (type.name === 'RichText' ? '<p></p>' : null)
 

@@ -72,13 +72,14 @@ export class GetSelectionSliceOperation {
         const colMeta      = this.controller.gridController.column.GetColumnMeta.run(columnKey)
         const listGridID   = cellMeta?.type?.list?.relatedGridID ?? colMeta?.type?.list?.relatedGridID
         if (typeof listGridID !== 'undefined') {
-          const valArray = Array.isArray(val) ? val : [val]
+          const valArray = Array.isArray(valFormatted) ? valFormatted : [valFormatted]
           let output: string[] = []
           for (const key of valArray) {
             output.push(this.controller.gridController.grid.GetRelatedDataPreviewString.run(listGridID, key) ?? '')
           }
           valFormatted = output.join(', ')
         }
+
         outputRowData.push(val.value)
         outputRowDataFormatted.push(valFormatted)
         if (!selectedCols.has(columnKey)) {
