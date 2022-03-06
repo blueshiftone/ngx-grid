@@ -36,6 +36,7 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
 
   ngOnInit(): void {
     this._init()
+    this.addSubscription(this.localizations.changes.subscribe(_ => this.changeDetection.detectChanges()))
   }
 
   private async _init() {
