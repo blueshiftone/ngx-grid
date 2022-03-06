@@ -4,7 +4,7 @@ import { BaseMultiEdit } from './base-multi-edit.abstract'
 
 export class TextPrepend extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
-  public label = '↤ Prepend text'
+  public label = 'locPrependText'
   public run   = (input: any) => {
     const valueTest   = new StringParser(this.cellValue).run()
     const valueString = valueTest.isValid ? valueTest.transformedValue : ''

@@ -17,7 +17,8 @@ import {
   PasteComponent,
   RevertRecordsComponent,
 } from './ui/static-toolbar/items'
-import { ToolbarComponent } from './ui/static-toolbar/toolbar.component'
+import { ToolbarComponent } from './ui/static-toolbar/toolbar.component';
+import { LocalizedTextComponent } from './ui/localized-text/localized-text.component'
 
 const materialModules = [
   MatButtonModule,
@@ -39,6 +40,7 @@ const materialModules = [
     PasteDeniedDialogComponent,
     PasteComponent,
     FloatingToolbarComponent,
+    LocalizedTextComponent,
   ],
   imports: [
     CommonModule,

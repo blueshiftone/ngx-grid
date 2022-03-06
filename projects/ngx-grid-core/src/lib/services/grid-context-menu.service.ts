@@ -6,7 +6,7 @@ import { first } from 'rxjs/operators'
 
 import { GridControllerService } from '../controller/grid-controller.service'
 import { GridEventsService } from '../events/grid-events.service'
-import { IGridContextMenuItem } from '../typings/interfaces'
+import { IGridContextMenu, IGridContextMenuItem } from '../typings/interfaces'
 import { ContextMenuOverlayComponent } from '../ui/grid-overlays/context-menu-overlay/context-menu-overlay.component'
 import { HasParentOfClass } from '../utils/find-parent-element-of-class'
 import { GridMultiCellEditService } from './grid-multi-cell-edit.service'
@@ -35,9 +35,13 @@ export class GridContextMenuService {
 
   public open(e: MouseEvent, items: IGridContextMenuItem[]): void {
     if (!items.length) return
+    const menu: IGridContextMenu = {
+      items,
+      loc: this.gridController.localize
+    }
     this.onDestroy()
     const ref      = this._createOverlayRef(e.clientX, e.clientY)
-    const injector = Injector.create({ providers: [{ provide: GRID_CONTEXT_MENU_ITEMS, useValue: items }] })
+    const injector = Injector.create({ providers: [{ provide: GRID_CONTEXT_MENU, useValue: menu }] })
     ref.attach(new ComponentPortal(ContextMenuOverlayComponent, null, injector))
     this._startSubscribers()
   }
@@ -49,8 +53,6 @@ export class GridContextMenuService {
     const selection = this.gridController.selection.latestSelection
     
     if (selection) {
-      
-      const rowKeysNum = selection.rowKeys.length
 
       const distinctType = this.multiCellEdit.getDistinctType(selection)
       
@@ -69,7 +71,7 @@ export class GridContextMenuService {
         if (distinctType.type.name === 'Boolean') action = undefined
         
         output.push({
-          label : 'Set values',
+          label : 'locSetValues',
           action,
           icon: EGridIcon.MultiEdit,
           children: editors.map(editor => {
@@ -92,12 +94,12 @@ export class GridContextMenuService {
       if (canInsert) {
         output.push(...[
           {
-            label: 'Insert a record above',
+            label: 'locInsertARecordAbove',
             action: () => this.gridController.row.InsertRowAboveSelection.run(),
             icon: EGridIcon.InsertAboveSelection
           },
           {
-            label: 'Insert a record below',
+            label: 'locInsertARecordBelow',
             action: () => this.gridController.row.InsertRowBelowSelection.run(),
             icon: EGridIcon.InsertBelowSelection
           },
@@ -105,14 +107,14 @@ export class GridContextMenuService {
       }
 
       output.push({
-        label : 'Copy selection',
+        label : 'locCopySelection',
         action: () => this.gridController.selection.copySelection(),
         icon  : EGridIcon.Copy
       })
 
       if (canDelete) {
         output.push({
-          label: `Delete ${rowKeysNum} record${rowKeysNum === 1 ? '' : 's'}`,
+          label: `locDeleteRecord(s)`,
           action: () => selection.rowKeys.forEach(k => this.gridController.row.DeleteRow.buffer(k)),
           icon: EGridIcon.Delete
         })
@@ -181,4 +183,6 @@ export class GridContextMenuService {
 
 }
 
-export const GRID_CONTEXT_MENU_ITEMS = new InjectionToken<IGridContextMenuItem[]>('GRID_CONTEXT_MENU_ITEMS')
+export const GRID_CONTEXT_MENU = new InjectionToken<IGridContextMenu>('GRID_CONTEXT_MENU')
+
+

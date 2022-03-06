@@ -45,7 +45,8 @@ import { HeaderComponent } from './ui/header/header.component'
 import { RecordSelectorCellComponent, RecordSelectorComponent, RecordSelectorRowComponent } from './ui/record-selector'
 import { RowIconComponent } from './ui/row/row-icon/row-icon.component'
 import { RowComponent } from './ui/row/row.component'
-import { SeperatorComponent } from './ui/seperator/seperator.component'
+import { SeperatorComponent } from './ui/seperator/seperator.component';
+import { LocalizedTextComponent } from './ui/localized-text/localized-text.component'
 
 GRID_OVERLAYS.set(EGridOverlayTypes.MarkdownEditor, MarkdownEditorComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.DateEditorOverlay, DateEditorOverlayComponent)
@@ -96,6 +97,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.CellValidationMessage, CellValidationMessage
     MultiCellEditInputComponent,
     CellValidationMessageComponent,
     ErrorDialogComponent,
+    LocalizedTextComponent,
   ],
   imports: [
     CommonModule,

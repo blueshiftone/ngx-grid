@@ -4,6 +4,7 @@ import { DataGridComponent } from '@blueshiftone/ngx-grid-core'
 import { fromEvent } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 
+import { LocalizationService } from '../../services/localization.service'
 import { ToolbarService } from '../../toolbar.service'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { HasParentMatching } from '../../utils/dom-element-parent-traversal'
@@ -32,11 +33,16 @@ export class ToolbarComponent extends AutoUnsubscribe implements OnInit {
   constructor(
     public readonly toolbarService : ToolbarService,
     public readonly changeDetection: ChangeDetectorRef,
+    private readonly localizations: LocalizationService
   ) { super() }
 
   ngOnInit(): void {
     if (!this.gridComponent) return
-    this.toolbarService.gridController = this.gridComponent.gridController
+    
+    this._setLocalizations();
+    this.gridComponent.localizations.changes.subscribe(_ => this._setLocalizations())
+
+    this.toolbarService.gridController       = this.gridComponent.gridController
     this.toolbarService.multiCellEditService = this.gridComponent.multiEdit
     this.toolbarService.initialiseStaticToolbar(this.primaryContainer, this.secondaryContainer, this.dropdownContainer, this.itemFactoryContainer)
     this.addSubscription(this.gridComponent.selectionChanged.pipe(debounceTime(50)).subscribe(slice => this.toolbarService.selectionSlice.next(slice)))
@@ -51,6 +57,13 @@ export class ToolbarComponent extends AutoUnsubscribe implements OnInit {
       e.preventDefault()
       e.stopPropagation()
     }))
+  }
+
+  private _setLocalizations() {
+    if (!this.gridComponent) return
+    this.localizations.setLocalizations(this.gridComponent.localizations.getLocalizations())
+    this.localizations.setCulture(this.gridComponent.localizations.culture)
+    this.localizations.changes.next()
   }
 
   override appOnDestroy(): void {
