@@ -21,6 +21,7 @@ import { GridEventsService } from '../../events/grid-events.service'
 import { GridContextMenuService } from '../../services/grid-context-menu.service'
 import { GridMultiCellEditService } from '../../services/grid-multi-cell-edit.service'
 import { GridOverlayService } from '../../services/grid-overlay-service.service'
+import { LocalizationService } from '../../services/localization.service'
 import { IGridConfiguration, IGridDataSource, IGridSelectionSlice } from '../../typings/interfaces'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
@@ -36,6 +37,7 @@ import { WINDOW } from '../../utils/window'
   providers: [
     GridControllerService,
     GridEventsService,
+    LocalizationService,
     GridOverlayService,
     GridContextMenuService,
     GridMultiCellEditService,
@@ -66,6 +68,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     public  readonly gridController: GridControllerService,
     private readonly overlays      : GridOverlayService,
     public  readonly events        : GridEventsService,
+    public  readonly localizations : LocalizationService,
     private readonly ctxService    : GridContextMenuService,
     public  readonly multiEdit     : GridMultiCellEditService
   ) { super() }

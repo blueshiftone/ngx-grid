@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnIn
 import { MatMenuTrigger } from '@angular/material/menu'
 import { TPrimaryKey } from '@blueshiftone/ngx-grid-core'
 
+import { LocalizationService } from '../../services/localization.service'
 import { ToolbarService } from '../../toolbar.service'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 
@@ -22,14 +23,20 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
   public canDelete    = true
   public multiEditorLabels: string[] = []
 
+  private readonly txtCopySelection  = 'locCopySelection'
+  private readonly txtDeleteRecords  = 'locDeleteRecords'
+  private readonly txtClearSelection = 'locClearSelection'
+
   constructor(
     public  readonly toolbarService : ToolbarService,
     private readonly elRef          : ElementRef<HTMLElement>,
     private readonly changeDetection: ChangeDetectorRef,
+    private readonly localizations  : LocalizationService,
   ) { super() }
 
   ngOnInit(): void {
     this._init()
+    this.addSubscription(this.localizations.changes.subscribe(_ => this.changeDetection.detectChanges()))
   }
 
   private async _init() {
@@ -47,6 +54,10 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
       this.addSubscription(this.toolbarService.gridController.gridEvents.GridWasModifiedEvent.on().subscribe(_ => this._checkChanges()))
     }
   }
+
+  public get locCopySelection() : string { return this.localizations.getLocalizedString(this.txtCopySelection) }
+  public get locDeleteRecords() : string { return this.localizations.getLocalizedString(this.txtDeleteRecords) }
+  public get locClearSelection(): string { return this.localizations.getLocalizedString(this.txtClearSelection) }
 
   public setValues(): void {
     const selection = this.toolbarService.selectionSlice.value?.selection

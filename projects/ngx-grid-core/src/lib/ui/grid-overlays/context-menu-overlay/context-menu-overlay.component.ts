@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, Inject } from '@angular/core'
 
-import { GRID_CONTEXT_MENU_ITEMS } from '../../../services/grid-context-menu.service'
-import { IGridContextMenuItem } from '../../../typings/interfaces/grid-context-menu-item.interface'
+import { GRID_CONTEXT_MENU } from '../../../services/grid-context-menu.service'
+import { IGridContextMenu } from '../../../typings/interfaces/grid-context-menu.interface'
 
 @Component({
   selector: 'data-grid-context-menu-overlay',
@@ -18,7 +18,7 @@ export class ContextMenuOverlayComponent {
   }
 
   constructor(
-    @Inject(GRID_CONTEXT_MENU_ITEMS) public items: IGridContextMenuItem[],
+    @Inject(GRID_CONTEXT_MENU) public menu: IGridContextMenu,
   ) { }
 
 }

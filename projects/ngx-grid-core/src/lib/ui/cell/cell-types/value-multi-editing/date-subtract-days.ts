@@ -6,7 +6,7 @@ import { BaseMultiEdit } from './base-multi-edit.abstract'
 
 export class DateSubtractDays extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
-  public label = 'Subtract days'
+  public label = 'locSubtractDays'
   public run   = (input: any) => {
     const dateTest   = new DateParser(this.cellValue).run()
     const numberTest = new NumberParser(input).run()

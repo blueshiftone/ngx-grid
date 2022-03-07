@@ -9,7 +9,6 @@ import { GridEventsService } from '../events/grid-events.service'
 import { EPositionPreference } from '../typings/enums/position-preference.enum'
 import { IGridCellType, IGridOverlayConfigs, IGridOverlayData, IGridOverlayOpened } from '../typings/interfaces'
 import GRID_OVERLAYS, { EGridOverlayTypes as EGridOverlayType } from '../ui/grid-overlays/grid-overlay-types'
-import { removeNullish } from '../utils/custom-rxjs/remove-nullish'
 import { OverlayPositionBuilder } from './overlay-position-builder.class'
 
 @Injectable({
@@ -32,10 +31,6 @@ export class GridOverlayService {
       this.events.factory.GridScrollStartedEvent.on(), 
       this.events.factory.CellSelectionChangedEvent.on(),
     ).subscribe(_ => this._overlayRefs.size && this.closeAll()))
-
-    this._subs.add(this.events.factory.CellSelectionChangedEvent.on().pipe(removeNullish()).subscribe(selection => {
-      if (this._overlayRefs.size > 0 && selection.cellCount > 1) this.closeAll()
-    }))
   }
 
   public open(originCell: IGridCellType, componentType: EGridOverlayType, configs: IGridOverlayConfigs = {}): IGridOverlayOpened {

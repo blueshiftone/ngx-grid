@@ -1,7 +1,7 @@
 <div class="button-group">
   <button class="primary-color" matRipple (click)="hasSelection ? insertAboveSelection() : insertAtTop()">
     <span class="material-icons-outlined icon">add</span>
-    <span class="label">Insert record</span>
+    <span class="label"><lib-localized-text>locInsertRecord</lib-localized-text></span>
   </button>
   <button class="primary-color icon-button" matRipple [matMenuTriggerFor]="insertMenu">
     <span class="material-icons-outlined icon">keyboard_arrow_down</span>
@@ -10,17 +10,18 @@
 <mat-menu #insertMenu="matMenu">
   <button mat-menu-item (click)="insertAtTop()">
     <mat-icon svgIcon="InsertAtTop"></mat-icon>
-    Insert at top
+    <lib-localized-text>locInsertAtTop</lib-localized-text>
   </button>
   <button mat-menu-item (click)="insertAboveSelection()" [disabled]="!hasSelection">
     <mat-icon svgIcon="InsertAboveSelection"></mat-icon>
-    Insert above selection</button>
+    <lib-localized-text>locInsertAboveSelection</lib-localized-text>
+  </button>
   <button mat-menu-item (click)="insertBelowSelection()" [disabled]="!hasSelection">
     <mat-icon svgIcon="InsertBelowSelection"></mat-icon>
-    Insert below selection
+    <lib-localized-text>locInsertBelowSelection</lib-localized-text>
   </button>
   <button mat-menu-item (click)="insertAtBottom()">
     <mat-icon svgIcon="InsertAtBottom"></mat-icon>
-    Insert at bottom
+    <lib-localized-text>locInsertAtBottom</lib-localized-text>
   </button>
 </mat-menu>

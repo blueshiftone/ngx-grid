@@ -4,8 +4,8 @@ import { BaseMultiEdit } from './base-multi-edit.abstract'
 
 export class NumberDivide extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
-  public label = '÷ Divide'
-  public override longLabel = '÷ Divide by'
+  public label = 'locDivide'
+  public override longLabel = 'locDivideBy'
   public run = (input: any) => {
     const inputNumberTest = new NumberParser(input).run()
     if (inputNumberTest.isInvalid) return

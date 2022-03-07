@@ -245,7 +245,8 @@ export class GridMultiCellEditService {
     let input = null
 
     if (editorInstance.requiresInput) {
-      input = await this.getMultiEditorInput(inputPositionStrategy, selection, editorInstance.longLabel ?? editorInstance.label, editorInstance.inputType ?? 'text')
+      const label = this.gridController.localize.getLocalizedString(editorInstance.longLabel ?? editorInstance.label)
+      input = await this.getMultiEditorInput(inputPositionStrategy, selection, label, editorInstance.inputType ?? 'text')
       if (!input) return
     }
 

@@ -4,8 +4,8 @@ import { BaseMultiEdit } from './base-multi-edit.abstract'
 
 export class NumberMultiply extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
-  public label = '× Multiply'
-  public override longLabel = '× Multiply by'
+  public label = 'locMultiply'
+  public override longLabel = 'locMultiplyBy'
   public run = (input: any) => {
     const inputNumberTest = new NumberParser(input).run()
     if (inputNumberTest.isInvalid) return

@@ -4,7 +4,7 @@ import { BaseMultiEdit } from './base-multi-edit.abstract'
 
 export class NumberAdd extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
-  public label = '+ Add'
+  public label = 'locAdd'
   public run   = (input: any) => {
     const inputNumberTest = new NumberParser(input).run()
     if (inputNumberTest.isInvalid) return
