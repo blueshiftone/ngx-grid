@@ -13,7 +13,7 @@ import { EGridOverlayTypes } from '../grid-overlay-types'
   styleUrls: ['./file-grid-cell-preview-overlay.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileGridCellPreviewComponentOverlay extends BasePreviewComponent implements OnInit {
+export class FileGridCellPreviewOverlayComponent extends BasePreviewComponent implements OnInit {
 
   public chipColor = 'rgba(16, 161, 214, 0.4)'
   public files: IGridFileCellValue[] = []

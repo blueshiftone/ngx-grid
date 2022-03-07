@@ -24,7 +24,7 @@ import { CellValidationMessageComponent } from './ui/grid-overlays/cell-validati
 import { ContextMenuOverlayComponent } from './ui/grid-overlays/context-menu-overlay/context-menu-overlay.component'
 import { DateEditorOverlayComponent } from './ui/grid-overlays/date-editor-overlay/date-editor-overlay.component'
 import { ExpandablePreviewPopupComponent } from './ui/grid-overlays/expandable-preview-popup/expandable-preview-popup.component'
-import { FileGridCellPreviewComponentOverlay } from './ui/grid-overlays/file-grid-cell-preview-overlay/file-grid-cell-preview-overlay.component'
+import { FileGridCellPreviewOverlayComponent } from './ui/grid-overlays/file-grid-cell-preview-overlay/file-grid-cell-preview-overlay.component'
 import { FileGridCellSelectedListComponent } from './ui/grid-overlays/file-grid-cell-selected-list/file-grid-cell-selected-list.component'
 import GRID_OVERLAYS, { EGridOverlayTypes } from './ui/grid-overlays/grid-overlay-types'
 import { MarkdownEditorComponent } from './ui/grid-overlays/markdown-editor-overlay/markdown-editor-overlay.component'
@@ -67,7 +67,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.ContextMenuOverlay, ContextMenuOverlayCompon
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiCellEditOverlay, MultiCellEditOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiCellEditInput, MultiCellEditInputComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.CellValidationMessage, CellValidationMessageComponent)
-GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellPreviewOverlay, FileGridCellPreviewComponentOverlay)
+GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellPreviewOverlay, FileGridCellPreviewOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelectedListComponent)
 
 @NgModule({
@@ -104,7 +104,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelect
     CellValidationMessageComponent,
     ErrorDialogComponent,
     LocalizedTextComponent,
-    FileGridCellPreviewComponentOverlay,
+    FileGridCellPreviewOverlayComponent,
     ChipComponent,
     CellActionButtonComponent,
     FileGridCellSelectedListComponent,
