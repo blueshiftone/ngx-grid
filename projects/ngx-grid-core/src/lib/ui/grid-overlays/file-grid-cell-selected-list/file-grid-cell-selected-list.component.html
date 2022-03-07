@@ -1,0 +1,19 @@
+<app-floating-window (closed)="close()" [width]="350">
+  <div class="files">
+    <div class="file" *ngFor="let file of files">
+      <div class="label">{{ file.fileName }}</div>
+      <button mat-icon-button (click)="remove(file)" class="remove" [matTooltip]="locRemoveFile" *ngIf="editable">
+        <span class="material-icons-outlined">close</span>
+      </button>
+      <button mat-icon-button (click)="download(file)" [matTooltip]="locDownloadFile">
+        <span class="material-icons-outlined">download</span>
+      </button>
+    </div>
+  </div>
+  <div class="actions" *ngIf="editable">
+    <button mat-button color="primary" (click)="newUpload()" class="link">
+      <span class="material-icons-outlined">add</span>
+      <span class="label">{{ localize('locUploadANewFile') }}</span>
+    </button>
+  </div>
+</app-floating-window>

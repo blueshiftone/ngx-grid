@@ -30,6 +30,10 @@ export class BaseOverlayComponent extends AutoUnsubscribe implements OnInit {
 
   }
 
+  public localize(str: string): string {
+    return this.gridController.localize.getLocalizedString(str)
+  }
+
   public close(): void {
     this.data.overlayRef.detach()
   }

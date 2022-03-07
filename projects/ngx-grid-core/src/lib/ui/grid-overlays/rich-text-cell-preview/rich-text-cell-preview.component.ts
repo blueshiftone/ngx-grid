@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit } from '@angular/core'
 
-import { MarkdownEditorComponent } from '../../../modules/markdown-editor/ui/markdown-editor/markdown-editor.component'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../typings/enums/position-preference.enum'
 import { IGridExpandableCellData, IGridOverlayData } from '../../../typings/interfaces'
@@ -22,14 +21,6 @@ export class RichTextCellPreviewComponent extends BasePreviewComponent implement
   ) { super(data, cd) }
 
   private _isOpen = false
-
-  override ngOnInit(): void {
-    
-    this.addSubscription(this.data.currentCell.valueChanged.subscribe(_ => {
-      this.cd.detectChanges()
-    }))
-    
-  }
 
   public async expand(): Promise<void> {
 

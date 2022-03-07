@@ -36,4 +36,9 @@ export const GRID_LOCALIZATION_DEFAULTS = new Map<string, string>([
   ["locInsertARecordAbove", "Insert a record above"],
   ["locInsertARecordBelow", "Insert a record below"],
   ["locCopySelection", "Copy selection"],
+  ["locUploadANewFile", "Upload a new file"],
+  ["locLinkToARecordFrom", "Link to a record from"],
+  ["locSelectAnOption", "Select an option"],
+  ["locRemoveFile", "Remove File"],
+  ["locDownloadFile", "Download File"],
 ])

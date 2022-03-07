@@ -1,26 +1,10 @@
 <data-grid-expandable-preview-popup (action)="$event === 'expandButton' ? expand() : select()" [overlayData]="data">
-  <div class="chip" *ngFor="let option of options;" [dataGridResponsiveBackgroundColor]="{color: option.color ?? defaultColor, themeMode: themeMode}">
-    <div class="label">{{ option.label ?? option.value }}</div>
-    <button class="close action" matRipple (click)="remove(option)" *ngIf="cell.isEditable">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
-      </svg>
-    </button>
-  </div>
-  <button class="action more" matRipple *ngIf="totalOptionsCount > 2" (click)="expand()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <rect width="24" height="24" style="fill:none" />
-      <path
-        d="M20.82,14.94A2.94,2.94,0,1,1,23.77,12,2.94,2.94,0,0,1,20.82,14.94Zm-8.82,0A2.94,2.94,0,1,1,14.94,12,2.94,2.94,0,0,1,12,14.94Zm-8.82,0A2.94,2.94,0,1,1,6.12,12,2.95,2.95,0,0,1,3.18,14.94Z"
-        style="fill-rule:evenodd" />
-    </svg>
-  </button>
-  <button class="action add" matRipple (click)="select()" *ngIf="cell.isEditable">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <rect width="24" height="24" style="fill:none" />
-      <path d="M23,13.6h-9.5V23h-3.2v-9.5H1v-3.2h9.5V1h3.2v9.5H23V13.6z" />
-    </svg>
-  </button>
+  <data-grid-chip chipStyle="rounded" [color]="option.color ?? defaultColor" [editable]="cell.isEditable"
+    [theme]="themeMode" *ngFor="let option of options" [label]="option.label ?? option.value.toString()"
+    (removeAction)="remove(option)">
+  </data-grid-chip>
+  <data-grid-cell-action-button actionType="more" (action)="expand()" *ngIf="totalOptionsCount > 2">
+  </data-grid-cell-action-button>
+  <data-grid-cell-action-button actionType="add" (action)="select()" *ngIf="cell.isEditable">
+  </data-grid-cell-action-button>
 </data-grid-expandable-preview-popup>

@@ -18,7 +18,12 @@ export class GridFileUploadService {
     this._uploads.set(upload.id, upload)
   }
 
-  public createUpload(fileLisit: FileList, coords: IGridCellCoordinates, entityName: string): IGridFilesSelected {
+  public cancelUpload(upload: IGridFileUpload) {
+    upload.uploadStream?.error("Upload stream cancelled")
+    this._uploads.delete(upload.id)
+  }
+
+  public createUpload(fileLisit: FileList, coords: IGridCellCoordinates, gridId: string): IGridFilesSelected {
 
     const files: IGridFileUpload[] = [...fileLisit].map(file => ({
       id: uuidv4(),
@@ -26,10 +31,13 @@ export class GridFileUploadService {
       progress: new BehaviorSubject(0),
       status: new BehaviorSubject<EFileUploadStatus>(EFileUploadStatus.Waiting),
       cellCoords: coords,
-      entityName,
+      gridId,
     }))
 
-    files.forEach(f => this.addUpload(f));
+    // files.forEach(f => this.addUpload(f));
+    // TODO: multiple file uploads
+
+    this.addUpload(files[0])
 
     return { ...coords, files }
   }
@@ -40,6 +48,27 @@ export class GridFileUploadService {
       output.push(...[...this._uploads.values()].filter(x => x.cellCoords.equals(coords)))
     }
     return output
+  }
+
+  public pickFile(callback: (files: FileList) => void): void {
+    const input = document.createElement('input')
+
+    input.type           = 'file'
+    input.multiple       = false
+    input.style.position = 'absolute'
+    input.style.opacity  = '0'
+
+    document.body.appendChild(input)
+
+    input.onclick = () => input.remove()
+
+    input.onchange = () => {
+      if (input.files?.length) {
+        callback(input.files)
+      }
+    }
+
+    input.click()
   }
 
 }

@@ -7,15 +7,11 @@ import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
-import { StaticDropdownOverlayComponent } from '../static-dropdown-overlay/static-dropdown-overlay.component'
 
 @Component({
   selector: 'data-grid-multi-select-static-list-overlay',
   templateUrl: './multi-select-static-list-overlay.component.html',
-  styleUrls: [
-    '../multi-select-grid-cell-preview/multi-select-grid-cell-preview.component.scss',
-    './multi-select-static-list-overlay.component.scss'
-  ],
+  styleUrls: ['./multi-select-static-list-overlay.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiSelectStaticListOverlayComponent extends BaseOverlayComponent implements OnInit {
@@ -39,6 +35,7 @@ export class MultiSelectStaticListOverlayComponent extends BaseOverlayComponent 
     this.addSubscription(this.data.currentCell.valueChanged.subscribe(_ => {
       this._setOptions()
     }))
+    this.addSubscription(this.gridController.localize.changes.subscribe(_ => this.cd.detectChanges()))
   }
 
   private _setOptions(): void {

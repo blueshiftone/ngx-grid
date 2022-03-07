@@ -11,7 +11,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ComponentLibraryModule } from './modules/component-lib/component-library.module'
 import { MarkdownEditorModule } from './modules/markdown-editor/markdown-editor.module'
 import { BodyComponent } from './ui/body/body.component'
+import { CellActionButtonComponent } from './ui/cell-action-button/cell-action-button.component'
 import { CellComponent } from './ui/cell/cell.component'
+import { ChipComponent } from './ui/chip/chip.component'
 import { ContextMenuComponent } from './ui/context-menu/context-menu.component'
 import { ContextMenuDirective } from './ui/context-menu/context-menu.directive'
 import { DataGridComponent } from './ui/data-grid/data-grid.component'
@@ -22,6 +24,8 @@ import { CellValidationMessageComponent } from './ui/grid-overlays/cell-validati
 import { ContextMenuOverlayComponent } from './ui/grid-overlays/context-menu-overlay/context-menu-overlay.component'
 import { DateEditorOverlayComponent } from './ui/grid-overlays/date-editor-overlay/date-editor-overlay.component'
 import { ExpandablePreviewPopupComponent } from './ui/grid-overlays/expandable-preview-popup/expandable-preview-popup.component'
+import { FileGridCellPreviewComponentOverlay } from './ui/grid-overlays/file-grid-cell-preview-overlay/file-grid-cell-preview-overlay.component'
+import { FileGridCellSelectedListComponent } from './ui/grid-overlays/file-grid-cell-selected-list/file-grid-cell-selected-list.component'
 import GRID_OVERLAYS, { EGridOverlayTypes } from './ui/grid-overlays/grid-overlay-types'
 import { MarkdownEditorComponent } from './ui/grid-overlays/markdown-editor-overlay/markdown-editor-overlay.component'
 import { MultiCellEditInputComponent } from './ui/grid-overlays/multi-cell-edit-input/multi-cell-edit-input.component'
@@ -42,11 +46,11 @@ import {
 } from './ui/grid-overlays/single-select-simple-foreign-key-dropdown-overlay/single-select-simple-foreign-key-dropdown-overlay.component'
 import { StaticDropdownOverlayComponent } from './ui/grid-overlays/static-dropdown-overlay/static-dropdown-overlay.component'
 import { HeaderComponent } from './ui/header/header.component'
+import { LocalizedTextComponent } from './ui/localized-text/localized-text.component'
 import { RecordSelectorCellComponent, RecordSelectorComponent, RecordSelectorRowComponent } from './ui/record-selector'
 import { RowIconComponent } from './ui/row/row-icon/row-icon.component'
 import { RowComponent } from './ui/row/row.component'
-import { SeperatorComponent } from './ui/seperator/seperator.component';
-import { LocalizedTextComponent } from './ui/localized-text/localized-text.component'
+import { SeperatorComponent } from './ui/seperator/seperator.component'
 
 GRID_OVERLAYS.set(EGridOverlayTypes.MarkdownEditor, MarkdownEditorComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.DateEditorOverlay, DateEditorOverlayComponent)
@@ -63,6 +67,8 @@ GRID_OVERLAYS.set(EGridOverlayTypes.ContextMenuOverlay, ContextMenuOverlayCompon
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiCellEditOverlay, MultiCellEditOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiCellEditInput, MultiCellEditInputComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.CellValidationMessage, CellValidationMessageComponent)
+GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellPreviewOverlay, FileGridCellPreviewComponentOverlay)
+GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelectedListComponent)
 
 @NgModule({
   declarations: [
@@ -98,6 +104,10 @@ GRID_OVERLAYS.set(EGridOverlayTypes.CellValidationMessage, CellValidationMessage
     CellValidationMessageComponent,
     ErrorDialogComponent,
     LocalizedTextComponent,
+    FileGridCellPreviewComponentOverlay,
+    ChipComponent,
+    CellActionButtonComponent,
+    FileGridCellSelectedListComponent,
   ],
   imports: [
     CommonModule,

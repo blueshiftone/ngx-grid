@@ -7,16 +7,11 @@ import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
-import { MultiSelectStaticListOverlayComponent } from '../multi-select-static-list-overlay/multi-select-static-list-overlay.component'
-import { StaticDropdownOverlayComponent } from '../static-dropdown-overlay/static-dropdown-overlay.component'
 
 @Component({
   selector: 'data-grid-multi-select-static-cell-preview',
   templateUrl: './multi-select-static-cell-preview.component.html',
-  styleUrls: [
-    '../multi-select-grid-cell-preview/multi-select-grid-cell-preview.component.scss',
-    './multi-select-static-cell-preview.component.scss',
-  ],
+  styleUrls: [ './multi-select-static-cell-preview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiSelectStaticCellPreviewComponent extends BasePreviewComponent implements OnInit {
