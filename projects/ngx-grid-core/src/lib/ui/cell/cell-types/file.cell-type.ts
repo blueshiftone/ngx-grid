@@ -14,6 +14,9 @@ export class FileCellType extends BaseExpandableCellType  {
   public mode = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
 
   public expandableComponentType = EGridOverlayTypes.FileGridCellPreviewOverlay
+
+  public dropZoneState      = new BehaviorSubject<boolean>(false)
+  public dropZoneHoverState = new BehaviorSubject<boolean>(false)
   
   private readonly cssClassName = 'file-cell-type'
 
@@ -91,19 +94,23 @@ export class FileCellType extends BaseExpandableCellType  {
     this._dropZoneNode = this.createDiv('file-dropzone')
     this.displayNode.appendChild(this._dropZoneNode)
     this.displayNode.classList.add('dropzone-active')
+    this.dropZoneState.next(true)
   }
 
   public dragStop() {
     this._dropZoneNode?.remove()
     this.displayNode.classList.remove('dropzone-active')
+    this.dropZoneState.next(false)
   }
 
   public hoverStart() {
     this.displayNode.classList.add('hover')
+    this.dropZoneHoverState.next(true)
   }
 
   public hoverStop() {
     this.displayNode.classList.remove('hover')
+    this.dropZoneHoverState.next(false)
   }
 
   private _generateDisplayNode(): HTMLElement {

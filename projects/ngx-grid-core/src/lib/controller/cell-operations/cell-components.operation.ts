@@ -26,6 +26,10 @@ export class CellComponents extends BaseCellOperation {
     }
   }
 
+  public linkElementToCell(el: HTMLElement, cell: IGridCellComponent): void {
+    this.cellComponentsByElement.set(el, cell)
+  }
+
   public added(cell: IGridCellComponent) {
     this.cellComponentsByCoords .set(cell.coordinates.compositeKey, cell)
     this.cellComponentsByElement.set(cell.element, cell)

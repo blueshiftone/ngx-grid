@@ -1,5 +1,6 @@
 <data-grid-expandable-preview-popup (action)="expand()" [overlayData]="data">
-  <div class="chips">
+  <div class="file-dropzone dropzone-active" [hidden]="!(dropZoneState | async)" [ngClass]="{ hover: (dropZoneHoverState | async) }"></div>
+  <div class="chips" [ngClass]="{ disabled: (dropZoneState | async) }">
     <data-grid-chip [color]="chipColor" [theme]="themeMode" *ngFor="let upload of pending"
       (removeAction)="removePending(upload)">
       <mat-icon svgIcon="Paperclip"></mat-icon>

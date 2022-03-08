@@ -16,6 +16,12 @@ export class BasePreviewComponent extends BaseOverlayComponent implements OnInit
     this.cell.displayNode.dispatchEvent(new MouseEvent("contextmenu", e))
   }
 
+  @HostListener('mouseenter')
+  public mouseEnter = () => {
+    const component = this.gridController.cell.CellComponents.findWithCoords(this.cell.coordinates)
+    if (component) this.gridController.gridEvents.CellMouseEnteredEvent.emit(component)
+  }
+
   constructor(
     @Inject(GRID_OVERLAY_DATA) data: IGridOverlayData,
     cd: ChangeDetectorRef,
