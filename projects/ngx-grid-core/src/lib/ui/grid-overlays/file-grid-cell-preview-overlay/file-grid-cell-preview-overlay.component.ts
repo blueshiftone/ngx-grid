@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit } from '@angular/core'
+import { BehaviorSubject } from 'rxjs'
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../typings/enums'
 import { IGridExpandableCellData, IGridFileUpload, IGridOverlayData } from '../../../typings/interfaces'
 import { IGridFileCellValue } from '../../../typings/interfaces/grid-file-cell-value.interface'
+import { FileCellType } from '../../cell/cell-types/file.cell-type'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
 
@@ -19,6 +21,9 @@ export class FileGridCellPreviewOverlayComponent extends BasePreviewComponent im
   public files: IGridFileCellValue[] = []
   public pending: IGridFileUpload[] = []
 
+  public dropZoneState      = new BehaviorSubject<boolean>(false)
+  public dropZoneHoverState = new BehaviorSubject<boolean>(false)
+
   constructor(
     @Inject(GRID_OVERLAY_DATA) data: IGridOverlayData<IGridExpandableCellData>,
     cd                             : ChangeDetectorRef,
@@ -30,12 +35,18 @@ export class FileGridCellPreviewOverlayComponent extends BasePreviewComponent im
   public override ngOnInit() {
     super.ngOnInit()
     if (this.value) this.files.push(this.value)
+    this.elRef.nativeElement.classList.add('cell')
+    const component = this.gridController.cell.CellComponents.findWithCoords(this.cell.coordinates)
+    if (component) this.gridController.cell.CellComponents.linkElementToCell(this.elRef.nativeElement, component)
     this._checkPendingUploads()
     this.addSubscription(this.cell.valueChanged.subscribe(_ => {
       this.files = this.cell.value ? [this.cell.value] : []
       this._checkPendingUploads()
       this.cd.detectChanges()
     }))
+    const cell = this.cell as FileCellType
+    this.dropZoneState      = cell.dropZoneState
+    this.dropZoneHoverState = cell.dropZoneHoverState
   }
 
   private _checkPendingUploads() {

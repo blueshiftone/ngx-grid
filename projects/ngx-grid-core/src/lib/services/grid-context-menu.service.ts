@@ -135,11 +135,12 @@ export class GridContextMenuService {
     }))
 
     this._subscriptions.add(
-      fromEvent(document.documentElement, 'mouseup')
+      fromEvent<MouseEvent>(document.documentElement, 'mouseup')
       .subscribe(e => {
         if (
-          HasParentOfClass('cdk-overlay-pane', e.target as HTMLElement) && 
-          !HasParentOfClass('stop-propagation', e.target as HTMLElement)
+          HasParentOfClass('cdk-overlay-pane', e.target as HTMLElement)
+          && !HasParentOfClass('stop-propagation', e.target as HTMLElement)
+          && e.button === 0
         ) {
           window.requestAnimationFrame(_ => this._overlayRef?.detach())
         }
