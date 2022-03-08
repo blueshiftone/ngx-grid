@@ -20,6 +20,10 @@ export class GridFileUploadService {
 
   public cancelUpload(upload: IGridFileUpload) {
     upload.uploadStream?.error("Upload stream cancelled")
+    this.removeUpload(upload)
+  }
+
+  public removeUpload(upload: IGridFileUpload) {
     this._uploads.delete(upload.id)
   }
 

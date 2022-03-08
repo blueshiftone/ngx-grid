@@ -52,6 +52,7 @@ button.action {
   &.more {
     width: 18px;
     height: 18px;
+    min-width: 18px;
     ::ng-deep {
       svg {
         width: 10px;
