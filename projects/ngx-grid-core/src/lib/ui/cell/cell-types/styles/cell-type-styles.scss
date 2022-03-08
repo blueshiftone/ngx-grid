@@ -168,8 +168,11 @@ input[type="number"] {
     border-radius: 4px;
     margin-right: 3px;
     svg {
-      width: 19px;
+      width: 14px;
+      min-width: 14px;
+      height: 14px;
       margin-right: 2px;
+      opacity: 0.7;
     }
     .progressBar {
       --size: 11px;

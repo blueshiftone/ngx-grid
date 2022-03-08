@@ -1,4 +1,4 @@
-import { ComponentType } from "@angular/cdk/portal"
+import { ComponentType } from '@angular/cdk/portal'
 
 export enum EGridOverlayTypes {
   MarkdownEditor,
@@ -15,7 +15,9 @@ export enum EGridOverlayTypes {
   ContextMenuOverlay,
   MultiCellEditOverlay,
   MultiCellEditInput,
-  CellValidationMessage
+  CellValidationMessage,
+  FileGridCellPreviewOverlay,
+  FileGridCellSelectedList,
 }
 
 let GRID_OVERLAYS = new Map<EGridOverlayTypes, ComponentType<any>>()

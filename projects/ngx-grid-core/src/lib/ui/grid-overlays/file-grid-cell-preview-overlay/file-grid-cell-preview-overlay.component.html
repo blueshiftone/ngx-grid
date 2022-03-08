@@ -1,0 +1,17 @@
+<data-grid-expandable-preview-popup (action)="expand()" [overlayData]="data">
+  <div class="chips">
+    <data-grid-chip [color]="chipColor" [theme]="themeMode" *ngFor="let upload of pending"
+      (removeAction)="removePending(upload)">
+      <mat-icon svgIcon="Paperclip"></mat-icon>
+      <div class="label">{{ upload.file.name }}</div>
+      <div class="progressBar"
+        [style.background]="'conic-gradient(var(--text-color) '+(upload.progress | async)+'%, transparent 0)'"></div>
+      <div class="progressTxt">{{ upload.progress | async }}%</div>
+    </data-grid-chip>
+    <data-grid-chip [color]="chipColor" [editable]="cell.isEditable" [theme]="themeMode" *ngFor="let file of files"
+      [label]="file.fileName" (removeAction)="remove(file)" (clickAction)="requestDownload(file)">
+      <mat-icon svgIcon="Paperclip"></mat-icon>
+    </data-grid-chip>
+    <data-grid-cell-action-button actionType="add" (action)="add()" *ngIf="editable"></data-grid-cell-action-button>
+  </div>
+</data-grid-expandable-preview-popup>

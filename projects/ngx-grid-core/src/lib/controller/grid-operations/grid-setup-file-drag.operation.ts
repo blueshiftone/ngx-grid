@@ -34,7 +34,7 @@ export class GridSetupFileDrag extends BaseGridOperation {
       dragCounter = 0
       fileCell?.hoverStop()
       if (e.dataTransfer?.files && e.dataTransfer.files.length > 0 && fileCell) {
-        this.gridEvents.GridFileUploadCreatedEvent.emit(uploads.createUpload(e.dataTransfer.files, fileCell.coordinates, this.gridOperations.source().dataSetName))
+        this.gridEvents.GridFileUploadCreatedEvent.emit(uploads.createUpload(e.dataTransfer.files, fileCell.coordinates, this.gridOperations.source().dataGridID))
         fileCell.receiveValue();
         fileCell = null;
        }

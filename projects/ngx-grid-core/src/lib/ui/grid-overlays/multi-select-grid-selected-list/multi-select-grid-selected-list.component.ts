@@ -58,7 +58,8 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
     this.addSubscription(this._updateDataNext.pipe(debounceTime(100)).subscribe(newVal => {
       this._updateData(newVal)
     }))
-    
+
+    this.addSubscription(this.gridController.localize.changes.subscribe(_ => this.cd.detectChanges()))
   }
 
   private _updateData(val = this.cell.value): void {

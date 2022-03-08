@@ -1,0 +1,10 @@
+<div class="chip {{ chipStyle }}" matRipple [matRippleDisabled]="!hasClickObservers"
+  [dataGridResponsiveBackgroundColor]="{color, themeMode: theme ?? 'light' }" [ngClass]="{ clickable: hasClickObservers }"
+  (click)="clickAction.emit()">
+  <div class="label">
+    <ng-content></ng-content>
+    <span *ngIf="label">{{ label }}</span>
+  </div>
+  <data-grid-cell-action-button actionType="close" (click)="$event.stopPropagation();" (action)="removeAction.emit()" *ngIf="editable">
+  </data-grid-cell-action-button>
+</div>

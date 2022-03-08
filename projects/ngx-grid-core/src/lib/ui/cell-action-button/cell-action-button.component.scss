@@ -1,0 +1,63 @@
+:host {
+  display: contents;
+}
+
+button.action {
+  border: none;
+  margin: 1.5px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.9;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  place-items: center;
+  place-content: center;
+  line-height: 0;
+  padding: 0;
+  background: var(--light-contrasting-15);
+  transition: background-color 100ms linear;
+  color: currentColor;
+  &:hover,
+  &.close:hover {
+    background: var(--light-contrasting-25);
+  }
+  ::ng-deep {
+    svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+      opacity: 0.7;
+    }
+  }
+  &.close {
+    margin-right: -2.5px;
+    margin-left: -1px;
+    cursor: pointer;
+    padding: 2px;
+    line-height: 15px;
+    height: 15px;
+    width: 15px;
+    background: transparent;
+    ::ng-deep {
+      svg {
+        fill: currentColor;
+        opacity: 0.7;
+        min-width: 12px;
+        height: 15px;
+      }
+    }
+  }
+  &.add,
+  &.more {
+    width: 18px;
+    height: 18px;
+    ::ng-deep {
+      svg {
+        width: 10px;
+        height: 10px;
+        opacity: 1;
+      }
+    }
+  }
+}

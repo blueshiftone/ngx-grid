@@ -1,6 +1,6 @@
 import { ICellValueParser } from '../../../../typings/interfaces'
 import { TCellTypeName } from '../../../../typings/types/cell-type-name.type'
-import { Array, Boolean, Date, MultiSelect, Number, String } from './parsers'
+import { Array, Boolean, Date, File, MultiSelect, Number, String } from './parsers'
 import { ValueParser } from './value-parser'
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -9,6 +9,7 @@ const parsers = {
   Boolean,
   Date,
   String,
+  File,
   Number,
   MultiSelect,
 }
@@ -16,7 +17,7 @@ const parsers = {
 export type TValueParserClass = typeof parsers[keyof typeof parsers]
 
 export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
-  File                : new ValueParser([String]),
+  File                : new ValueParser([File]),
   Boolean             : new ValueParser([Boolean]),
   Text                : new ValueParser([String]),
   RichText            : new ValueParser([String]),
