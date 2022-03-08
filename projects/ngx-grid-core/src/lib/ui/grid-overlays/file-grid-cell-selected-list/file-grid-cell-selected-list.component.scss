@@ -22,6 +22,9 @@
     flex-grow: 1;
     user-select: none;
     cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .remove {
     .material-icons-outlined {
