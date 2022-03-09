@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs'
 
-import { IGridCellMeta, IGridColumnMeta, IGridMetadataCollection, IGridRawData, IGridRowMeta, IGridSeperator } from '.'
+import { IGridCellMeta, IGridColumnMeta, IGridMetadataCollection, IGridRawData, IGridRowMeta, IGridSeparator } from '.'
 import { TPrimaryKey } from '../types'
 
 export interface IGridDataSource {
@@ -20,7 +20,7 @@ export interface IGridDataSource {
   allColumnKeys           : string[]
   relatedData             : Map<string, IGridDataSource>
   rowPreviewTemplateString: string
-  seperators              : IGridSeperator[] 
+  separators              : IGridSeparator[] 
   maskNewIds              : boolean
   metadata                : IGridMetadataCollection
 }

@@ -16,7 +16,7 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { EGridIcon } from '../../services/icon.service'
-import { IGridCellCoordinates, IGridRow, IGridRowComponent, IGridSeperator } from '../../typings/interfaces'
+import { IGridCellCoordinates, IGridRow, IGridRowComponent, IGridSeparator } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TColumnKey, TPrimaryKey } from '../../typings/types'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
@@ -79,7 +79,7 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   }
   
   public get rowKey()           : TPrimaryKey          { return this.gridRow.rowKey }
-  public get seperators()       : IGridSeperator[]     { return this.gridController.row.GetRowSeperators.run(this.rowKey) }
+  public get separators()       : IGridSeparator[]     { return this.gridController.row.GetRowSeparators.run(this.rowKey) }
   public get firstCellPosition(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[0]) }
   public get lastCellPosition() : IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[this.columns.length-1]) }
   public get rowComponent()     : IGridRowComponent    { return this }

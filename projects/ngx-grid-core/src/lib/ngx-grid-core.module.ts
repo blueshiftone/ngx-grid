@@ -50,7 +50,7 @@ import { LocalizedTextComponent } from './ui/localized-text/localized-text.compo
 import { RecordSelectorCellComponent, RecordSelectorComponent, RecordSelectorRowComponent } from './ui/record-selector'
 import { RowIconComponent } from './ui/row/row-icon/row-icon.component'
 import { RowComponent } from './ui/row/row.component'
-import { SeperatorComponent } from './ui/seperator/seperator.component'
+import { SeparatorComponent } from './ui/separator/separator.component'
 
 GRID_OVERLAYS.set(EGridOverlayTypes.MarkdownEditor, MarkdownEditorComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.DateEditorOverlay, DateEditorOverlayComponent)
@@ -80,7 +80,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelect
     RowIconComponent,
     MarkdownEditorComponent,
     DateEditorOverlayComponent,
-    SeperatorComponent,
+    SeparatorComponent,
     SingleSelectGridDropdownOverlayComponent,
     StaticDropdownOverlayComponent,
     MultiSelectGridDropdownOverlayComponent,

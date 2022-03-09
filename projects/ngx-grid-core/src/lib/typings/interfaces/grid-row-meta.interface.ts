@@ -1,11 +1,11 @@
 import { IGridMetadataCollection } from '.'
 import { ERowStatus } from '../enums/row-status.enum'
 import { TPrimaryKey } from '../types'
-import { IGridSeperator } from './grid-seperator.interface'
+import { IGridSeparator } from './grid-separator.interface'
 
 export interface IGridRowMeta {
   rowKey     : TPrimaryKey
-  seperators?: IGridSeperator[]
+  separators?: IGridSeparator[]
   isNew      : boolean
   isDeleted  : boolean
   isDirty    : boolean

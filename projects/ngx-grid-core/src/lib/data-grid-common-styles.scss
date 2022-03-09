@@ -38,6 +38,7 @@
 
 .cell {
   position: relative;
+  z-index: 2;
   display: inline-flex;
   vertical-align: top;
   align-items: center;
@@ -65,7 +66,7 @@
   }
   &.row-thumb {
     background: var(--app-bg);
-    z-index: 4;
+    z-index: 1;
     position: sticky;
     left: 0;
     width: 22px;

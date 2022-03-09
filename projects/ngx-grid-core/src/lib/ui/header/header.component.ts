@@ -6,7 +6,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { ESortDirection } from '../../typings/enums/sort-direction.enum'
-import { IGridSeperator } from '../../typings/interfaces'
+import { IGridSeparator } from '../../typings/interfaces'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 
@@ -119,8 +119,8 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     return this.gridController.column.GetColumnLabel.run(columnName)
   }
 
-  public seperators(columnName: string): IGridSeperator[] {
-    return this.gridController.column.GetColumnSeperators.run(columnName)
+  public separators(columnName: string): IGridSeparator[] {
+    return this.gridController.column.GetColumnSeparators.run(columnName)
   }
 
   private _setCursor(cursor: string): void {

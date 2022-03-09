@@ -3,15 +3,15 @@ import { IGridMetadataCollection, IGridRowMeta } from '..'
 import { EMetadataType } from '../../enums'
 import { ERowStatus } from '../../enums/row-status.enum'
 import { TPrimaryKey } from '../../types'
-import { IGridSeperator } from '../grid-seperator.interface'
+import { IGridSeparator } from '../grid-separator.interface'
 
 export class GridRowMeta implements IGridRowMeta {
-  public seperators?: IGridSeperator[] | undefined
+  public separators?: IGridSeparator[] | undefined
   public rowKey     : TPrimaryKey = ''
   public status     : ERowStatus  = ERowStatus.Committed
   public metadata   : IGridMetadataCollection = new GridMetadataCollection();
 
-  constructor(meta: Partial<Pick<IGridRowMeta, 'rowKey' | 'status' | 'seperators'>>) {
+  constructor(meta: Partial<Pick<IGridRowMeta, 'rowKey' | 'status' | 'separators'>>) {
     Object.assign(this, meta)
   }
   
