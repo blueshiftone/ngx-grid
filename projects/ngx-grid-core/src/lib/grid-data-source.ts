@@ -9,7 +9,7 @@ import {
   IGridMetadataCollection,
   IGridRawData,
   IGridRowMeta,
-  IGridSeperator,
+  IGridSeparator,
 } from './typings/interfaces'
 import { GridMetadataCollection } from './typings/interfaces/implementations'
 import { Randomish } from './utils/randomish'
@@ -24,7 +24,7 @@ export class GridDataSource implements IGridDataSource {
   public hiddenColumns: string[]          = []
   public disabled                         = false
   public columnMeta: IGridColumnMeta[]    = []
-  public seperators: IGridSeperator[]     = []
+  public separators: IGridSeparator[]     = []
   public maskNewIds: boolean              = false
   
   public relatedData: Map<string,          IGridDataSource> = new Map()
@@ -59,7 +59,7 @@ export class GridDataSource implements IGridDataSource {
       disabled        : g.disabled,
       columnMeta      : g.columnMeta,
       metadata        : g.metadata,
-      seperators      : g.seperators,
+      separators      : g.separators,
       cellMeta        : g.cellMeta,
       rowMeta         : g.rowMeta,
     }

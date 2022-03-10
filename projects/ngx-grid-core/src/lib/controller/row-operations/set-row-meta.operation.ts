@@ -9,7 +9,7 @@ export class SetRowMeta extends BaseRowOperation {
 
   constructor(factory: IRowOperationFactory) { super(factory) }
 
-  public run(rowKey: TPrimaryKey, input: Partial<Pick<IGridRowMeta, 'metadata' | 'rowKey' | 'status' | 'seperators'>>): void {
+  public run(rowKey: TPrimaryKey, input: Partial<Pick<IGridRowMeta, 'metadata' | 'rowKey' | 'status' | 'separators'>>): void {
     
     const rowMeta: IGridRowMeta = this.rowOperations.GetRowMeta.run(rowKey) ?? GridImplementationFactory.gridRowMeta({ rowKey })
 

@@ -17,7 +17,7 @@
   }
   &.x {
     height: 2px;
-    left: 22px;
+    left: 0px;
     &.after {
       transform: translateY(50%);
       bottom: 0px;
@@ -32,7 +32,7 @@
 }
 
 ::ng-deep {
-  .cdk-drag-preview data-grid-seperator {
+  .cdk-drag-preview data-grid-separator {
     display: none;
   }
 }
