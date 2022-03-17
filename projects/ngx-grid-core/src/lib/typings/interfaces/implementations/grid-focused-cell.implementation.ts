@@ -17,12 +17,12 @@ export class GridFocusedCell implements IGridCellFocused {
   public get compositeKey(): string {
     return this.coords.compositeKey
   }
-  public get rowKey(): TPrimaryKey {
-    return this.coords.rowKey
-  }
-  public get columnKey(): TColumnKey {
-    return this.coords.columnKey
-  }
+  
+  public get rowKey()   : TPrimaryKey  { return this.coords.rowKey }
+  public set rowKey(key : TPrimaryKey) { this.coords.rowKey = key }
+
+  public get columnKey(): TColumnKey   { return this.coords.columnKey }
+
   public equals(other: IGridCellFocused): boolean {
     return this.isCell(other)
   }

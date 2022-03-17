@@ -15,7 +15,7 @@ export class GridRow implements IGridRow {
   }
 
   public get rowKey(): TPrimaryKey {
-    return this.getValue(this._primaryKeyColumn)?.value
+    return this.values.get(this._primaryKeyColumn)?.value ?? ''
   }
 
   public get valuesArray(): { columnKey: TColumnKey, value: IGridCellValue }[] {
@@ -23,10 +23,15 @@ export class GridRow implements IGridRow {
   }
 
   public getValue(columnKey: string): IGridCellValue {
-    return this.values.get(columnKey) ?? new GridCellValue(new GridCellCoordinates(columnKey ? this.rowKey : columnKey, columnKey), null)
+    let cellValue = this.values.get(columnKey)
+    if (!cellValue) {
+      cellValue = new GridCellValue(new GridCellCoordinates(columnKey ? this.rowKey : columnKey, columnKey), null)
+      this.values.set(columnKey, cellValue)
+    }
+    return cellValue
   }
 
-  public setValue(columnKey: string, value: any): any {
+  public setValue(columnKey: string, value: any): void {
     if (!this.values.has(columnKey)) this.values.set(columnKey, new GridCellValue(new GridCellCoordinates(this.rowKey, columnKey), value))
     this.values.get(columnKey)!.value = value
   }
