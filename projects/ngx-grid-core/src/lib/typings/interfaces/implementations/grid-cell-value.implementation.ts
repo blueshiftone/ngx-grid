@@ -16,6 +16,9 @@ export class GridCellValue implements IGridCellValue {
   public get rowKey(): TPrimaryKey {
     return this.coords.rowKey
   }
+  public set rowKey(rowKey: TPrimaryKey) {
+    this.coords.rowKey = rowKey
+  }
   public get columnKey(): TColumnKey {
     return this.coords.columnKey
   }

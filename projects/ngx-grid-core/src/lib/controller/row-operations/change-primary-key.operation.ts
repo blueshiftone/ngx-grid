@@ -12,11 +12,13 @@ export class ChangePrimaryKey extends BaseRowOperation {
     const rowOps               = this.rowOperations
     const gridRow              = rowOps.GetRow.run(oldRowKey)
     const { primaryColumnKey } = this.gridOperations.source()
+    const { cellOperations }   = this
     
     if (!gridRow) return
 
     // Update value in grid row
     gridRow.setValue(primaryColumnKey, newRowKey)
+    gridRow.values.forEach(v => v.rowKey = newRowKey)
     
     // Update row map
     rowOps.rowKeyMap.delete(oldRowKey)
@@ -39,15 +41,10 @@ export class ChangePrimaryKey extends BaseRowOperation {
 
     // Update cell meta maps and cells
     for (const columnKey of this.gridOperations.source()?.allColumnKeys ?? []) {
-      const cellMeta = this.cellOperations.GetCellMeta.run(new GridCellCoordinates(oldRowKey, columnKey))
+      const cellMeta = cellOperations.GetCellMeta.run(new GridCellCoordinates(oldRowKey, columnKey))
       if (cellMeta) cellMeta.coords.rowKey = newRowKey
-      const cellComponent = this.cellOperations.CellComponents.findWithCoords(new GridCellCoordinates(oldRowKey, columnKey))
-      if (cellComponent) cellComponent.rowKey = newRowKey
     }
-
-    // Update row component
-    const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(oldRowKey)
-    if (rowComponent) rowComponent.rowKey = newRowKey
+    cellOperations.CellComponents.findWithCoords(new GridCellCoordinates(oldRowKey, primaryColumnKey))?.typeComponent?.receiveValue(newRowKey);
 
     // Update selection state
     const selection = this.selection.latestSelection
@@ -59,7 +56,7 @@ export class ChangePrimaryKey extends BaseRowOperation {
 
     // Update component maps
     this.rowOperations.RowComponents.changePrimaryKey(oldRowKey, newRowKey)
-    this.cellOperations.CellComponents.changePrimaryKey(oldRowKey, newRowKey)
+    cellOperations.CellComponents.changePrimaryKey(oldRowKey, newRowKey)
 
   }
 
