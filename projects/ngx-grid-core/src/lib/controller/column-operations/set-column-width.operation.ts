@@ -6,8 +6,8 @@ export class SetColumnWidth extends BaseColumnOperation {
 
   constructor(factory: IColumnOperationFactory) { super(factory) }
 
-  public run (column: Set<IGridCellComponent>, width: number): void {
-    column.forEach(cell => cell.style.width = `${width}px`)
+  public run (cells: Set<IGridCellComponent>, width: number): void {
+    cells.forEach(cell => cell.style.width = width === Infinity ? `` : `${width}px`)
   }
 
 }

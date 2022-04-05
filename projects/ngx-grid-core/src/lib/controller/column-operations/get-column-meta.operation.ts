@@ -11,6 +11,10 @@ export class GetColumnMeta extends BaseColumnOperation {
     return this._colMeta.find(meta => meta.columnKey === columnKey)
   }
 
+  public getAll(): IGridColumnMeta[] {
+    return this._colMeta
+  }
+
   private get _colMeta(): Array<IGridColumnMeta> { return this.gridOperations.source()?.columnMeta ?? [] }
 
 }

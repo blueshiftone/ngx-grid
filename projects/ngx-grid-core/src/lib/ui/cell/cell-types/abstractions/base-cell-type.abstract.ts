@@ -155,6 +155,12 @@ export abstract class BaseCellType implements IGridCellType {
     return node
   }
 
+  public createLoadingAnimation(): HTMLDivElement {
+    const node = this.createDiv()
+    node.innerHTML = `<div class="loading-dots"><div></div><div></div><div></div></div>`
+    return node.firstElementChild as HTMLDivElement
+  }
+
   protected getValue():any {
     return this.value
   }

@@ -55,7 +55,7 @@ export class GridPaste extends BaseGridOperation {
               plainText: tdEl.innerText.trim(),
               html     : tdEl.innerHTML
             }
-            if (cellValue.plainText.match(/^\#+$/)) cellValue.plainText = cellValue.html = csvData[rowIndex][colIndex] ?? ''
+            if (cellValue.plainText.match(/^\#+$/)) cellValue.plainText = cellValue.html = csvData[rowIndex]?.[colIndex] ?? ''
             row.push(cellValue)
             colIndex++
           })
