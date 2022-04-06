@@ -34,8 +34,6 @@ export class SetCellDraftValue extends BaseCellOperation {
 
       cellValue.isDraft = true
 
-      this.rowOperations.ResetRowStatus.buffer(rowKey)
-
       this.gridEvents.CellDraftValueChangedEvent.emit(cellValue)
     }
 
