@@ -17,8 +17,7 @@ export class RecalculateColumnWidth extends BaseColumnOperation {
     window.requestAnimationFrame(_ => {
       const colWidths = this.gridEvents.ColumnWidthChangedEvent.state
       if (!colWidths) return
-      for (const entry of cellMap.entries()) {
-        const [colKey, cellComponents] = entry
+      for (const [colKey, cellComponents] of cellMap.entries()) {
         const newWidth = Math.max(...[...cellComponents].map(c => c.element.getBoundingClientRect().width))
         colWidths.setWidth(colKey, newWidth)
       }
