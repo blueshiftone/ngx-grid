@@ -1,8 +1,12 @@
 import { SubscriptionLike } from 'rxjs'
 import { take } from 'rxjs/operators'
 
+import { GridDataSource } from '../../grid-data-source'
+import { EMetadataType } from '../../typings/enums'
 import { IGridDataSource } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
+import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
+import { TColumnKey } from '../../typings/types'
 import { BaseGridOperation } from './base-grid-operation.abstract'
 
 export class SetDataSource extends BaseGridOperation {
@@ -23,16 +27,35 @@ export class SetDataSource extends BaseGridOperation {
     this.gridOperations.UpdateRelatedDataMap.run()
 
     for (const relatedSource of source.relatedData.entries()) {
-      this._subs.add(relatedSource[1].data.subscribe(_ => {
-        this.gridOperations.UpdateRelatedDataMap.run([relatedSource])
-        this.gridOperations.UpdateForeignKeyCells.run(relatedSource[0])
-      }))
+      this._watchRelatedDataSource(...relatedSource)
     }
     
+  }
+
+  public getRelatedGrid(dataSetName: string, dataGridID: string, primaryColumnKey: TColumnKey, recordPreviewTemplateString: string): IGridDataSource {
+    let relatedGrid = this.gridOperations.GetRelatedData.run(dataGridID)
+    if (!relatedGrid) {
+      relatedGrid = new GridDataSource({
+        dataSetName,
+        dataGridID,
+        primaryColumnKey,
+        metadata: GridImplementationFactory.gridMetadataCollection([ { key: EMetadataType.RecordPreviewTemplateString, value: recordPreviewTemplateString } ])
+      })
+      this.gridOperations.SetRelatedData.run(dataGridID, relatedGrid)
+      this._watchRelatedDataSource(dataGridID, relatedGrid)
+    }
+    return relatedGrid
   }
 
   public override onDestroy = () => {
     this._subs.forEach(s => s.unsubscribe())
     this._subs.clear()
+  }
+
+  private _watchRelatedDataSource(sourceGridID: string, source: IGridDataSource): void {
+    this._subs.add(source.data.subscribe(_ => {
+      this.gridOperations.UpdateRelatedDataMap.run([[sourceGridID, source]])
+      this.gridOperations.UpdateForeignKeyCells.run(sourceGridID)
+    }))
   }
 }
