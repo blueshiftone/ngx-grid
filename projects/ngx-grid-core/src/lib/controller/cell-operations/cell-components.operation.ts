@@ -4,18 +4,17 @@ import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
 import { ArrayFromMap } from '../../utils/array-from-map'
 import { DistinctValues } from '../../utils/distinct-values'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class CellComponents extends BaseCellOperation {
+export class CellComponents extends Operation {
 
   private readonly cellComponentsByElement = new WeakMap<HTMLElement, IGridCellComponent>()
   private readonly cellComponentsByCoords  = new Map<string, IGridCellComponent>()
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public changePrimaryKey(oldKey: TPrimaryKey, newKey: TPrimaryKey) {
-    const allColumnKeys = this.gridOperations.source().allColumnKeys ?? []
-    for (const columnKey of allColumnKeys) {
+    for (const columnKey of this.dataSource.columns) {
       const oldCoordKey = new GridCellCoordinates(oldKey, columnKey).compositeKey
       const newCoordKey = new GridCellCoordinates(newKey, columnKey).compositeKey
       const cell = this.cellComponentsByCoords.get(oldCoordKey)
@@ -41,7 +40,7 @@ export class CellComponents extends BaseCellOperation {
     if(this.cellComponentsByCoords.get(oldCoords.compositeKey) === cell) this.cellComponentsByCoords.delete(oldCoords.compositeKey)
     this.cellComponentsByCoords.set(cell.coordinates.compositeKey, cell)
     const focusedCell    = this.gridEvents.CellFocusChangedEvent.state
-    const focusNextValue = !focusedCell || focusedCell.equals(cell.coordinates)
+    const focusNextValue = focusedCell?.equals(cell.coordinates) ?? false
     if (focusNextValue !== cell.focus.value) cell.focus.next(focusNextValue)
     this._updateCellComponent(cell)
   }

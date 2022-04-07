@@ -1,10 +1,10 @@
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class PreSelectedRowsChanged extends BaseRowOperation {
+export class PreSelectedRowsChanged extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
   
   public run(selection: [TPrimaryKey | undefined | null, TPrimaryKey | undefined | null]): void {
     const [prev, next] = selection

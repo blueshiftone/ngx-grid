@@ -5,18 +5,17 @@ import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operatio
 import { GridCellCoordinates, GridCellValue } from '../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
 
-export class GenerateNewRow extends BaseRowOperation {
+export class GenerateNewRow extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(): IGridRow {
-    const source        = this.gridOperations.source()
-    const cols          = (source?.data.value.columns ?? [])
+    const cols          = this.dataSource.columns
     const rowKey        = uuidv4();
-    const columnKey     = source?.primaryColumnKey ?? ''
+    const columnKey     = this.dataSource.primaryColumnKey
     const values        = [cols.map<[TColumnKey, IGridCellValue]>(col => ([col, new GridCellValue(new GridCellCoordinates(rowKey, columnKey), null)]))]
     const row: IGridRow = GridImplementationFactory.gridRow(columnKey, new Map<TColumnKey, IGridCellValue>(...values))
     row.setValue(columnKey, rowKey)

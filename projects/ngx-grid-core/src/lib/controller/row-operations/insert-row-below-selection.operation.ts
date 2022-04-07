@@ -1,10 +1,10 @@
 import { IGridSelectionRange } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class InsertRowBelowSelection extends BaseRowOperation {
+export class InsertRowBelowSelection extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(row = this.rowOperations.GenerateNewRow.run()): void {
     const selection = this._getSelection()

@@ -1,10 +1,10 @@
 import { IGridCellFocused } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class FocusedRowChanged extends BaseRowOperation {
+export class FocusedRowChanged extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(focusedChange: [IGridCellFocused?, IGridCellFocused?]): void {
     const [prev, next] = focusedChange

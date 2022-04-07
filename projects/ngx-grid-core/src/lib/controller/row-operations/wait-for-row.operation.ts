@@ -2,11 +2,11 @@ import { filter, take, timeout } from 'rxjs/operators'
 
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class WaitForRow extends BaseRowOperation {
+export class WaitForRow extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rowKey: TPrimaryKey): Promise<void> {
     return new Promise(resolve => {

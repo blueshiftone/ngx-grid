@@ -5,7 +5,7 @@ export class GetLastRowIndexOperation {
   constructor(private readonly controller: GridSelectionController) { }
 
   public run(): number {
-    return ((this._filteredRows?.length ?? this._sortedRows?.length ?? this._source?.data.value.rows.length) || 1) - 1
+    return ((this._filteredRows?.length ?? this._sortedRows?.length ?? this._source?.rows.length) || 1) - 1
   }
 
   private get _source() {

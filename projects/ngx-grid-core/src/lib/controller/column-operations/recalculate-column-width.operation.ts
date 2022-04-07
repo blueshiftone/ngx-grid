@@ -1,11 +1,11 @@
 import { IGridCellComponent } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { TColumnKey } from '../../typings/types'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RecalculateColumnWidth extends BaseColumnOperation {
+export class RecalculateColumnWidth extends Operation {
 
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run (...columnKeys : string[]): void {
     const cellMap = new Map<TColumnKey, Set<IGridCellComponent>>()

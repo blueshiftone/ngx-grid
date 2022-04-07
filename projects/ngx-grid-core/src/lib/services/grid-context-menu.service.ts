@@ -88,7 +88,7 @@ export class GridContextMenuService {
         })
       }
 
-      const source = this.gridController.grid.source()
+      const source = this.gridController.dataSource
       const { canInsert, canDelete } = source
 
       if (canInsert) {

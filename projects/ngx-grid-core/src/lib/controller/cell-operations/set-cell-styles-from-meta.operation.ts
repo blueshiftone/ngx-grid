@@ -2,11 +2,11 @@ import { EMetadataType } from '../../typings/enums'
 import { IGridCellComponent } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { IGridStyle } from '../../typings/interfaces/grid-style.interface'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetCellStylesFromMeta extends BaseCellOperation {
+export class SetCellStylesFromMeta extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public run(cell: IGridCellComponent): void {
     cell.toggleClass('is-invalid', !this.cellOperations.GetCellIsValid.run(cell.coordinates))

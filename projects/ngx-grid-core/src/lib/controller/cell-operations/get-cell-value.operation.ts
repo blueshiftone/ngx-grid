@@ -1,13 +1,13 @@
 import { IGridCellCoordinates } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetCellValue extends BaseCellOperation {
+export class GetCellValue extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates) {
-    return this.rowOperations.rowKeyMap.get(coordinates.rowKey)?.getValue(coordinates.columnKey) ?? null
+    return this.dataSource.getRow(coordinates.rowKey)?.getValue(coordinates.columnKey) ?? null
   }
 
 }

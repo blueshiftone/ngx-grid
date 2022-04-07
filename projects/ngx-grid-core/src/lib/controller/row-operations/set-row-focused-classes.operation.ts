@@ -1,10 +1,10 @@
 import { IGridCellFocused, IGridRowComponent } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetRowFocusedClasses extends BaseRowOperation {
+export class SetRowFocusedClasses extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   private readonly className = 'focused'
 

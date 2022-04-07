@@ -3,15 +3,15 @@ import { distinctUntilChanged, takeUntil, throttleTime } from 'rxjs/operators'
 
 import { IGridOperationFactory, IGridViewportAutoScrollConfigs } from '../../typings/interfaces'
 import { ArrayWith } from '../../utils/array-with-elements'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ViewportAutoScroll extends BaseGridOperation {
+export class ViewportAutoScroll extends Operation {
 
   private readonly distanceMouseNeedsToMove = 10 // distance mouse needs to move before auto-scroll is activated
 
   private readonly subscriptions: Set<Subscription> = new Set()
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(configs: IGridViewportAutoScrollConfigs): void {
     

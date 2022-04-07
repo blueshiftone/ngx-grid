@@ -1,15 +1,15 @@
 import { IGridCellCoordinates, IGridDataType } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetCellType extends BaseCellOperation {
+export class GetCellType extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates): IGridDataType {
     return this.cellOperations.GetCellMeta.run(coordinates)?.type || this._getColMeta(coordinates.columnKey)?.type || { name: 'Text' }
   }
 
-  private _getColMeta  = (columnKey: string) => this.gridOperations.source()?.columnMeta.find(c => c.columnKey === columnKey)
+  private _getColMeta  = (columnKey: string) => this.dataSource.columnMeta.find(c => c.columnKey === columnKey)
 
 }

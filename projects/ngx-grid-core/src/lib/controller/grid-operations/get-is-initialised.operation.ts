@@ -1,9 +1,9 @@
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetIsInitialised extends BaseGridOperation {
+export class GetIsInitialised extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): boolean {
     return this.gridEvents.GridInitialisedEvent.state === true

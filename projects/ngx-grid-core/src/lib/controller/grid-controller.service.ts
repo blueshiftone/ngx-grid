@@ -5,10 +5,12 @@ import { fromEvent, Subscription } from 'rxjs'
 import { filter, take } from 'rxjs/operators'
 
 import { GridEventsService } from '../events/grid-events.service'
+import { GridDataSource } from '../grid-data-source'
 import { GridFileUploadService } from '../services/grid-file-upload.service'
 import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
+import { IGridDataSource } from '../typings/interfaces'
 import { DeleteFromArray } from '../utils/array-delete'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
 import { ColumnOperationFactory } from './column-operations/_column-operation.factory'
@@ -21,11 +23,13 @@ export const DATA_GRIDS_FOCUSED_TREE: string[] = []
 @Injectable()
 export class GridControllerService {
   
-  public cell      = new CellOperationFactory   (this).factory
-  public row       = new RowOperationFactory    (this).factory
-  public grid      = new GridOperationFactory   (this).factory
-  public column    = new ColumnOperationFactory (this, this.prefs).factory
-  public selection = new GridSelectionController(this, this.row)
+  public cell       = new CellOperationFactory   (this).factory
+  public row        = new RowOperationFactory    (this).factory
+  public grid       = new GridOperationFactory   (this).factory
+  public column     = new ColumnOperationFactory (this, this.prefs).factory
+  public selection  = new GridSelectionController(this, this.row)
+
+  public dataSource: IGridDataSource = new GridDataSource()
 
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
   
@@ -172,6 +176,7 @@ export class GridControllerService {
     this.row      .onDestroy()
     this.cell     .onDestroy()
     this.selection.onDestroy()
+    this.dataSource.onDestroy()
     DeleteFromArray(DATA_GRIDS_FOCUSED_TREE, this.grid.GetGridId.run())
   }
 

@@ -42,7 +42,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   ) { super() }
 
   ngOnInit(): void {
-
+        
     this.addSubscription(this._gridEvents.GridDataChangedEvent.onWithInitialValue().subscribe(_ => this.setValues()))
 
     this.addSubscription(this._gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
@@ -65,12 +65,6 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       this.columnsSelected = !selection ? {} : selectedColumnIndexes.reduce<{ [key: string]: boolean }>((output, colIndex) => { output[colIndex] = true; return output }, {})
       this.cd.detectChanges()
     }))
-
-    window.requestAnimationFrame(_ => {
-      this.columnElements?.forEach((el, idx) => {
-        this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns[idx], width: el.nativeElement.getBoundingClientRect().width })
-      })
-    })
 
     this.addSubscription(this._gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
       colWidths.columns.forEach(col => {
@@ -112,6 +106,13 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public setValues(): void {
     this.columns = this.gridController.column.GetColumns.run()
+    if (this.columns.length && !this.gridController.isInitialised) {
+      window.requestAnimationFrame(_ => {
+        this.columnElements?.forEach((el, idx) => {
+          this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns[idx], width: el.nativeElement.getBoundingClientRect().width })
+        })
+      })
+    }
     this.cd.detectChanges()
   }
 

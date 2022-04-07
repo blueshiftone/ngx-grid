@@ -4,13 +4,13 @@ import { distinctUntilChanged, filter, pairwise, startWith, takeUntil } from 'rx
 import { IGridOperationFactory } from '../../typings/interfaces'
 import { FileCellType } from '../../ui/cell/cell-types/file.cell-type'
 import { FindParentOfClass } from '../../utils/find-parent-element-of-class'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GridSetupFileDrag extends BaseGridOperation {
+export class GridSetupFileDrag extends Operation {
 
   private _subscriptions = new Set<Subscription>()
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): void {
 
@@ -34,7 +34,7 @@ export class GridSetupFileDrag extends BaseGridOperation {
       dragCounter = 0
       fileCell?.hoverStop()
       if (e.dataTransfer?.files && e.dataTransfer.files.length > 0 && fileCell) {
-        this.gridEvents.GridFileUploadCreatedEvent.emit(uploads.createUpload(e.dataTransfer.files, fileCell.coordinates, this.gridOperations.source().dataGridID))
+        this.gridEvents.GridFileUploadCreatedEvent.emit(uploads.createUpload(e.dataTransfer.files, fileCell.coordinates, this.dataSource.dataGridID))
         fileCell.receiveValue();
         fileCell = null;
        }

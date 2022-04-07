@@ -11,7 +11,7 @@ export class CalculateNextSelectionOperation extends BaseSelectionOperation {
     to        = this.selectionState.endCellPos
   ): void {
     const state = this.selectionState 
-    
+
     if (state.isAdding && !state.hasModifiers) this.controller.addSelection(selection, from, to) 
     if (state.hasModifiers)                    this.controller.addSecondarySelection(selection, from, to)
     if (state.isSubtracting)                   this.controller.subtractSelection(selection, from, to)

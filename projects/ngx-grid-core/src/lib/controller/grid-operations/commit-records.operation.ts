@@ -2,11 +2,11 @@ import { IGridCellComponent, IGridRowComponent, IGridRowMeta } from '../../typin
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { ErrorDialogComponent } from '../../ui/dialogs/error-dialog/error-dialog.component'
 import { WithDefaultTrue } from '../../utils/with-default-true'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class CommitRecords extends BaseGridOperation {
+export class CommitRecords extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public async run(rowMetas: IGridRowMeta[], options: ICommitRecordsOptions = {}) {
     

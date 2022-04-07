@@ -1,11 +1,11 @@
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetIsDisabled extends BaseGridOperation {
+export class GetIsDisabled extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): boolean {
-    return this.gridOperations.source()?.disabled === true
+    return this.dataSource.disabled === true
   }
 }

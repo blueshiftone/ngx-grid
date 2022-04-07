@@ -1,14 +1,14 @@
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { IGridRow } from '../../typings/interfaces/grid-row.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetRow extends BaseRowOperation {
+export class GetRow extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rowKey: TPrimaryKey): IGridRow | undefined {
-    return this.rowOperations.rowKeyMap.get(rowKey)
+    return this.dataSource.getRow(rowKey)
   }
 
 }

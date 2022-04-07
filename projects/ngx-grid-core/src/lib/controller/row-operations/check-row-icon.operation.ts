@@ -2,11 +2,11 @@ import { EGridIcon } from '../../services/icon.service'
 import { IGridRowComponent, TGridMode } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class CheckRowIcon extends BaseRowOperation {
+export class CheckRowIcon extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(row: IGridRowComponent): void {
     for (const applyIconFn of Object.values(this._iconConditions)) {

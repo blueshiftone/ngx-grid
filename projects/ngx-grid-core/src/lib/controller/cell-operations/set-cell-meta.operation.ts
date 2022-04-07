@@ -2,11 +2,11 @@ import { IGridCellCoordinates, IGridCellMeta, IGridMetadataInfo } from '../../ty
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetCellMeta extends BaseCellOperation {
+export class SetCellMeta extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates, input: Partial<IGridCellMeta> | IGridMetadataInfo[]): void {
 
@@ -25,7 +25,7 @@ export class SetCellMeta extends BaseCellOperation {
       Object.assign(meta, input)
     }    
 
-    this.gridOperations.source()?.cellMeta.set(coordinates.compositeKey, meta)
+    this.dataSource.cellMeta.set(coordinates.compositeKey, meta)
   }
 
 }

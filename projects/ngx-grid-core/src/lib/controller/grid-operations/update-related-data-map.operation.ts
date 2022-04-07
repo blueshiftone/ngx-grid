@@ -1,21 +1,21 @@
 import { IGridDataSource, IGridRow } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class UpdateRelatedDataMap extends BaseGridOperation {
+export class UpdateRelatedDataMap extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
-  public run(sources:[string, IGridDataSource][] = [...this.gridOperations.source().relatedData.entries()]) {
-    if (!this.gridOperations.source) return
+  public run(sources:[string, IGridDataSource][] = [...this.dataSource.relatedData.entries()]) {
+    if (!this.dataSource) return
     this.gridOperations.relatedDataMap.clear()
     for (const entry of sources) {
 
       const [gridID, source]        = entry
       const rowMap: Map<TPrimaryKey, IGridRow> = new Map()
       
-      source.data.value.rows.forEach(row => rowMap.set(row.rowKey, row))
+      source.rows.forEach(row => rowMap.set(row.rowKey, row))
       this.gridOperations.relatedDataMap.set(gridID, { source: source, rowMap: rowMap })
 
     }

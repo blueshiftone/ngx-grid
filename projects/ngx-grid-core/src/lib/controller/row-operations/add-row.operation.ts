@@ -5,20 +5,17 @@ import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operatio
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TColumnKey, TPrimaryKey } from '../../typings/types'
 import { BufferOperation } from '../buffer-operation'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class AddRow extends BaseRowOperation {
+export class AddRow extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public buffer = (row: IGridRow, atIndex?: number) => this.bufferOperation.next([row, atIndex])
 
   private async _run(args: [IGridRow, number][]): Promise<void> {
-
-    const data = this.gridOperations.source()?.data
-    if (typeof data === 'undefined') return
 
     let firstEditableCell: null | TColumnKey = null
 
@@ -30,18 +27,11 @@ export class AddRow extends BaseRowOperation {
       const [row, atIndex] = arg
       rowKey = row.rowKey
 
-      if (typeof atIndex !== 'undefined' && atIndex > -1) data.value.rows.splice(atIndex, 0, row)
-      else data.value.rows.push(row)
-
-      data.value.rows = [...data.value.rows]
-
-      this.rowOperations.rowKeyMap.set(rowKey, row)
+      this.dataSource.upsertRows(atIndex ?? -1, row)
 
       buffers.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New))
-
-      const cols = this.gridOperations.source()?.data.value.columns ?? []
       
-      for (const columnKey of cols) {
+      for (const columnKey of this.dataSource.columns) {
         const colMeta = this.columnOperations.GetColumnMeta.run(columnKey)
         const canUpdate = colMeta?.metadata.get<boolean>(EMetadataType.CanUpdate) !== false
         if (canUpdate && firstEditableCell === null) firstEditableCell = columnKey
@@ -51,7 +41,6 @@ export class AddRow extends BaseRowOperation {
 
     await Promise.all(buffers)
 
-    data.next(data.value)
     if (firstEditableCell !== null) this.selection.selectCell(new GridCellCoordinates(rowKey, firstEditableCell))
     else this.selection.selectRow(rowKey)
     this.selection.emitNextSelectionSlice()

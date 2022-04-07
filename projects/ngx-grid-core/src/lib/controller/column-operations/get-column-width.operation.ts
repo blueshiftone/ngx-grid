@@ -1,10 +1,10 @@
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { TColumnKey } from '../../typings/types'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetColumnWidth extends BaseColumnOperation {
+export class GetColumnWidth extends Operation {
 
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run (columnKey: TColumnKey): number | null {
     return this._getWidths()?.columns.find(col => col.columnKey === columnKey)?.width ?? null

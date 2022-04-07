@@ -1,17 +1,17 @@
 import { IGridRow } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetAllRows extends BaseRowOperation {
+export class GetAllRows extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public allRows(): IGridRow[] {
-    return this._sortedRows ?? this.gridOperations.source()?.data.value.rows ?? []
+    return this._sortedRows ?? this.dataSource.rows
   }
 
   public filteredRows(): IGridRow[] {
-    return this._filteredRows ?? this._sortedRows ?? this.gridOperations.source()?.data.value.rows ?? []
+    return this._filteredRows ?? this.allRows()
   }
 
   private get _sortedRows() {

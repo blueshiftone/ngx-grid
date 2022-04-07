@@ -10,6 +10,7 @@ import {
   IGridSelectionStrategy,
   IMoveSelectionFromFocusConfigs,
 } from '../../typings/interfaces'
+import { IDestroyable } from '../../typings/interfaces/destroyable.interface'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
 import { TAtLeast } from '../../typings/types/at-least.type'
@@ -47,7 +48,7 @@ import {
 } from './operations'
 import { TSelectionStrategies } from './strategies'
 
-export class GridSelectionController {
+export class GridSelectionController implements IDestroyable {
 
   private _subscriptions: Subscription[] = []
   private _gridViewPort?: CdkVirtualScrollViewport

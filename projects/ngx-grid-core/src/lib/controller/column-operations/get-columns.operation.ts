@@ -4,12 +4,12 @@ import { IGridColumnMeta, IGridColumnOrder } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { ArraysAreEqual } from '../../utils/arrays-are-equal'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetColumns extends BaseColumnOperation {
+export class GetColumns extends Operation {
 
   constructor(factory: IColumnOperationFactory) {
-    super(factory)
+    super(factory.gridController)
     
     this.subs.add(merge(
       this.gridEvents.ColumnOrderChangedEvent.on(),
@@ -30,9 +30,8 @@ export class GetColumns extends BaseColumnOperation {
   }
 
   private _updateColumns(): void {
-    if (typeof this._source === 'undefined') return
 
-    let   keys         = [...this._source.allColumnKeys]
+    let   keys         = [...this.dataSource.columns]
     const savedOrder   = this._savedOrder
     const defaultOrder = this._colMeta
       .filter(m => m.sortOrder !== undefined)
@@ -67,18 +66,16 @@ export class GetColumns extends BaseColumnOperation {
 
   }
 
-  private get _source() { return this.gridOperations.source() }
-
   private get _savedOrder() {
     return this.columnOperations.prefsService.get<IGridColumnOrder[]>(this.columnOperations.getPrefsKey('GridColumnSortOrder'), [])
   }
 
   private get _colMeta(): IGridColumnMeta[] {
-    return this._source?.columnMeta || []
+    return this.dataSource.columnMeta
   }
 
   private get _visibleColumnsConfig(): string[] {
-    return (this._source?.visibleColumns ?? this._source?.allColumnKeys ?? []).filter(col => !(this._source?.hiddenColumns ?? []).includes(col))
+    return (this.dataSource.visibleColumns ?? this.dataSource.columns).filter(col => !(this.dataSource.hiddenColumns).includes(col))
   }
 
   private _getLastColumnsUpdatedEvent() {

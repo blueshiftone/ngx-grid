@@ -3,13 +3,13 @@ import { IGridRow, IGridRowComponent, IRowOperationFactory } from '../../typings
 import { TPrimaryKey } from '../../typings/types'
 import { WithDefaultTrue } from '../../utils/with-default-true'
 import { BufferOperation } from '../buffer-operation'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class DeleteRow extends BaseRowOperation {
+export class DeleteRow extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
   
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public buffer = (rowKey: TPrimaryKey, options: IDeleteRowOperationOptions = {}) => this.bufferOperation.next([rowKey, options])
 

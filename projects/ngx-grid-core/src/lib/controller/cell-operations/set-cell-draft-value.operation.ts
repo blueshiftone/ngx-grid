@@ -3,13 +3,13 @@ import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operat
 import { TPrimaryKey } from '../../typings/types'
 import { WithDefaultTrue } from '../../utils/with-default-true'
 import { BufferOperation } from '../buffer-operation'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetCellDraftValue extends BaseCellOperation {
+export class SetCellDraftValue extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public buffer = (coordinates: IGridCellCoordinates, options: ISetCellDraftValueOptions = {}) => this.bufferOperation.next([coordinates, options])
   

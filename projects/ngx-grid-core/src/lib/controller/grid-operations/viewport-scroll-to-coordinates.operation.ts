@@ -4,14 +4,14 @@ import { filter, first, takeUntil } from 'rxjs/operators'
 import { IGridCellCoordinates } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ViewportScrollToCoordinates extends BaseGridOperation {
+export class ViewportScrollToCoordinates extends Operation {
 
   private readonly subscriptions: Set<Subscription> = new Set()
 
   constructor(factory: IGridOperationFactory) {
-    super(factory)
+    super(factory.gridController)
     this.subscriptions.add(this.gridEvents.GridScrollToChangedEvent.on().subscribe(cellPos => {
       if (!this.gridOperations.GetIsInitialised.run()) {
         // Wait for grid to be initialised

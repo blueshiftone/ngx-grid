@@ -7,16 +7,15 @@ import { TPrimaryKey } from '../../typings/types'
 import { CELL_VALUE_PARSERS } from '../../ui/cell/cell-types/value-parsing'
 import { LooksLikeCSV } from '../../utils/looks-like-csv'
 import { ParseCSV } from '../../utils/parse-csv'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GridPaste extends BaseGridOperation {
+export class GridPaste extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(data: IGridPasteText): void {
 
-    const gridEvents = this.gridEvents
-    const dataSource = this.gridOperations.source()?.data
+    const {gridEvents, dataSource} = this
     if (typeof dataSource === 'undefined') return
 
     const startCell = this._getStartCell()
@@ -162,8 +161,7 @@ export class GridPaste extends BaseGridOperation {
         for (const row of newRows) {
           const { rowKey } = row
           if (ar) ar.splice(index, 0, row)
-          dataSource.value.rows.push(row)
-          this.rowOperations.rowKeyMap.set(rowKey, row)
+          dataSource.upsertRows(row)
           this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New)
           index++
         }
@@ -181,9 +179,6 @@ export class GridPaste extends BaseGridOperation {
             gridEvents.ColumnSortByChangedEvent.emit(sorted)
           }
         }
-        
-        dataSource.value.rows = [...dataSource.value.rows]
-        dataSource.next(dataSource.value)
 
       } 
 

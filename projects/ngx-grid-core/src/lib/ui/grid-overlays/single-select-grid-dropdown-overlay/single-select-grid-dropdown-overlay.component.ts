@@ -8,9 +8,6 @@ import { IGridDataSource, IGridOverlayData, IGridSelectionSlice } from '../../..
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
-import {
-  SingleSelectSimpleForeignKeyDropdownOverlayComponent,
-} from '../single-select-simple-foreign-key-dropdown-overlay/single-select-simple-foreign-key-dropdown-overlay.component'
 
 @Component({
   selector: 'app-single-select-dropdown-overlay',
@@ -56,7 +53,7 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
       return
     }
     if (!this.dataSource || !change.rows.length) return
-    const pkIndex = this.dataSource.data.value.columns.indexOf(this.dataSource.primaryColumnKey)
+    const pkIndex = this.dataSource.columns.indexOf(this.dataSource.primaryColumnKey)
     if (change.rows[0][pkIndex] !== this.value[0]) this._updateValue(change.rows[0][pkIndex])
   }
 

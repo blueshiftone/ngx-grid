@@ -1,14 +1,13 @@
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { DATA_GRIDS_FOCUSED_TREE } from '../grid-controller.service'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class HasGridFocus extends BaseGridOperation {
+export class HasGridFocus extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): boolean {
-    const source = this.gridOperations.source()
-    return source && DATA_GRIDS_FOCUSED_TREE[0] === source.dataGridID || false
+    return DATA_GRIDS_FOCUSED_TREE[0] === this.dataSource.dataGridID || false
   }
 
 }

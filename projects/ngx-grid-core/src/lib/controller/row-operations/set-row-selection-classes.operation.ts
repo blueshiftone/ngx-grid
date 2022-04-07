@@ -1,12 +1,12 @@
 import { IGridRowComponent, IGridSelectionRange } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetRowSelectionClasses extends BaseRowOperation {
+export class SetRowSelectionClasses extends Operation {
   
   private readonly rowInSelectionClassName = 'row-in-selection'
   
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(row: IGridRowComponent, selection?: IGridSelectionRange | null): void {
     if (typeof selection === 'undefined') selection = this.selection.latestSelection

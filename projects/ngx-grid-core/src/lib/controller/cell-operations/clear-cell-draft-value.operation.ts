@@ -2,13 +2,12 @@ import { IGridCellCoordinates } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
 import { BufferOperation } from '../buffer-operation'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ClearCellDraftValue extends BaseCellOperation {
-  
+export class ClearCellDraftValue extends Operation {
   public bufferOperation = new BufferOperation(async (args: any) => await this._run(args))
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public buffer = (coordinates: IGridCellCoordinates) => this.bufferOperation.next([coordinates])
   

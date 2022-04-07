@@ -30,7 +30,6 @@ export class GridOperationFactory {
         this.operations.ViewportSetupEditTriggers.run()
         this.operations.KeyBindings.run()
       },
-      source   : () => gridEvents.GridDataChangedEvent.state,
       onDestroy: () => Object.values(this.operations).forEach(itm => itm.onDestroy?.()),
     } as IGridOperationFactory
 

@@ -1,11 +1,11 @@
 import { IGridCellComponent, IGridRowComponent, IGridRowMeta } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RevertRecords extends BaseGridOperation {
+export class RevertRecords extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public async run(rowMetas: IGridRowMeta[]) {
     

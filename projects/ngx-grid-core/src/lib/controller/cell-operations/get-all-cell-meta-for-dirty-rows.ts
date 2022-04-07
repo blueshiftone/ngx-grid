@@ -3,11 +3,11 @@ import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operat
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetAllCellMetaForDirtyRows extends BaseCellOperation {
+export class GetAllCellMetaForDirtyRows extends Operation { 
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public run(rowKeys?: TPrimaryKey[]): IGridCellMeta[] {
     

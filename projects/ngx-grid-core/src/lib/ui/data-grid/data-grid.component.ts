@@ -85,7 +85,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
       this._applyPreselectedRows()
       this.gridController.selection.initialise(SELECTION_STRATEGIES[this.config.selectionStrategy])
       this._gridEvents.GridModeChangedEvent.emit(this.config.gridMode)
-      this.gridController.grid.source().maskNewIds = this.config.maskNewIds
+      this.gridController.dataSource.maskNewIds = this.config.maskNewIds
       this.cd.detectChanges()
     })
     
@@ -149,8 +149,9 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
   }
 
   private _applyPreselectedRows(): void {
+    if (!this.preselectedRows.length) return
     this._preselectedRowsUpdated.next()
-    this.gridController.selection.preselectRows(this.preselectedRows ?? [])
+    this.gridController.selection.preselectRows(this.preselectedRows)
     this.gridController.selection.emitNextSelectionSlice()
     if (this.config.scrollToPreselected) this.gridController.selection.scrollIntoView()
   }

@@ -2,13 +2,13 @@ import { Subject, Subscription } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, repeat, takeUntil } from 'rxjs/operators'
 
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ViewportWatchScrollOffset extends BaseGridOperation {
+export class ViewportWatchScrollOffset extends Operation {
 
   private readonly subscriptions: Set<Subscription> = new Set()
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): void {
     const { viewPort } = this.gridOperations

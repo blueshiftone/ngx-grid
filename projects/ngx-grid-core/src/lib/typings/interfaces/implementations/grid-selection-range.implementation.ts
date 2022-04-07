@@ -44,7 +44,9 @@ export class GridSelectionRange implements IGridSelectionRange {
 
   public add(cell: IGridCellCoordinates) {
 
-    if (!this._rowMap.get(cell.rowKey)) this._rowMap.set(cell.rowKey, new Set())
+    if (!this._rowMap.get(cell.rowKey)) {
+      this._rowMap.set(cell.rowKey, new Set())
+    }
     this._rowMap.get(cell.rowKey)!.add(cell.columnKey)   
 
     if (!this._colMap.get(cell.columnKey)) this._colMap.set(cell.columnKey, new Set())
@@ -222,11 +224,11 @@ export class GridSelectionRange implements IGridSelectionRange {
     },
     getRowIndex: (rowKey: TPrimaryKey): number => {
       const row = this.globalUtils.getRowFromRowKey(rowKey)
-      if (!row) return -1
+      if (!row) throw new Error(`Unable to find row for key ${rowKey}`)
       return this._visibleRows.indexOf(row)
     },
     getRowFromRowKey: (rowKey: TPrimaryKey): IGridRow | undefined => {
-      return this._rowKeyMap.get(rowKey)
+      return this.gridEvents.GridDataChangedEvent.state?.getRow(rowKey)
     },
     getColumnIndex: (columnKey: TColumnKey): number => {
       return this._visibleColumns.indexOf(columnKey)
@@ -266,16 +268,12 @@ export class GridSelectionRange implements IGridSelectionRange {
     return output
   }
 
-  private get _rowKeyMap(): Map<TPrimaryKey, IGridRow> {
-    return this.gridEvents.RowKeyMapChangedEvent.state || new Map()
-  }
-
   private get _visibleColumns(): TColumnKey[] {
     return this.gridEvents.ColumnsUpdatedEvent.state?.visibleColumns || []
   }
 
   private get _visibleRows(): IGridRow[] {
-    return this._filteredRows ?? this._sortedRows ?? this._source?.data.value.rows ?? []
+    return this._filteredRows ?? this._sortedRows ?? this._source?.rows ?? []
   }
 
   private get _source() {

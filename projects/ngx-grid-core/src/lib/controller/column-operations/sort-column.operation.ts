@@ -1,13 +1,13 @@
 import { ESortDirection } from '../../typings/enums/sort-direction.enum'
 import { IGridRow, IGridSorted } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SortColumn extends BaseColumnOperation {
+export class SortColumn extends Operation {
 
   public sortBy: IGridSorted | null = null
   
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(columnKey: string) {    
     const currentSort: ESortDirection = this.sortBy?.columnName === columnKey ? this.sortBy.sortOrder : ESortDirection.Natural
@@ -40,7 +40,7 @@ export class SortColumn extends BaseColumnOperation {
   }
 
   private get _rows(): IGridRow[] {
-    return this._source?.data.value.rows || []
+    return this._source?.rows || []
   }
 
 }

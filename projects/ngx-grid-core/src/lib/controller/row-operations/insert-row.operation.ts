@@ -1,14 +1,14 @@
 import { IGridRow, IRowOperationFactory } from '../../typings/interfaces'
 import { WithDefaultTrue } from '../../utils/with-default-true'
 import { BufferOperation } from '../buffer-operation'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
 
-export class InsertRow extends BaseRowOperation {
+export class InsertRow extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public buffer = (
     insertRow: IGridRow,

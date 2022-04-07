@@ -124,7 +124,7 @@ export class GetSelectionSliceOperation {
   private get _indexOfPrimaryKey(): number {
     const source = this._source
     if (!source) return -1
-    return source.data.value.columns.indexOf(source.primaryColumnKey)
+    return source.columns.indexOf(source.primaryColumnKey)
   }
 
   private get _gridEvents() {

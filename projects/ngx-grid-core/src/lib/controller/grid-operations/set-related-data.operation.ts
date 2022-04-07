@@ -1,14 +1,12 @@
 import { IGridDataSource } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetRelatedData extends BaseGridOperation {
+export class SetRelatedData extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(gridID: string, relatedGridSource: IGridDataSource) {
-    const parentGridSource = this.gridOperations.source()
-    if (!parentGridSource) throw new Error("parentGridSource is undefined")
-    return parentGridSource.relatedData.set(gridID, relatedGridSource)
+    return this.dataSource.relatedData.set(gridID, relatedGridSource)
   }
 }

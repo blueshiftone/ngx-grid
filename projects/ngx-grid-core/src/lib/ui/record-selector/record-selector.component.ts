@@ -85,7 +85,7 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
   ngOnChanges(changes: SimpleChanges) {
     if (this._hasChange('source', changes)) {
       this._sourceChanged.next()
-      this.addSubscription(this.source.data.pipe(takeUntil(this._sourceChanged)).subscribe(_ => {
+      this.addSubscription(this.source.onChanges.pipe(takeUntil(this._sourceChanged)).subscribe(_ => {
         this._initialise()
       }))
     }

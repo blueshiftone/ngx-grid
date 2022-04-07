@@ -1,11 +1,11 @@
 import { EMetadataType } from '../../typings/enums'
 import { IGridCellCoordinates } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetCellIsEditable extends BaseCellOperation {
+export class GetCellIsEditable extends Operation { 
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates): boolean {
     return this.cellOperations.GetCellMetaValue.run<boolean>(coordinates, EMetadataType.CanUpdate)
