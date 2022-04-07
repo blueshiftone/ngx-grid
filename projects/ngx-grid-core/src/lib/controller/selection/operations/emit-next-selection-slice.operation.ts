@@ -1,16 +1,16 @@
-import { GridSelectionController } from '../grid-selection.controller'
+import { ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class EmitNextSelectionSliceOperation extends BaseSelectionOperation {
+export class EmitNextSelectionSlice extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) {
+  constructor(private readonly controller: ISelectionController) {
     super(controller)
   }
 
   public run(): void {
 
     const lastSlice = this._getLastSlice()
-    const nextSlice = this.controller.getSelectionSlice()
+    const nextSlice = this.controller.GetSelectionSlice.run()
 
     if (lastSlice === nextSlice) return
 

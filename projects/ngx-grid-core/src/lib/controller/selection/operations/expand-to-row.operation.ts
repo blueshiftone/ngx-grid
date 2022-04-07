@@ -1,15 +1,15 @@
-import { IGridRowComponent } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridRowComponent, ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class ExpandToRowOperation extends BaseSelectionOperation {
+export class ExpandToRow extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) { super(controller) }
+  constructor(private readonly controller: ISelectionController) { super(controller) }
 
   public run(): void {
     const state = this.selectionState
     const row   = this._getLastSeenRow()
     if (!row) throw new Error('There is no active row information to make a selection with')
+    if (!state) return
     state.startCellPos = row.firstCellPosition
     state.endCellPos   = row.lastCellPosition
   }

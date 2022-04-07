@@ -1,17 +1,16 @@
-import { IGridCellCoordinates, IMoveSelectionFromFocusConfigs } from '../../../typings/interfaces'
+import { IGridCellCoordinates, IMoveSelectionFromFocusConfigs, ISelectionController } from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey, TPrimaryKey } from '../../../typings/types'
-import { GridSelectionController } from '../grid-selection.controller'
 import { GridSelectionStateFromCoordinates } from '../state-generators/grid-selection-state-from-coordinates.class'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class MoveSelectionFromFocusOperation extends BaseSelectionOperation {
+export class MoveSelectionFromFocus extends BaseSelectionOperation {
 
   private _hasModifiers: boolean = false
   private _isRowMode = false
 
-  constructor(public readonly controller: GridSelectionController) { super(controller) }
+  constructor(public readonly controller: ISelectionController) { super(controller) }
 
   public run(configs: IMoveSelectionFromFocusConfigs) {
     this._hasModifiers = configs.hasModifier || false
@@ -22,12 +21,12 @@ export class MoveSelectionFromFocusOperation extends BaseSelectionOperation {
       toCellAbove  : () => { this._applyNext(this._nextCell(0, -1)) },
       toCellRight  : () => { this._applyNext(this._nextCell(1, 0)) },
       toCellLeft   : () => { this._applyNext(this._nextCell(-1, 0)) },
-      toEndOfRow   : () => { this._applyNext(this._nextCell(this.controller.getLastColumnIndex(), 0)) },
-      toStartOfRow : () => { this._applyNext(this._nextCell(this.controller.getLastColumnIndex() * -1, 0)) },
-      toEndOfGrid  : () => { this._applyNext(this._nextCell(this.controller.getLastColumnIndex(), this.controller.getLastRowIndex())) },
-      toStartOfGrid: () => { this._applyNext(this._nextCell(this.controller.getLastColumnIndex() * -1, this.controller.getLastRowIndex() * -1)) },
-      toPageUp     : () => { this._applyNext(this._nextCell(0, this.controller.pageSize * -1)) },
-      toPageDown   : () => { this._applyNext(this._nextCell(0, this.controller.pageSize)) },
+      toEndOfRow   : () => { this._applyNext(this._nextCell(this.controller.GetLastColumnIndex.run(), 0)) },
+      toStartOfRow : () => { this._applyNext(this._nextCell(this.controller.GetLastColumnIndex.run() * -1, 0)) },
+      toEndOfGrid  : () => { this._applyNext(this._nextCell(this.controller.GetLastColumnIndex.run(), this.controller.GetLastRowIndex.run())) },
+      toStartOfGrid: () => { this._applyNext(this._nextCell(this.controller.GetLastColumnIndex.run() * -1, this.controller.GetLastRowIndex.run() * -1)) },
+      toPageUp     : () => { this._applyNext(this._nextCell(0, this.controller.pageSize() * -1)) },
+      toPageDown   : () => { this._applyNext(this._nextCell(0, this.controller.pageSize())) },
     }
   }
 
@@ -43,18 +42,20 @@ export class MoveSelectionFromFocusOperation extends BaseSelectionOperation {
 
       state = new GridSelectionStateFromCoordinates( ...coordinates, this.controller.gridEvents, {
         focusedCell: this._focusedCell,
-        previousSelection: this.selectionState.previousSelection?.clone()
+        previousSelection: this.selectionState?.previousSelection?.clone()
       }, this._hasModifiers, this._hasModifiers)
-      this.controller.state = this.selectionState = state
+      this.controller.state = state
 
-      this.controller.calculateNextSelection()
+      this.controller.CalculateNextSelection.run()
 
-      const focusChanged = this.controller.emitFocusedCell()
+      const focusChanged = this.controller.EmitFocusedCell.run()
       if (focusChanged) state.previousSelection = state.currentSelection.clone()
 
-      this.controller.emitNextSelection(state.currentSelection)
+      this.controller.EmitNextSelection.run(state.currentSelection)
 
     } else {
+
+      if (!state) return
 
       const prevSelection = state.previousSelection
       if (!prevSelection) return
@@ -71,25 +72,26 @@ export class MoveSelectionFromFocusOperation extends BaseSelectionOperation {
 
       finalSelection.secondarySelection = null
 
-      this.controller.emitNextSelection(finalSelection)
+      this.controller.EmitNextSelection.run(finalSelection)
 
     }    
 
-    this.controller.scrollIntoView(this._isRowMode ? coordinates[0] : coordinates[1])
+    this.controller.ScrollIntoView.run(this._isRowMode ? coordinates[0] : coordinates[1])
   }
 
   private _nextRow(increment: number): [IGridCellCoordinates, IGridCellCoordinates] | null {
     const nextCell = this._nextCell(0, increment)
     if (!nextCell) return null
     nextCell[0].rowKey = 0
-    nextCell[1].rowKey = this.controller.getLastColumnIndex()
+    nextCell[1].rowKey = this.controller.GetLastColumnIndex.run()
     this._isRowMode = true
     return nextCell
   }
 
   private _nextCell(incrementX: number, incrementY: number): [IGridCellCoordinates, IGridCellCoordinates] | null {
     this._isRowMode = false    
-    const state   = this.selectionState
+    const state = this.selectionState
+    if (!state) return null
     const utils   = state.currentSelection.globalUtils
     const focused = state.focusedCell
     if (!focused) return null

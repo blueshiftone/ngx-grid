@@ -1,11 +1,10 @@
-import { IGridCellCoordinates } from '../../../typings/interfaces'
+import { IGridCellCoordinates, ISelectionController } from '../../../typings/interfaces'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
-import { GridSelectionController } from '../grid-selection.controller'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class ReplaceSelectionOperation extends BaseSelectionOperation {
+export class ReplaceSelection extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) { super(controller) }
+  constructor(private readonly controller: ISelectionController) { super(controller) }
 
   public run(coordinates: [IGridCellCoordinates, IGridCellCoordinates]): void {
 
@@ -13,15 +12,15 @@ export class ReplaceSelectionOperation extends BaseSelectionOperation {
     
     const nextFocusedCell = GridImplementationFactory.gridFocusedCell(start)
 
-    const state = this.selectionState = this.controller.state = this.controller.createStateFromCoordinates(coordinates, {focusedCell: nextFocusedCell})
+    const state = this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run(coordinates, {focusedCell: nextFocusedCell})
 
     this.controller.gridEvents.CellFocusChangedEvent.emit(nextFocusedCell)
     
     state.currentSelection.addRange(...coordinates)
 
-    this.controller.emitNextSelection(state.currentSelection)
+    this.controller.EmitNextSelection.run(state.currentSelection)
 
-    this.controller.scrollIntoView(start)
+    this.controller.ScrollIntoView.run(start)
 
   }
 

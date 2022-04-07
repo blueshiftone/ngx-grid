@@ -151,9 +151,9 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
   private _applyPreselectedRows(): void {
     if (!this.preselectedRows.length) return
     this._preselectedRowsUpdated.next()
-    this.gridController.selection.preselectRows(this.preselectedRows)
-    this.gridController.selection.emitNextSelectionSlice()
-    if (this.config.scrollToPreselected) this.gridController.selection.scrollIntoView()
+    this.gridController.selection.PreselectRows.run(this.preselectedRows)
+    this.gridController.selection.EmitNextSelectionSlice.run()
+    if (this.config.scrollToPreselected) this.gridController.selection.ScrollIntoView.run()
   }
 
   private _hasChange(key: string, changes: SimpleChanges) {

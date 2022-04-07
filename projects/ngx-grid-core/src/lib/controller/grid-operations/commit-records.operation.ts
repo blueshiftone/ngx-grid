@@ -21,8 +21,8 @@ export class CommitRecords extends Operation {
       this.cellOperations.gridController.dialogs.open(ErrorDialogComponent, { data: "Validation errors need to be corrected before committing." })
         .afterClosed()
         .subscribe(_ => {
-        this.selection.selectCell(invalidCell.coords);
-        this.selection.scrollIntoView(invalidCell.coords);
+        this.selection.SelectCell.run(invalidCell.coords);
+        this.selection.ScrollIntoView.run(invalidCell.coords);
       })
       return;
     }

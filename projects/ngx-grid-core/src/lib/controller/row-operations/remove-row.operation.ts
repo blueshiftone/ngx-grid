@@ -21,7 +21,7 @@ export class RemoveRow extends Operation {
       this.rowOperations.dirtyRowsMap.delete(rowKey)
     }
 
-    this.selection.removeOrphanedRows()
+    this.selection.RemoveOrphanedRows.run()
 
     this.gridEvents.GridWasModifiedEvent.emit(true)
   }

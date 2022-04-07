@@ -1,7 +1,7 @@
-import { GridSelectionController } from '../../controller/selection/grid-selection.controller'
+import { ISelectionController } from './selection-controller.interface'
 
 export interface IGridSelectionStrategy {
-  controller: GridSelectionController
+  controller: ISelectionController
   
   attach(el: HTMLElement): void
 }

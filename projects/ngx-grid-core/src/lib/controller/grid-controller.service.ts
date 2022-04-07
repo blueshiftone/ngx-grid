@@ -27,7 +27,7 @@ export class GridControllerService {
   public row        = new RowOperationFactory    (this).factory
   public grid       = new GridOperationFactory   (this).factory
   public column     = new ColumnOperationFactory (this, this.prefs).factory
-  public selection  = new GridSelectionController(this, this.row)
+  public selection  = new GridSelectionController(this, this.row).factory
 
   public dataSource: IGridDataSource = new GridDataSource()
 
@@ -67,7 +67,7 @@ export class GridControllerService {
 
     // Column order changed
     addSubscription(gridEvents.ColumnOrderChangedEvent.on().subscribe(_ => {
-      this.cell.SelectedCellsChanged.run([undefined, this.selection.latestSelection])
+      this.cell.SelectedCellsChanged.run([undefined, this.selection.latestSelection()])
       this.row.RowComponents.getAll().forEach(row => row.detectChanges())
     }))
 
@@ -138,11 +138,11 @@ export class GridControllerService {
     addSubscription(gridEvents.GridKeyCmdPressedEvent.on().subscribe(event => {
       switch(event.key) {
         
-        case 'Ctrl+C': this.selection.copySelection(); break
+        case 'Ctrl+C': this.selection.CopySelection.run(); break
 
         case 'Delete': 
         case 'Backspace':
-          (this.selection.latestSelection?.rowKeys ?? []).forEach(rowKey => this.row.DeleteRow.buffer(rowKey));
+          (this.selection.latestSelection()?.rowKeys ?? []).forEach(rowKey => this.row.DeleteRow.buffer(rowKey));
         break
 
         // Toggle checkboxes

@@ -1,17 +1,17 @@
+import { ISelectionController } from '../../../typings/interfaces'
 import { Clipboard } from '../../../utils/clipboard.class'
 import { ExcelFormatter } from '../../../utils/excel-formatter.class'
-import { GridSelectionController } from '../grid-selection.controller'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class CopySelectionOperation extends BaseSelectionOperation {
+export class CopySelection extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) {
+  constructor(private readonly controller: ISelectionController) {
     super(controller)
   }
 
   public async run(): Promise<void> {
 
-    const slice = this.controller.getSelectionSlice()
+    const slice = this.controller.GetSelectionSlice.run()
 
     if (!slice) return
 

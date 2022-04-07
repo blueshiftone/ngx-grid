@@ -8,7 +8,7 @@ export class SetCellSelectionClasses extends Operation {
 
   public run(cell: IGridCellComponent, selection?: IGridSelectionRange | null): void {  
     
-    if (typeof selection === 'undefined') selection = this.selection.latestSelection
+    if (typeof selection === 'undefined') selection = this.selection.latestSelection()
     
     const { coordinates }          = cell
     const isSelected          = selection?.includes(coordinates)

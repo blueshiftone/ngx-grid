@@ -39,7 +39,7 @@ export class ChangePrimaryKey extends Operation {
     cellOperations.CellComponents.findWithCoords(new GridCellCoordinates(oldRowKey, primaryColumnKey))?.typeComponent?.receiveValue(newRowKey);
 
     // Update selection state
-    const selection = this.selection.latestSelection
+    const selection = this.selection.latestSelection()
     selection?.changePrimaryKey(oldRowKey, newRowKey)
 
     // Update focused state

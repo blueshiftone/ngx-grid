@@ -9,7 +9,7 @@ export class SetRowSelectionClasses extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(row: IGridRowComponent, selection?: IGridSelectionRange | null): void {
-    if (typeof selection === 'undefined') selection = this.selection.latestSelection
+    if (typeof selection === 'undefined') selection = this.selection.latestSelection()
     row.toggleClass(
       this.rowInSelectionClassName,
       selection?.includesRow(row.rowKey)

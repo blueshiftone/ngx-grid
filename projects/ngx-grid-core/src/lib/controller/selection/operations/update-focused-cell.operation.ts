@@ -1,15 +1,16 @@
+import { ISelectionController } from '../../../typings/interfaces'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
-import { GridSelectionController } from '../grid-selection.controller'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class UpdateFocusedCellOperation extends BaseSelectionOperation {
+export class UpdateFocusedCell extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) {
+  constructor(private readonly controller: ISelectionController) {
     super(controller)
   }
 
   public run(): void {
-    const nextSelection = this.controller.latestSelection
+    if (!this.selectionState) return
+    const nextSelection = this.controller.latestSelection()
     if (nextSelection && nextSelection.cellCount > 0) {
       if (this._focusedCell && !nextSelection.includes(this._focusedCell)) {
         this.selectionState.focusedCell = GridImplementationFactory.gridFocusedCell(nextSelection.getBounds().topLeft)

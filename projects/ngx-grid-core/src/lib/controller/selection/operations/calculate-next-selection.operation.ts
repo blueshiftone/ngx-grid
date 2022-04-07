@@ -1,20 +1,22 @@
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridCellCoordinates, IGridSelectionRange, ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class CalculateNextSelectionOperation extends BaseSelectionOperation {
+export class CalculateNextSelection extends BaseSelectionOperation {
 
-  constructor(public readonly controller: GridSelectionController) { super(controller) }
+  constructor(public readonly controller: ISelectionController) { super(controller) }
 
   public run(
-    selection = this.selectionState.currentSelection,
-    from      = this.selectionState.startCellPos,
-    to        = this.selectionState.endCellPos
+    selection?: IGridSelectionRange,
+    from?     : IGridCellCoordinates,
+    to?       : IGridCellCoordinates
   ): void {
     const state = this.selectionState 
+    if (!state) return
 
-    if (state.isAdding && !state.hasModifiers) this.controller.addSelection(selection, from, to) 
-    if (state.hasModifiers)                    this.controller.addSecondarySelection(selection, from, to)
-    if (state.isSubtracting)                   this.controller.subtractSelection(selection, from, to)
+    if (state.isAdding && !state.hasModifiers) this.controller.AddSelection.run(selection ?? state.currentSelection, from ?? state.startCellPos, to ?? state.endCellPos) 
+    if (state.hasModifiers)                    this.controller.AddSecondarySelection.run(selection, from, to)
+    if (state.isSubtracting)                   this.controller.SubtractSelection.run(selection, from, to)
+    console.log(state.currentSelection)
   }
 
 }

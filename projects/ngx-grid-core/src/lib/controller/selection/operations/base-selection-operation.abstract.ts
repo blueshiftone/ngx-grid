@@ -1,11 +1,6 @@
-import { IGridSelectionState } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridSelectionState, ISelectionController } from '../../../typings/interfaces'
 
 export abstract class BaseSelectionOperation {
-  public selectionState: IGridSelectionState
-  constructor(controller: GridSelectionController) {
-    const state = controller.state
-    if (!state) throw Error('State is not defined')
-    this.selectionState = state
-  }
+  public get selectionState(): IGridSelectionState | null { return this._controller.state }
+  constructor(private readonly _controller: ISelectionController) {}
 }

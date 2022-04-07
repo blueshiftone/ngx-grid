@@ -1,11 +1,11 @@
+import { ISelectionController } from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
 import { TPrimaryKey } from '../../../typings/types'
-import { GridSelectionController } from '../grid-selection.controller'
 
-export class SelectRowOperation {
+export class SelectRow {
 
-  constructor(public readonly controller: GridSelectionController) {}
+  constructor(public readonly controller: ISelectionController) {}
 
   public run(rowKey: TPrimaryKey) {
 
@@ -14,9 +14,9 @@ export class SelectRowOperation {
     const startPos = new GridCellCoordinates(rowKey, utils.getFirstColumn())
     const endPos   = new GridCellCoordinates(rowKey, utils.getLastColumn())
     
-    if (this.controller.state === null) this.controller.state = this.controller.createStateFromCoordinates([startPos, endPos])
+    if (this.controller.state === null) this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run([startPos, endPos])
 
-    this.controller.replaceSelection([startPos, endPos])
+    this.controller.ReplaceSelection.run([startPos, endPos])
 
   }
 

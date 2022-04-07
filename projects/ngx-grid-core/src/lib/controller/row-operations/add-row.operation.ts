@@ -41,9 +41,9 @@ export class AddRow extends Operation {
 
     await Promise.all(buffers)
 
-    if (firstEditableCell !== null) this.selection.selectCell(new GridCellCoordinates(rowKey, firstEditableCell))
-    else this.selection.selectRow(rowKey)
-    this.selection.emitNextSelectionSlice()
+    if (firstEditableCell !== null) this.selection.SelectCell.run(new GridCellCoordinates(rowKey, firstEditableCell))
+    else this.selection.SelectRow.run(rowKey)
+    this.selection.EmitNextSelectionSlice.run()
 
     this.gridEvents.GridWasModifiedEvent.emit(true)
   }

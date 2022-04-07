@@ -1,13 +1,18 @@
 import { fromEvent } from 'rxjs'
 
-import { IGridCellCoordinates, IGridKeyboardEvent, IGridSelectionRange, IGridSelectionStrategy } from '../../../typings/interfaces'
+import {
+  IGridCellCoordinates,
+  IGridKeyboardEvent,
+  IGridSelectionRange,
+  IGridSelectionStrategy,
+  ISelectionController,
+} from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { HasParentOfClass } from '../../../utils/find-parent-element-of-class'
-import { GridSelectionController } from '../grid-selection.controller'
 
 export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
 
-  constructor(public readonly controller: GridSelectionController) {}
+  constructor(public readonly controller: ISelectionController) {}
 
   public attach(el: HTMLElement): void {
 
@@ -17,7 +22,7 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
       // button 0 = Left Mouse Button
       if (e.button !== 0 || !HasParentOfClass('cell', e.target as HTMLElement)) return
       
-      let state = this.controller.createStateFromMouseEvent({
+      let state = this.controller.CreateSelectionStateFromMouseEvent.run({
         ctrlKey: false,
         shiftKey: false,
         target: e.target
@@ -26,11 +31,11 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
       
       this.controller.state = state
       
-      this.controller.expandToRow()
+      this.controller.ExpandToRow.run()
       
-      this.controller.emitFocusedCell()
+      this.controller.EmitFocusedCell.run()
       
-      this.controller.calculateNextSelection()
+      this.controller.CalculateNextSelection.run()
 
       if(state.currentSelection.isEqual(this._lastSelection)) {    
         state.previousSelection = undefined
@@ -55,7 +60,7 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
       if (rowKey !== null && rowKey !== undefined) rowKey = utils.incrementRow(rowKey, increment)
       else rowKey = 0
       this.controller.gridEvents.RowPreselectedEvent.emit(rowKey)
-      this.controller.scrollIntoView(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
+      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
     }
 
     this.controller.keyboardEvents.arrowDown  =
@@ -84,10 +89,10 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
           nextSelection.removeRange(...coords)
           this._emitSelection(null)
           this.controller.state.currentSelection = nextSelection       
-          this.controller.updateFocusedCell()
+          this.controller.UpdateFocusedCell.run()
         } else {
-          this.controller.replaceSelection(coords)
-          this.controller.emitNextSelectionSlice()
+          this.controller.ReplaceSelection.run(coords)
+          this.controller.EmitNextSelectionSlice.run()
         }
       }      
     }
@@ -95,8 +100,8 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
   }
 
   private _emitSelection = (s: IGridSelectionRange | null) => {
-    this.controller.emitNextSelection(s)
-    this.controller.emitNextSelectionSlice()
+    this.controller.EmitNextSelection.run(s)
+    this.controller.EmitNextSelectionSlice.run()
   }
 
   private get _lastSelection()    { return this.controller.gridEvents.CellSelectionChangedEvent.state ?? null }

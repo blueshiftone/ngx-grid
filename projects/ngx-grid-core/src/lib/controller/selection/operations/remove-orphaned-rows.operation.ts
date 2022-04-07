@@ -1,15 +1,15 @@
+import { ISelectionController } from '../../../typings/interfaces'
 import { TPrimaryKey } from '../../../typings/types'
-import { GridSelectionController } from '../grid-selection.controller'
 
-export class RemoveOrphanedRowsOperation {
+export class RemoveOrphanedRows {
 
-  constructor(public readonly controller: GridSelectionController) {}
+  constructor(public readonly controller: ISelectionController) {}
 
   public run(): void {
     
     const orphanedRowKeys = new Set<TPrimaryKey>()
     
-    let lastSelection = this.controller.latestSelection
+    let lastSelection = this.controller.latestSelection()
     if (!lastSelection) return
 
     const rowKeys       = lastSelection.rowKeys
@@ -27,8 +27,8 @@ export class RemoveOrphanedRowsOperation {
         if (orphanedRowKeys.has(cell.rowKey)) nextSelection.remove(cell)
       }
 
-      this.controller.emitNextSelection(nextSelection.cellCount > 0 ? nextSelection : null)
-      this.controller.emitNextSelectionSlice()
+      this.controller.EmitNextSelection.run(nextSelection.cellCount > 0 ? nextSelection : null)
+      this.controller.EmitNextSelectionSlice.run()
 
     }
 

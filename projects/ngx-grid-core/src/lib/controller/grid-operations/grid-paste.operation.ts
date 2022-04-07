@@ -182,16 +182,16 @@ export class GridPaste extends Operation {
 
       } 
 
-      this.selection.selectRange(startCell, endCell)
-      this.selection.emitNextSelectionSlice()
-      this.selection.scrollIntoView()
+      this.selection.SelectRange.run(startCell, endCell)
+      this.selection.EmitNextSelectionSlice.run()
+      this.selection.ScrollIntoView.run()
 
     }
 
   }
 
   private _getStartCell() {
-    return this.selection.latestSelection?.getBounds().topLeft
+    return this.selection.latestSelection()?.getBounds().topLeft
   }
 
   private get _sortedRows() {

@@ -61,7 +61,7 @@ export class CheckRowIcon extends Operation {
   }
 
   private _rowIsSelected(row: IGridRowComponent): boolean {
-    const selection = this.selection.latestSelection
+    const selection = this.selection.latestSelection()
     return this._gridMode === 'SelectMode'
       && (selection?.includesRow(row.rowKey) === true || (!selection?.secondarySelection?.isSubtracting && selection?.secondarySelection?.includesRow(row.rowKey) === true)) 
   }

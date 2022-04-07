@@ -1,17 +1,22 @@
 import { fromEvent, merge, Subject } from 'rxjs'
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators'
 
-import { IGridCellCoordinates, IGridKeyboardEvent, IGridSelectionRange, IGridSelectionStrategy } from '../../../typings/interfaces'
+import {
+  IGridCellCoordinates,
+  IGridKeyboardEvent,
+  IGridSelectionRange,
+  IGridSelectionStrategy,
+  ISelectionController,
+} from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
 import { removeNullish } from '../../../utils/custom-rxjs/remove-nullish'
 import { HasParentOfClass } from '../../../utils/find-parent-element-of-class'
-import { GridSelectionController } from '../grid-selection.controller'
 import { GridSelectionStateFromCoordinates } from '../state-generators/grid-selection-state-from-coordinates.class'
 
 export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
 
-  constructor(public readonly controller: GridSelectionController) { }
+  constructor(public readonly controller: ISelectionController) { }
 
   public attach(el: HTMLElement): void {
     this._keyboardHandling()
@@ -24,7 +29,7 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
     if (e.button !== 0 || !HasParentOfClass('cell', e.target as HTMLElement)) return
     this._gridEvents.CellSelectionStartedEvent.emit(true)
 
-    let state = this.controller.createStateFromMouseEvent({
+    let state = this.controller.CreateSelectionStateFromMouseEvent.run({
       ctrlKey: !e.shiftKey && typeof this.controller.state?.previousSelection !== 'undefined',
       shiftKey: e.shiftKey,
       target: e.target
@@ -36,14 +41,14 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
 
     this.controller.state = state
 
-    this.controller.expandToRow()
+    this.controller.ExpandToRow.run()
 
-    if (state.hasCtrlKey) this.controller.startMultiSelect()
-    else if (state.hasShiftKey) this.controller.startShiftSelect()
+    if (state.hasCtrlKey) this.controller.StartMultiSelect.run()
+    else if (state.hasShiftKey) this.controller.StartShiftSelect.run()
 
-    this.controller.calculateNextSelection()
+    this.controller.CalculateNextSelection.run()
 
-    const focusChanged = this.controller.emitFocusedCell()
+    const focusChanged = this.controller.EmitFocusedCell.run()
     if (focusChanged) state.previousSelection = state.currentSelection.clone()
 
     this._continueSelection()
@@ -58,15 +63,15 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
       .pipe(removeNullish(), takeUntil(merge(this._windowFocusChanged, this._mouseReleased)))
       .subscribe(rowComponent => {
         const nextSelection = (state.hasShiftKey && state.previousSelection ? state.previousSelection : state.initialSelection).clone()
-        this.controller.calculateNextSelection(nextSelection, state.startCellPos, rowComponent.lastCellPosition)
+        this.controller.CalculateNextSelection.run(nextSelection, state.startCellPos, rowComponent.lastCellPosition)
         this._emitSelection(nextSelection)
       })
       .add(() => {
-        const finalSelection = this.controller.getFinalSelection()
+        const finalSelection = this.controller.GetFinalSelection.run()
         this._gridEvents.CellSelectionStoppedEvent.emit(true)
         this._emitSelection(finalSelection)
-        this.controller.emitNextSelectionSlice()
-        this.controller.updateFocusedCell()
+        this.controller.EmitNextSelectionSlice.run()
+        this.controller.UpdateFocusedCell.run()
       })
 
   }  
@@ -77,14 +82,14 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
       const state = this.controller.state
       if (!state) throw new Error('State is undefined')
       const utils = state.currentSelection.globalUtils
-      let rowKey = this._lastPreSelection ?? Array.from(this.controller.latestSelection?.rows || [])[0]
+      let rowKey = this._lastPreSelection ?? Array.from(this.controller.latestSelection()?.rows || [])[0]
       if (rowKey !== null && rowKey !== undefined) rowKey = utils.incrementRow(rowKey, increment)
       else rowKey = 0
       this._gridEvents.RowPreselectedEvent.emit(rowKey)
-      this.controller.scrollIntoView(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
+      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
     }
 
-    this.controller.keyboardEvents.ctrlA = () => this.controller.selectAll()
+    this.controller.keyboardEvents.ctrlA = () => this.controller.SelectAll.run()
 
     this.controller.keyboardEvents.arrowDown  =
     this.controller.keyboardEvents.arrowRight = () => move(1)
@@ -114,22 +119,22 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
           previousSelection: this.controller.state.previousSelection
         })
         
-        if (this.controller.latestSelection?.includesRow(rowKey)) nextState.currentSelection.removeRange(...coords)
+        if (this.controller.latestSelection()?.includesRow(rowKey)) nextState.currentSelection.removeRange(...coords)
         else                                                      nextState.currentSelection.addRange(...coords)
 
         if (!nextState.currentSelection.cellCount && !nextState.currentSelection.secondarySelection?.cellCount) this._emitSelection(null)
         else this._emitSelection(nextState.currentSelection)
         
         this.controller.state = nextState
-        this.controller.updateFocusedCell()
-        this.controller.emitNextSelectionSlice()
+        this.controller.UpdateFocusedCell.run()
+        this.controller.EmitNextSelectionSlice.run()
       }
     }
 
   }
 
   private _emitSelection = (s: IGridSelectionRange | null) => {
-    this.controller.emitNextSelection(s)
+    this.controller.EmitNextSelection.run(s)
   }
 
   private get _lastPreSelection() {
