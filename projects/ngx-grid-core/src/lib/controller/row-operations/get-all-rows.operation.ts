@@ -15,10 +15,10 @@ export class GetAllRows extends Operation {
   }
 
   private get _sortedRows() {
-    return this.gridEvents.ColumnSortByChangedEvent.state?.rows || null
+    return this.gridEvents.ColumnSortByChangedEvent.state?.rows ?? null
   }
 
   private get _filteredRows() {
-    return this.gridEvents.RowsFilteredEvent.state || null
+    return this.gridEvents.RowsFilteredEvent.state ?? null
   }
 }

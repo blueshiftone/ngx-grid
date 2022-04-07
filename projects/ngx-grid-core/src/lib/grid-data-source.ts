@@ -134,9 +134,9 @@ export class GridDataSource implements IGridDataSource {
         this._rowMap.set(row.rowKey, row)
         output.push(row)
       }
-      this._changesStream.next()
       this.upsertColumns(...[...output[output.length-1].values.values()].map(v => v.columnKey))
     }
+    this._changesStream.next()
     return output
   }
 
@@ -151,6 +151,7 @@ export class GridDataSource implements IGridDataSource {
       if (index > -1) {
         this.rows.splice(index, 1)
       }
+      this._rowMap.delete(row.rowKey)
     }
     this._changesStream.next()
   }
@@ -167,6 +168,7 @@ export class GridDataSource implements IGridDataSource {
 
   public clearData(): void {
     this._rowMap.clear()
+    this._colSetCache.clear()
     this.rows.length = 0
     this.columns.length = 0
     this._changesStream.next()

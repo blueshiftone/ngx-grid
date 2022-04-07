@@ -223,6 +223,10 @@ export class GridSelectionRange implements IGridSelectionRange {
       return this._visibleColumns[columIndex]
     },
     getRowIndex: (rowKey: TPrimaryKey): number => {
+      if (!rowKey) {
+        console.warn(`Undefined or null row key when getting row index`);        
+        return -1
+      }
       const row = this.globalUtils.getRowFromRowKey(rowKey)
       if (!row) throw new Error(`Unable to find row for key ${rowKey}`)
       return this._visibleRows.indexOf(row)

@@ -14,14 +14,16 @@ export class RecalculateColumnWidth extends Operation {
       this.columnOperations.SetColumnWidth.run(cellComponents, Infinity)
       cellMap.set(col, cellComponents)
     }
-    window.requestAnimationFrame(_ => {
-      const colWidths = this.gridEvents.ColumnWidthChangedEvent.state
-      if (!colWidths) return
-      for (const [colKey, cellComponents] of cellMap.entries()) {
-        const newWidth = Math.max(...[...cellComponents].map(c => c.element.getBoundingClientRect().width))
-        colWidths.setWidth(colKey, newWidth)
-      }
-      this.gridEvents.ColumnWidthChangedEvent.emit(colWidths)
+    setTimeout(() => {
+      requestAnimationFrame(_ => {
+        const colWidths = this.gridEvents.ColumnWidthChangedEvent.state
+        if (!colWidths) return
+        for (const [colKey, cellComponents] of cellMap.entries()) {
+          const newWidth = Math.max(...[...cellComponents].map(c => c.element.getBoundingClientRect().width))
+          colWidths.setWidth(colKey, newWidth)
+        }
+        this.gridEvents.ColumnWidthChangedEvent.emit(colWidths)
+      })
     })
   }
 

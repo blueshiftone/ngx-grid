@@ -3,7 +3,6 @@ import { merge, Subscription } from 'rxjs'
 import { IGridColumnMeta, IGridColumnOrder } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { ArraysAreEqual } from '../../utils/arrays-are-equal'
-import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { Operation } from '../operation.abstract'
 
 export class GetColumns extends Operation {
@@ -14,7 +13,7 @@ export class GetColumns extends Operation {
     this.subs.add(merge(
       this.gridEvents.ColumnOrderChangedEvent.on(),
       this.gridEvents.GridDataChangedEvent.on()
-    ).pipe(removeNullish()).subscribe(_ => this._updateColumns()))
+    ).subscribe(_ => this._updateColumns()))
   }
 
   private readonly subs   : Set<Subscription> = new Set()
@@ -26,6 +25,7 @@ export class GetColumns extends Operation {
   }
 
   public run(): string[] {
+    if (!this._visibleColumns.length && this.dataSource.columns.length) this._updateColumns()
     return this._visibleColumns
   }
 
