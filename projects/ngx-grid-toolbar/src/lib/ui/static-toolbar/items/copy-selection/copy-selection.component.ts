@@ -37,7 +37,7 @@ export class CopySelectionComponent extends AutoUnsubscribe implements IToolbarC
   }
 
   public action(): void {
-    this.toolbarService.gridController?.selection.copySelection()
+    this.toolbarService.gridController?.selection.CopySelection.run()
   }
 
 }
