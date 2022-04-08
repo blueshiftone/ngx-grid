@@ -12,7 +12,7 @@ export class FilterRows extends Operation {
     let filtered: IGridRow[] = []
     if (filter) { 
       filter = filter.toLowerCase()
-      filtered = rows.filter(row => row.valuesArray.map(v => v.value).join('').toLowerCase().includes(filter!))
+      filtered = rows.filter(row => row.valuesArray.map(v => v.value.value).join('').toLowerCase().includes(filter!))
       this.gridEvents.RowsFilteredEvent.emit(filtered)
     } else if (this._getRowsFilteredEvent() !== null && typeof this._getRowsFilteredEvent() !== 'undefined') {
       this.gridEvents.RowsFilteredEvent.emit(null)

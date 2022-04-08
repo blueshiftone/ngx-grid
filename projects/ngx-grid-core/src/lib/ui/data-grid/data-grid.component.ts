@@ -139,8 +139,8 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
       this.data.disabled = this.disabled
     }
 
-    if (typeof changes['FilterString']?.currentValue !== 'undefined')
-      this._nextFilterString.next(changes['FilterString'].currentValue)
+    if (typeof changes['filterString']?.currentValue !== 'undefined')
+      this._nextFilterString.next(changes['filterString'].currentValue)
   }
 
   private async _afterGridInit(fn: () => any): Promise<void> {

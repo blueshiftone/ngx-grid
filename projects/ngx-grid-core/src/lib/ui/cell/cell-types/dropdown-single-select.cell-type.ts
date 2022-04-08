@@ -77,7 +77,6 @@ export class DropdownSingleSelectCellType extends BaseCellType {
     let overlayComponentType: EGridOverlayTypes = EGridOverlayTypes.StaticDropdownOverlay
     if (this._isRelatedGrid) {
       overlayConfigs.size = {
-        width: 550,
         height: 300
       }
       overlayComponentType = EGridOverlayTypes.SingleSelectSimpleForeignKeyDropdownOverlay
