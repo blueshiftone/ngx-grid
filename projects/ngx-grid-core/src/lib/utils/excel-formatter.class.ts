@@ -64,6 +64,9 @@ export class ExcelFormatter {
         this._replaceBlockNodes(node) as HTMLDivElement
         value = node.innerHTML
       break
+      case 'File' :
+        value = value?.fileName ?? ''
+      break
       case 'Percent': 
         msoNumberFormat = `0%`
       break
@@ -95,6 +98,10 @@ export class ExcelFormatter {
       const div = document.createElement('div')
       div.innerHTML = value ?? ''
       value = div.innerText.replace(/\r|\n/g, '')
+    }
+
+    if (cellType.name === 'File') {
+      value = value?.fileName ?? ''
     }
     
     if (Array.isArray(value)) value = value.join(',')

@@ -62,10 +62,7 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
     this.overlayService.open(
       this.cell,
       EGridOverlayTypes.SingleSelectSimpleForeignKeyDropdownOverlay,
-      {size: {
-        width: 550,
-        height: 300
-      }}
+      { size: { height: 300 } }
     )
   }
 
