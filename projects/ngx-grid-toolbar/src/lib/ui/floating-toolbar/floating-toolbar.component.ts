@@ -87,7 +87,7 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
   }
 
   public copySelection(): void {
-    this.toolbarService.gridController?.selection.copySelection()
+    this.toolbarService.gridController?.selection.CopySelection.run()
   }
 
   public deleteRecords(): void {
@@ -95,7 +95,7 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
   }
 
   public clearSelection(): void {
-    this.toolbarService.gridController?.selection.clearSelection()
+    this.toolbarService.gridController?.selection.ClearSelection.run()
   }
 
   private get _selectedRowKeys(): TPrimaryKey[] {
