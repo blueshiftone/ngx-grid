@@ -3,11 +3,11 @@ import { IGridCellValidationState } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { CellValidationMessageComponent } from '../../ui/grid-overlays/cell-validation-message/cell-validation-message.component'
 import { EGridOverlayTypes } from '../../ui/grid-overlays/grid-overlay-types'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetCellValidationDialog extends BaseCellOperation {
+export class SetCellValidationDialog extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(event: IGridCellValidationState,) {
 

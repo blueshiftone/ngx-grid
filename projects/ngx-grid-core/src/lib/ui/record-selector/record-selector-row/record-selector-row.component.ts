@@ -64,6 +64,7 @@ export class RecordSelectorRowComponent extends AutoUnsubscribe implements IGrid
   }
 
   ngOnChanges(): void {
+    this._setColumns()
     this.cells?.forEach(cell => {
       cell.detectChanges()
     })

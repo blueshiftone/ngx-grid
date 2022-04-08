@@ -27,7 +27,7 @@ export class DeleteRecordsComponent extends AutoUnsubscribe implements IToolbarC
     public  readonly toolbarService : ToolbarService,
   ) { super() }
 
-  public get isVisible(): boolean { return this.toolbarService.gridController?.grid.source()?.canDelete !== false }
+  public get isVisible(): boolean { return this.toolbarService.gridController?.dataSource.canDelete !== false }
 
   public get isEnabled(): boolean {
     return this.toolbarService.recordCount > 0

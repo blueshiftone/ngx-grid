@@ -50,7 +50,7 @@ export class GridContextMenuService {
     
     const output: IGridContextMenuItem[] = []
     
-    const selection = this.gridController.selection.latestSelection
+    const selection = this.gridController.selection.latestSelection()
     
     if (selection) {
 
@@ -88,7 +88,7 @@ export class GridContextMenuService {
         })
       }
 
-      const source = this.gridController.grid.source()
+      const source = this.gridController.dataSource
       const { canInsert, canDelete } = source
 
       if (canInsert) {
@@ -108,7 +108,7 @@ export class GridContextMenuService {
 
       output.push({
         label : 'locCopySelection',
-        action: () => this.gridController.selection.copySelection(),
+        action: () => this.gridController.selection.CopySelection.run(),
         icon  : EGridIcon.Copy
       })
 

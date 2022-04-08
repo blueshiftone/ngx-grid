@@ -1,35 +1,27 @@
 import { IRowOperationFactory } from '../../typings/interfaces'
 import { TPrimaryKey } from '../../typings/types'
-import { DeleteFromArray } from '../../utils/array-delete'
 import { BufferOperation } from '../buffer-operation'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RemoveRow extends BaseRowOperation {
+export class RemoveRow extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
   
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
   
   public buffer = (rowKey: TPrimaryKey) => {
     return this.bufferOperation.next([rowKey])
   }
 
   private  async _run(args: TPrimaryKey[][]): Promise<void> {
-    const data = this.gridOperations.source()?.data
-    if (typeof data === 'undefined') return
     
     for (const arg of args) {
       const [rowKey] = arg
-      const row = this.rowOperations.GetRow.run(rowKey)
-      DeleteFromArray(data.value.rows, row)
-      data.value.rows = [...data.value.rows]
-      this.rowOperations.rowKeyMap.delete(rowKey)
+      this.dataSource.removeRows(rowKey)
       this.rowOperations.dirtyRowsMap.delete(rowKey)
     }
 
-    data.next(data.value)
-
-    this.selection.removeOrphanedRows()
+    this.selection.RemoveOrphanedRows.run()
 
     this.gridEvents.GridWasModifiedEvent.emit(true)
   }

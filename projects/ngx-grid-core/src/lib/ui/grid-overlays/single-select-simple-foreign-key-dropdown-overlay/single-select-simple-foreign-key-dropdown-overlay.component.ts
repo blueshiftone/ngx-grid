@@ -9,7 +9,6 @@ import { IGridDataSource, IGridOverlayData, IGridSelectListOption } from '../../
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
-import { SingleSelectGridDropdownOverlayComponent } from '../single-select-grid-dropdown-overlay/single-select-grid-dropdown-overlay.component'
 
 @Component({
   selector: 'data-grid-single-select-simple-foreign-key-dropdown-overlay',
@@ -52,7 +51,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     this.dataSource = this._getDataSource()
     if (!this.dataSource) return
 
-    this.dataSource.data.value.rows.forEach(row => {
+    this.dataSource.rows.forEach(row => {
       const primaryKey = row.rowKey
       const option: IGridSelectListOption = {
         value: primaryKey,

@@ -1,9 +1,9 @@
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RevertAll extends BaseGridOperation {
+export class RevertAll extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run() {
     

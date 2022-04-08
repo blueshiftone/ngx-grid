@@ -30,7 +30,7 @@ export class InsertRecordComponent extends AutoUnsubscribe implements IToolbarCo
     this.addSubscription(this.toolbarService.selectionSlice.subscribe(_ => this.cd.detectChanges()))
   }
 
-  public get isVisible(): boolean { return this.toolbarService.gridController?.grid.source()?.canInsert !== false }
+  public get isVisible(): boolean { return this.toolbarService.gridController?.dataSource.canInsert !== false }
   
   public get element() { return this.elRef.nativeElement }
 

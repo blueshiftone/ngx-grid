@@ -1,12 +1,12 @@
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetGridId extends BaseGridOperation {
+export class GetGridId extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): string {
-    return this.gridOperations.source()?.dataGridID ?? ''
+    return this.dataSource.dataGridID ?? ''
   }
 
 }

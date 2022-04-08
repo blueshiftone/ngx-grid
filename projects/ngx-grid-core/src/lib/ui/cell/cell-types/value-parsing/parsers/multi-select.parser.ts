@@ -94,11 +94,11 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
     if (unmatchedKeys.length && typeof grid !== 'undefined') {
 
       const previewStringMap = new Map<string, IGridRow>()
-      const rows             = grid.data.value.rows
-      const columns          = grid.data.value.columns
+      const rows             = grid.rows
+      const columns          = grid.columns
 
       for(const row of rows) {
-        let outputString = grid.rowPreviewTemplateString
+        let outputString = grid.rowTemplateString
         for (const col of columns) {
           if (outputString.includes(col)) {
             const regex = new RegExp(`\\{\\{(?:\\s+)?${col}(?:\\s+)?\\}\\}`, 'g')

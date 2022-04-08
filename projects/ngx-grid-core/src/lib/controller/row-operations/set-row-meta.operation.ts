@@ -3,11 +3,11 @@ import { IGridRowMeta } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetRowMeta extends BaseRowOperation {
+export class SetRowMeta extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rowKey: TPrimaryKey, input: Partial<Pick<IGridRowMeta, 'metadata' | 'rowKey' | 'status' | 'separators'>>): void {
     
@@ -26,7 +26,7 @@ export class SetRowMeta extends BaseRowOperation {
     if (rowMeta.isDirty)                                  this.rowOperations.dirtyRowsMap.set(rowKey, rowMeta)
     else if(this.rowOperations.dirtyRowsMap.has(rowKey)) this.rowOperations.dirtyRowsMap.delete(rowKey)
 
-    this.gridOperations.source()?.rowMeta.set(rowKey, rowMeta)
+    this.dataSource.rowMeta.set(rowKey, rowMeta)
     
   }
 

@@ -1,12 +1,12 @@
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetActualIndexOfColumn extends BaseColumnOperation {
+export class GetActualIndexOfColumn extends Operation {
 
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(columnName: string) {
-    return this.gridOperations.source()?.allColumnKeys.indexOf(columnName) ?? -1
+    return this.dataSource.columns.indexOf(columnName) ?? -1
   }
 
 }

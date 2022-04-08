@@ -2,11 +2,11 @@ import { IGridCellComponent, IGridRowComponent, IGridRowMeta } from '../../typin
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { ErrorDialogComponent } from '../../ui/dialogs/error-dialog/error-dialog.component'
 import { WithDefaultTrue } from '../../utils/with-default-true'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class CommitRecords extends BaseGridOperation {
+export class CommitRecords extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public async run(rowMetas: IGridRowMeta[], options: ICommitRecordsOptions = {}) {
     
@@ -21,8 +21,8 @@ export class CommitRecords extends BaseGridOperation {
       this.cellOperations.gridController.dialogs.open(ErrorDialogComponent, { data: "Validation errors need to be corrected before committing." })
         .afterClosed()
         .subscribe(_ => {
-        this.selection.selectCell(invalidCell.coords);
-        this.selection.scrollIntoView(invalidCell.coords);
+        this.selection.SelectCell.run(invalidCell.coords);
+        this.selection.ScrollIntoView.run(invalidCell.coords);
       })
       return;
     }

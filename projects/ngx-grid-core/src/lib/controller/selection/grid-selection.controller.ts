@@ -1,170 +1,82 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
-import { Subscription } from 'rxjs'
+import { Subscription, SubscriptionLike } from 'rxjs'
 
-import { IGridEventsFactory } from '../../events/grid-events.service'
-import {
-  IGridCellCoordinates,
-  IGridKeyboardEvent,
-  IGridSelectionRange,
-  IGridSelectionState,
-  IGridSelectionStrategy,
-  IMoveSelectionFromFocusConfigs,
-} from '../../typings/interfaces'
+import { ISelectionController } from '../../typings/interfaces'
+import { IDestroyable } from '../../typings/interfaces/destroyable.interface'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
-import { TPrimaryKey } from '../../typings/types'
-import { TAtLeast } from '../../typings/types/at-least.type'
+import { TInstanceTypeProps } from '../../typings/types'
 import { GridControllerService } from '../grid-controller.service'
-import {
-  AddSecondarySelectionOperation,
-  AddSelectionOperation,
-  CalculateNextSelectionOperation,
-  ClearSelectionOperation,
-  CopySelectionOperation,
-  CreateSelectionStateFromCoordinatesOperation,
-  CreateSelectionStateFromMouseEventOperation,
-  EmitFocusedCellOperation,
-  EmitNextSelectionOperation,
-  EmitNextSelectionSliceOperation,
-  ExpandToRowOperation,
-  GetFinalSelectionOperation,
-  GetLastColumnIndexOperation,
-  GetLastRowIndexOperation,
-  GetSelectionSliceOperation,
-  MoveSelectionFromFocusOperation,
-  PreselectRowsOperation,
-  RemoveOrphanedRowsOperation,
-  ReplaceSelectionOperation,
-  ScrollIntoViewOperation,
-  SelectAllOperation,
-  SelectCellOperation,
-  SelectRangeOperation,
-  SelectRowOperation,
-  StartMultiSelectOperation,
-  StartShiftSelectOperation,
-  SubtractSelectionOperation,
-  ToggleSelectionOperation,
-  UpdateFocusedCellOperation,
-} from './operations'
+import * as SelectionOperations from './operations'
 import { TSelectionStrategies } from './strategies'
 
-export class GridSelectionController {
+export type TSelectionOperations = TInstanceTypeProps<typeof SelectionOperations>
 
-  private _subscriptions: Subscription[] = []
+export class GridSelectionController implements IDestroyable {
+
+  public readonly operations: TSelectionOperations
+  public readonly factory   : ISelectionController
+
+  private _subscriptions = new Set<SubscriptionLike>()
   private _gridViewPort?: CdkVirtualScrollViewport
-  
-  public strategy?: IGridSelectionStrategy
-  public readonly gridEvents: IGridEventsFactory
-
-  public state: IGridSelectionState | null = null
-
-  public keyboardEvents: {
-    arrowUp?    (e: IGridKeyboardEvent): void
-    arrowRight? (e: IGridKeyboardEvent): void
-    arrowDown?  (e: IGridKeyboardEvent): void
-    arrowLeft?  (e: IGridKeyboardEvent): void
-    pageUp?     (e: IGridKeyboardEvent): void
-    pageDown?   (e: IGridKeyboardEvent): void
-    home?       (e: IGridKeyboardEvent): void
-    end?        (e: IGridKeyboardEvent): void
-    ctrlA?      (e: IGridKeyboardEvent): void
-    tab?        (e: IGridKeyboardEvent): void
-    enter?      (e: IGridKeyboardEvent): void
-    space?      (e: IGridKeyboardEvent): void
-    any?        (e: IGridKeyboardEvent): void
-  } = {}
 
   constructor(
     public readonly gridController: GridControllerService,
     public readonly rowOperations : IRowOperationFactory
   ) {
-    this.gridEvents = gridController.gridEvents
-    this.addSubscription(this.gridEvents.GridKeyCmdPressedEvent.on().subscribe(e => {
-      switch(e?.key) {
-        case 'ArrowUp'   : this.keyboardEvents.arrowUp?.(e); break
-        case 'ArrowRight': this.keyboardEvents.arrowRight?.(e); break
-        case 'ArrowDown' : this.keyboardEvents.arrowDown?.(e); break
-        case 'ArrowLeft' : this.keyboardEvents.arrowLeft?.(e); break
-        case 'PageUp'    : this.keyboardEvents.pageUp?.(e); break
-        case 'PageDown'  : this.keyboardEvents.pageDown?.(e); break
-        case 'Home'      : this.keyboardEvents.home?.(e); break
-        case 'End'       : this.keyboardEvents.end?.(e); break
-        case 'Ctrl+A'    : this.keyboardEvents.ctrlA?.(e); break
-        case 'Tab'       : this.keyboardEvents.tab?.(e); break
-        case 'Enter'     : this.keyboardEvents.enter?.(e); break
-        case 'Space'     : this.keyboardEvents.space?.(e); break
+
+    this.factory = {
+      state          : null,
+      gridEvents     : gridController.gridEvents,
+      keyboardEvents : {},
+      gridController,
+
+      pageSize: () => Math.floor((this._gridViewPort?.getViewportSize() || 0) / 25),
+
+      onDestroy: () => this.onDestroy(),
+
+      addSubscription: (s: Subscription) => this._subscriptions.add(s),
+
+      latestSelection: () => this.gridController.gridEvents.CellSelectionChangedEvent.state,
+
+      attachGridBody: (viewPort: CdkVirtualScrollViewport) => {
+        this._gridViewPort = viewPort
+        this.factory.strategy?.attach(viewPort.elementRef.nativeElement)
+      },
+
+      initialise: (strategy: TSelectionStrategies) => {
+        this.onDestroy()
+        this.factory.strategy = new strategy(this.factory)
+        if (this._gridViewPort) this.factory.attachGridBody(this._gridViewPort)
+
+        this._subscriptions.add(this.gridController.gridEvents.GridKeyCmdPressedEvent.on().subscribe(e => {
+          switch(e?.key) {
+            case 'ArrowUp'   : this.factory.keyboardEvents.arrowUp?.(e); break
+            case 'ArrowRight': this.factory.keyboardEvents.arrowRight?.(e); break
+            case 'ArrowDown' : this.factory.keyboardEvents.arrowDown?.(e); break
+            case 'ArrowLeft' : this.factory.keyboardEvents.arrowLeft?.(e); break
+            case 'PageUp'    : this.factory.keyboardEvents.pageUp?.(e); break
+            case 'PageDown'  : this.factory.keyboardEvents.pageDown?.(e); break
+            case 'Home'      : this.factory.keyboardEvents.home?.(e); break
+            case 'End'       : this.factory.keyboardEvents.end?.(e); break
+            case 'Ctrl+A'    : this.factory.keyboardEvents.ctrlA?.(e); break
+            case 'Tab'       : this.factory.keyboardEvents.tab?.(e); break
+            case 'Enter'     : this.factory.keyboardEvents.enter?.(e); break
+            case 'Space'     : this.factory.keyboardEvents.space?.(e); break
+          }
+          if (e) this.factory.keyboardEvents.any?.(e);
+        }))
       }
-      if (e) this.keyboardEvents.any?.(e);
-    }))
-  }
 
-  public readonly initialise = (strategy: TSelectionStrategies) => {
-    this.onDestroy()
-    this.strategy = new strategy(this)
-    if (this._gridViewPort) this.attachGridBody(this._gridViewPort)
-  }
+    } as ISelectionController
 
-  public readonly attachGridBody = (viewPort: CdkVirtualScrollViewport) => {
-    this._gridViewPort = viewPort
-    this.strategy?.attach(viewPort.elementRef.nativeElement)
-  }
+    this.operations = {} as TSelectionOperations
+    for (const key of (Object.keys(SelectionOperations) as (keyof typeof SelectionOperations)[])) this.operations[key] = new SelectionOperations[key](this.factory) as any
+    Object.assign(this.factory, this.operations)
 
-  public readonly createStateFromMouseEvent = (event: TAtLeast<MouseEvent, 'ctrlKey' | 'shiftKey' | 'target'>) => new CreateSelectionStateFromMouseEventOperation(this).run(event)
-
-  public readonly createStateFromCoordinates = (
-    coordinates: [IGridCellCoordinates, IGridCellCoordinates],
-    input?: Partial<IGridSelectionState>,
-    ctrlKey?: boolean,
-    shiftKey?: boolean
-  ) => new CreateSelectionStateFromCoordinatesOperation(this).run(coordinates, input, ctrlKey, shiftKey)
-  
-  public readonly expandToRow        = () => new ExpandToRowOperation       (this).run()
-  public readonly emitFocusedCell    = () => new EmitFocusedCellOperation   (this).run()
-  public readonly selectAll          = () => new SelectAllOperation         (this).run()
-  public readonly startShiftSelect   = () => new StartShiftSelectOperation  (this).run()
-  public readonly startMultiSelect   = () => new StartMultiSelectOperation  (this).run()
-  public readonly updateFocusedCell  = () => new UpdateFocusedCellOperation (this).run()
-  public readonly getSelectionSlice  = () => new GetSelectionSliceOperation (this).run()
-  public readonly getFinalSelection  = () => new GetFinalSelectionOperation (this).run()
-  public readonly getLastColumnIndex = () => new GetLastColumnIndexOperation(this).run()
-  public readonly getLastRowIndex    = () => new GetLastRowIndexOperation   (this).run()
-  public readonly copySelection      = () => new CopySelectionOperation     (this).run()
-  public readonly removeOrphanedRows = () => new RemoveOrphanedRowsOperation(this).run()
-  public readonly clearSelection     = () => new ClearSelectionOperation(this).run()
-  
-  public readonly selectRow   = (rowKey: TPrimaryKey)                                    => new SelectRowOperation(this).run(rowKey)
-  public readonly selectCell  = (coords: IGridCellCoordinates)                           => new SelectCellOperation(this).run(coords)
-  public readonly selectRange = (start: IGridCellCoordinates, end: IGridCellCoordinates) => new SelectRangeOperation(this).run(start, end)
-  
-  public readonly addSelection           = (selection?: IGridSelectionRange, from?: IGridCellCoordinates, to?: IGridCellCoordinates) => new AddSelectionOperation          (this).run(selection, from, to)
-  public readonly subtractSelection      = (selection?: IGridSelectionRange, from?: IGridCellCoordinates, to?: IGridCellCoordinates) => new SubtractSelectionOperation     (this).run(selection, from, to)
-  public readonly addSecondarySelection  = (selection?: IGridSelectionRange, from?: IGridCellCoordinates, to?: IGridCellCoordinates) => new AddSecondarySelectionOperation (this).run(selection, from, to)
-  public readonly toggleSelection        = (selection?: IGridSelectionRange, from?: IGridCellCoordinates, to?: IGridCellCoordinates) => new ToggleSelectionOperation       (this).run(selection, from, to)
-  public readonly calculateNextSelection = (selection?: IGridSelectionRange, from?: IGridCellCoordinates, to?: IGridCellCoordinates) => new CalculateNextSelectionOperation(this).run(selection, from, to)
-  public readonly replaceSelection       = (coordinates: [IGridCellCoordinates, IGridCellCoordinates])                               => new ReplaceSelectionOperation      (this).run(coordinates)
-  
-  public readonly emitNextSelection      = (selection: IGridSelectionRange | null) => new EmitNextSelectionOperation(this).run(selection)
-  public readonly emitNextSelectionSlice = ()                                      => new EmitNextSelectionSliceOperation(this).run()
-  
-  public readonly preselectRows = (keys: (string | number)[]) => new PreselectRowsOperation(this).run(keys)
-
-  public readonly scrollIntoView = (pos?: IGridCellCoordinates)   => new ScrollIntoViewOperation(this).run(pos)
-
-  public readonly moveSelectionFromFocus = (configs: IMoveSelectionFromFocusConfigs) => new MoveSelectionFromFocusOperation(this).run(configs)
-
-  public get pageSize(): number {
-    return Math.floor((this._gridViewPort?.getViewportSize() || 0) / 25)
   }
 
   public onDestroy(): void {
     this._subscriptions.forEach(s => s.unsubscribe())
-  }
-
-  public addSubscription(s: Subscription): void {
-    this._subscriptions.lastIndexOf(s)
-  }
-
-  public get latestSelection() {
-    return this.gridEvents.CellSelectionChangedEvent.state
   }
 
 }

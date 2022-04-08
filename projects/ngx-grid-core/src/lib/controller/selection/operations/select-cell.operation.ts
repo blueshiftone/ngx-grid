@@ -1,17 +1,16 @@
-import { IGridCellCoordinates } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridCellCoordinates, ISelectionController } from '../../../typings/interfaces'
 
-export class SelectCellOperation {
+export class SelectCell {
 
-  constructor(public readonly controller: GridSelectionController) {}
+  constructor(public readonly controller: ISelectionController) {}
 
   public run(coords: IGridCellCoordinates) {
 
     const coordinateSet: [IGridCellCoordinates, IGridCellCoordinates] = [{...coords}, {...coords}]
 
-    if (this.controller.state === null) this.controller.state = this.controller.createStateFromCoordinates(coordinateSet)
+    if (this.controller.state === null) this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run(coordinateSet)
 
-    this.controller.replaceSelection(coordinateSet)
+    this.controller.ReplaceSelection.run(coordinateSet)
 
   }
 

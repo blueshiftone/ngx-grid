@@ -4,11 +4,11 @@ import { GridCellCoordinates, GridCellValue } from '../../typings/interfaces/imp
 import { CELL_VALUE_PARSERS } from '../../ui/cell/cell-types/value-parsing'
 import { WithDefaultTrue } from '../../utils/with-default-true'
 import { BufferOperation } from '../buffer-operation'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class SetCellValue extends BaseCellOperation {
+export class SetCellValue extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(
     coordinates: IGridCellCoordinates,
@@ -17,11 +17,10 @@ export class SetCellValue extends BaseCellOperation {
   ): IGridValueParsingResult {
 
     const { rowKey, columnKey } = coordinates
-    const source = this.gridOperations.source()
     const row    = this.rowOperations.GetRow.run(rowKey)
     const type   = this.cellOperations.GetCellType.run(coordinates).name
 
-    const { primaryColumnKey, maskNewIds } = source
+    const { primaryColumnKey, maskNewIds } = this.dataSource
 
     const parseResults = CELL_VALUE_PARSERS[type].validate(value, this.cellOperations.gridController, coordinates)
 

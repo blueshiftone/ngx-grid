@@ -1,11 +1,11 @@
 import { IGridCellCoordinates, IGridValueValidationResult } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { ValueValidator } from '../../ui/cell/cell-types/value-validation/value-validator'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ValidateCell extends BaseCellOperation {
+export class ValidateCell extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(cellCoordinates: IGridCellCoordinates): IGridValueValidationResult[] {
 

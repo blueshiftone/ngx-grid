@@ -1,10 +1,10 @@
 import { IGridColumnOrder, IGridColumns } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ChangeColumnOrder extends BaseColumnOperation {
+export class ChangeColumnOrder extends Operation {
 
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(changedIndexes: [number, number]) {
     let   [prevIndex, nextIndex]   = changedIndexes

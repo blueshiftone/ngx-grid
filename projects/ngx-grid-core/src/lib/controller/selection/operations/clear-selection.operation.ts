@@ -1,13 +1,13 @@
-import { GridSelectionController } from '../grid-selection.controller'
+import { ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class ClearSelectionOperation extends BaseSelectionOperation {
+export class ClearSelection extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) { super(controller) }
+  constructor(private readonly controller: ISelectionController) { super(controller) }
 
   public run(): void {
-    this.controller.emitNextSelection(null)
-    this.controller.emitNextSelectionSlice()
+    this.controller.EmitNextSelection.run(null)
+    this.controller.EmitNextSelectionSlice.run()
     this.controller.gridEvents.CellFocusChangedEvent.emit(undefined)
   }
 

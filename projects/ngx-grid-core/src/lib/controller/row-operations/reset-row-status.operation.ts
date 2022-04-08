@@ -4,13 +4,13 @@ import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operatio
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
 import { BufferOperation } from '../buffer-operation'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ResetRowStatus extends BaseRowOperation {
+export class ResetRowStatus extends Operation {
 
   public bufferOperation = new BufferOperation((args: any) => this._run(args))
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   private async _run(args: [TPrimaryKey, ERowStatus][]) {
 

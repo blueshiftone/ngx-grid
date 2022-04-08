@@ -1,17 +1,16 @@
-import { IGridCellValue, IGridSelectionSlice } from '../../../typings/interfaces'
+import { IGridCellValue, IGridSelectionSlice, ISelectionController } from '../../../typings/interfaces'
 import { GridCellCoordinates, GridCellValue } from '../../../typings/interfaces/implementations'
-import { GridSelectionController } from '../grid-selection.controller'
 
-export class GetSelectionSliceOperation {
+export class GetSelectionSlice {
   
-  constructor(private readonly controller: GridSelectionController) {}
+  constructor(private readonly controller: ISelectionController) {}
 
   public run(): IGridSelectionSlice | null {
-    const selection = this.controller.latestSelection
+    const selection = this.controller.latestSelection()
     const columns   = this._getColumns()
     if (!selection || !columns || !columns.visibleColumns.length) return null
     const utils = selection.globalUtils
-    const rows  = this.controller.rowOperations.GetAllRows.filteredRows()
+    const rows  = this.controller.gridController.row.GetAllRows.filteredRows()
     const output: IGridSelectionSlice = {
       selection     : selection,
       cells         : [],
@@ -124,7 +123,7 @@ export class GetSelectionSliceOperation {
   private get _indexOfPrimaryKey(): number {
     const source = this._source
     if (!source) return -1
-    return source.data.value.columns.indexOf(source.primaryColumnKey)
+    return source.columns.indexOf(source.primaryColumnKey)
   }
 
   private get _gridEvents() {

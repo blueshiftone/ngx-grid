@@ -1,11 +1,11 @@
 import { IGridRow } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class FilterRelatedDataRows extends BaseGridOperation {
+export class FilterRelatedDataRows extends Operation {
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
   
   public run(gridID: string, rowKeys: TPrimaryKey[]): IGridRow[] {
     const grid = this.gridOperations.relatedDataMap.get(gridID)

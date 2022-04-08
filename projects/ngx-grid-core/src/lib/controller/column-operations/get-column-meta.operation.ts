@@ -1,16 +1,18 @@
 import { IGridColumnMeta } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { TColumnKey } from '../../typings/types'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetColumnMeta extends BaseColumnOperation {
+export class GetColumnMeta extends Operation {
 
-  constructor(factory: IColumnOperationFactory) { super(factory) }
+  constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(columnKey: TColumnKey): IGridColumnMeta | undefined {
-    return this._colMeta.find(meta => meta.columnKey === columnKey)
+    return this.dataSource.columnMeta.find(meta => meta.columnKey === columnKey)
   }
 
-  private get _colMeta(): Array<IGridColumnMeta> { return this.gridOperations.source()?.columnMeta ?? [] }
+  public getAll(): IGridColumnMeta[] {
+    return this.dataSource.columnMeta
+  }
 
 }

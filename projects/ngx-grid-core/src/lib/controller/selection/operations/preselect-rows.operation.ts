@@ -1,11 +1,11 @@
+import { ISelectionController } from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../../typings/types'
-import { GridSelectionController } from '../grid-selection.controller'
 import { GridSelectionStateFromCoordinates } from '../state-generators/grid-selection-state-from-coordinates.class'
 
-export class PreselectRowsOperation {
+export class PreselectRows {
 
-  constructor(private readonly controller: GridSelectionController) {}
+  constructor(private readonly controller: ISelectionController) {}
 
   public run(rowKeys: Array<TPrimaryKey>) {
 
@@ -28,10 +28,10 @@ export class PreselectRowsOperation {
         new GridCellCoordinates(rowKey, lastCol))
     })
 
-    const focusChanged = this.controller.emitFocusedCell()
+    const focusChanged = this.controller.EmitFocusedCell.run()
     if (focusChanged) state.previousSelection = state.currentSelection.clone()
 
-    this.controller.emitNextSelection(state.currentSelection)
+    this.controller.EmitNextSelection.run(state.currentSelection)
 
     return state
 

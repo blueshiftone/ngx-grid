@@ -1,28 +1,20 @@
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ChangePrimaryKey extends BaseRowOperation {
+export class ChangePrimaryKey extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(oldRowKey: TPrimaryKey, newRowKey: TPrimaryKey) {
 
     const rowOps               = this.rowOperations
-    const gridRow              = rowOps.GetRow.run(oldRowKey)
-    const { primaryColumnKey } = this.gridOperations.source()
+    const { primaryColumnKey } = this.dataSource
     const { cellOperations }   = this
-    
-    if (!gridRow) return
 
-    // Update value in grid row
-    gridRow.setValue(primaryColumnKey, newRowKey)
-    gridRow.values.forEach(v => v.rowKey = newRowKey)
-    
-    // Update row map
-    rowOps.rowKeyMap.delete(oldRowKey)
-    rowOps.rowKeyMap.set(newRowKey, gridRow)
+    // Update row
+    this.dataSource.changeRowPrimaryKey(oldRowKey, newRowKey)
 
     // Update dirty rows map
     const dirtyRow = rowOps.dirtyRowsMap.get(oldRowKey)
@@ -40,14 +32,14 @@ export class ChangePrimaryKey extends BaseRowOperation {
     }
 
     // Update cell meta maps and cells
-    for (const columnKey of this.gridOperations.source()?.allColumnKeys ?? []) {
+    for (const columnKey of this.dataSource.columns) {
       const cellMeta = cellOperations.GetCellMeta.run(new GridCellCoordinates(oldRowKey, columnKey))
       if (cellMeta) cellMeta.coords.rowKey = newRowKey
     }
     cellOperations.CellComponents.findWithCoords(new GridCellCoordinates(oldRowKey, primaryColumnKey))?.typeComponent?.receiveValue(newRowKey);
 
     // Update selection state
-    const selection = this.selection.latestSelection
+    const selection = this.selection.latestSelection()
     selection?.changePrimaryKey(oldRowKey, newRowKey)
 
     // Update focused state

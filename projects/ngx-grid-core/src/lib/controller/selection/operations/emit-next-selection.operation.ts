@@ -1,10 +1,9 @@
-import { IGridSelectionRange } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridSelectionRange, ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class EmitNextSelectionOperation extends BaseSelectionOperation {
+export class EmitNextSelection extends BaseSelectionOperation {
 
-  constructor(private readonly controller: GridSelectionController) {
+  constructor(private readonly controller: ISelectionController) {
     super(controller)
   }
 

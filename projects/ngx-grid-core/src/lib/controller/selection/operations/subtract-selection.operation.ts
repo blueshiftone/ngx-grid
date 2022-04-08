@@ -1,16 +1,17 @@
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridCellCoordinates, IGridSelectionRange, ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class SubtractSelectionOperation extends BaseSelectionOperation {
+export class SubtractSelection extends BaseSelectionOperation {
 
-  constructor(controller: GridSelectionController) { super(controller) }
+  constructor(controller: ISelectionController) { super(controller) }
 
   public run(
-    selection = this.selectionState.currentSelection,
-    from      = this.selectionState.startCellPos,
-    to        = this.selectionState.endCellPos
-  ): void {
-    selection.removeRange(from, to)
+    selection?: IGridSelectionRange,
+    from?     : IGridCellCoordinates,
+    to?       : IGridCellCoordinates
+  ) {
+    if (!this.selectionState) return
+    (selection ?? this.selectionState.currentSelection).removeRange(from ?? this.selectionState.startCellPos, to ?? this.selectionState.endCellPos)
   }
 
 }

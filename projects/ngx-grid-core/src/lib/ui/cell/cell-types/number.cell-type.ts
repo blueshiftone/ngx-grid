@@ -45,7 +45,7 @@ export class NumberCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
-    const source       = this.gridController.grid.source()
+    const source       = this.gridController.dataSource
     const meta         = this.gridController.row.GetRowMeta.run(this.parentCell.rowKey)
     const isNewRow     = meta?.status === ERowStatus.New
     const isPrimarykey = source.primaryColumnKey === this.parentCell.columnKey

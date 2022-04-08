@@ -1,12 +1,11 @@
-import { IGridCellCoordinates } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridCellCoordinates, ISelectionController } from '../../../typings/interfaces'
 
-export class ScrollIntoViewOperation {
+export class ScrollIntoView {
   
-  constructor(public readonly controller: GridSelectionController) { }
+  constructor(public readonly controller: ISelectionController) { }
 
   public run(pos?: IGridCellCoordinates): void {
-    const firstCell = this.controller.latestSelection?.coordinatesAt.topLeft()
+    const firstCell = this.controller.latestSelection()?.coordinatesAt.topLeft()
     const coords = pos ?? firstCell
     if (!coords) return
     this.controller.gridEvents.GridScrollToChangedEvent.emit(coords)

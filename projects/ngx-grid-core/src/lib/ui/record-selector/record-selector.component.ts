@@ -12,7 +12,7 @@ import {
   ViewChild,
 } from '@angular/core'
 import { merge, Subject } from 'rxjs'
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 
 import { LIST_ANIMATION } from '../../animations/list.animation'
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -49,8 +49,8 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
 
   public rows: IGridRow[] = []
 
-  private _sourceChanged    = new Subject<void>()
   private _nextFilterString = new Subject<string>()
+  private _sourceChanged = new  Subject<void>()
 
   constructor(
     public readonly gridController: GridControllerService,
@@ -63,9 +63,11 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
     this.addSubscription(merge(
       this.events.factory.GridDataChangedEvent.onWithInitialValue(),
       this.events.factory.ColumnSortByChangedEvent.on(),
+      this._sourceChanged
     ).subscribe(_ => {
       this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
       this.cd.detectChanges()
+      this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))
 
     this.addSubscription(this._nextFilterString.pipe(debounceTime(100), distinctUntilChanged()).subscribe(val => {
@@ -78,16 +80,10 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
 
   }
 
-  private _initialise() {
-    this.gridController.grid.SetDataSource.run(this.source)
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    if (this._hasChange('source', changes)) {
+    if (this._hasChange('source', changes) && this.source !== this.gridController.dataSource) {
+      this.gridController.grid.SetDataSource.run(changes['source'].currentValue)
       this._sourceChanged.next()
-      this.addSubscription(this.source.data.pipe(takeUntil(this._sourceChanged)).subscribe(_ => {
-        this._initialise()
-      }))
     }
 
     if (this._hasChange('filterString', changes))

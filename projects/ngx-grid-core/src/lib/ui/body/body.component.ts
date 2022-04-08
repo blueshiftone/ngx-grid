@@ -51,8 +51,9 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
       this.events.factory.GridDataChangedEvent.onWithInitialValue(),
       this.events.factory.ColumnSortByChangedEvent.on(),
     ).subscribe(_ => {
-      this.rows = this.gridController.row.GetAllRows.filteredRows()
+      this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
       this.cd.detectChanges()
+      this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))
 
     this.gridController.grid.attachViewport(this.viewPort, this.autoScrollConfigs)

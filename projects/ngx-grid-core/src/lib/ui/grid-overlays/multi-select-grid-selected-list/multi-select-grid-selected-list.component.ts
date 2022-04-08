@@ -83,10 +83,8 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
     const primaryKeyValues = DistinctValues<any>(val)
     this.values = primaryKeyValues
 
-    this.dataSource.data.next({
-      columns: gridSource.data.value.columns,
-      rows: this.gridController.grid.FilterRelatedDataRows.run(gridID, val)
-    })
+    this.dataSource.clearData()
+    this.dataSource.upsertRows(...this.gridController.grid.FilterRelatedDataRows.run(gridID, val))
 
     this.cd.detectChanges()
 
@@ -120,7 +118,7 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
 
   private _clearDataSource(): void {
     this.values = []
-    this.dataSource?.data.next({ columns: [], rows: [] })
+    this.dataSource?.clearData()
   }
 
   private get _relatedGridID() {

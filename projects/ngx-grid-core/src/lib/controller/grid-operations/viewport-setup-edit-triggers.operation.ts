@@ -4,13 +4,13 @@ import { filter, map, repeat, take } from 'rxjs/operators'
 import { IGridCellComponent, IGridCellFocused, IGridKeyboardEvent, IGridOperationFactory } from '../../typings/interfaces'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { FindParentOfClass } from '../../utils/find-parent-element-of-class'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class ViewportSetupEditTriggers extends BaseGridOperation {
+export class ViewportSetupEditTriggers extends Operation {
 
   private readonly subscriptions: Set<Subscription> = new Set()
 
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): void {
     this._reset()

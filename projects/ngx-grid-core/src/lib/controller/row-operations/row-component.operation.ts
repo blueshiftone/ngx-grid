@@ -4,13 +4,13 @@ import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
 import { ArrayFromMap } from '../../utils/array-from-map'
 import { DistinctValues } from '../../utils/distinct-values'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RowComponents extends BaseRowOperation {
+export class RowComponents extends Operation {
 
   private readonly rowComponentsByKey = new Map<TPrimaryKey, IGridRowComponent>()
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public changePrimaryKey(oldKey: TPrimaryKey, newKey: TPrimaryKey) {
     const row = this.rowComponentsByKey.get(oldKey)

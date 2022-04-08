@@ -1,10 +1,9 @@
-import { IGridCellCoordinates, IGridSelectionState } from '../../../typings/interfaces'
-import { GridSelectionController } from '../grid-selection.controller'
+import { IGridCellCoordinates, IGridSelectionState, ISelectionController } from '../../../typings/interfaces'
 import { GridSelectionStateFromCoordinates } from '../state-generators/grid-selection-state-from-coordinates.class'
 
-export class CreateSelectionStateFromCoordinatesOperation {
+export class CreateSelectionStateFromCoordinates {
 
-  constructor(private readonly controller: GridSelectionController) { }
+  constructor(private readonly controller: ISelectionController) { }
 
   public run(
     coordinates: [IGridCellCoordinates, IGridCellCoordinates],

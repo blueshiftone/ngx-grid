@@ -1,13 +1,13 @@
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { TColumnKey, TPrimaryKey } from '../../typings/types'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class RemoveCellMeta extends BaseCellOperation {
+export class RemoveCellMeta extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(columnKey: TColumnKey, rowKey: TPrimaryKey) {
-    this.gridOperations.source()?.cellMeta.delete(`${columnKey}>${rowKey}`)
+    this.dataSource.cellMeta.delete(`${columnKey}>${rowKey}`)
   }
 
 }

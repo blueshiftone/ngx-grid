@@ -1,16 +1,14 @@
 import { IGridRowMeta } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
-import { BaseRowOperation } from './base-row-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class GetRowMeta extends BaseRowOperation {
+export class GetRowMeta extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory) }
+  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rowKey: TPrimaryKey): IGridRowMeta | undefined {
-    return this._rowMeta.get(rowKey)
+    return this.dataSource.rowMeta.get(rowKey)
   }
-
-  private get _rowMeta(): Map<TPrimaryKey, IGridRowMeta> { return this.gridOperations.source()?.rowMeta ?? new Map() }
 
 }

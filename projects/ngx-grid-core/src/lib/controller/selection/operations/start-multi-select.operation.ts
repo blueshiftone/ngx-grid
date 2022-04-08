@@ -1,13 +1,14 @@
 import { ESelectMode } from '../../../typings/enums/select-mode.enum'
-import { GridSelectionController } from '../grid-selection.controller'
+import { ISelectionController } from '../../../typings/interfaces'
 import { BaseSelectionOperation } from './base-selection-operation.abstract'
 
-export class StartMultiSelectOperation extends BaseSelectionOperation {
+export class StartMultiSelect extends BaseSelectionOperation {
 
-  constructor(controller: GridSelectionController) { super(controller) }
+  constructor(controller: ISelectionController) { super(controller) }
 
   public run(): void {
     const state = this.selectionState
+    if (!state) return
     state.initialSelection.multiSelect = true
     if (state.currentSelection.includes(state.startCellPos)) {
       state.mode = ESelectMode.Subtract

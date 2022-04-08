@@ -1,11 +1,11 @@
-import { GridSelectionController } from '../grid-selection.controller'
+import { ISelectionController } from '../../../typings/interfaces'
 
-export class GetLastRowIndexOperation {
+export class GetLastRowIndex {
 
-  constructor(private readonly controller: GridSelectionController) { }
+  constructor(private readonly controller: ISelectionController) { }
 
   public run(): number {
-    return ((this._filteredRows?.length ?? this._sortedRows?.length ?? this._source?.data.value.rows.length) || 1) - 1
+    return ((this._filteredRows?.length ?? this._sortedRows?.length ?? this._source?.rows.length) || 1) - 1
   }
 
   private get _source() {

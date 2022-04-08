@@ -36,7 +36,12 @@ export class DropdownSingleSelectCellType extends BaseCellType {
     this._displayNode.classList.toggle('empty', val === null || typeof val === 'undefined' || val === '')
     this._displayNode.classList.toggle('related', this._isRelatedGrid)
     this._displayNode.classList.toggle('static', this._isStaticGrid)
-    this._labelNode.innerText = (val ?? '').toString()
+    if (val !== null && val == this.value && this._isRelatedGrid) {
+      this._labelNode.innerText = ``
+      this._labelNode.append(this.createLoadingAnimation())
+    } else {
+      this._labelNode.innerText = (val ?? '').toString()
+    }
   }
 
   private _generateDisplayNode(): HTMLElement {

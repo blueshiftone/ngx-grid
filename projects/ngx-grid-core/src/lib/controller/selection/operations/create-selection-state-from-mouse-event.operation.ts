@@ -1,12 +1,11 @@
-import { IGridCellComponent, IGridCellFocused, IGridSelectionRange, IGridSelectionState } from '../../../typings/interfaces'
+import { IGridCellComponent, IGridCellFocused, IGridSelectionRange, IGridSelectionState, ISelectionController } from '../../../typings/interfaces'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
 import { TAtLeast } from '../../../typings/types/at-least.type'
-import { GridSelectionController } from '../grid-selection.controller'
 import { GridSelectionStateFromEvent } from '../state-generators/grid-selection-state-from-event.class'
 
-export class CreateSelectionStateFromMouseEventOperation {
+export class CreateSelectionStateFromMouseEvent {
 
-  constructor(private readonly controller: GridSelectionController) {}
+  constructor(private readonly controller: ISelectionController) {}
 
   public run(e: TAtLeast<MouseEvent, 'ctrlKey' | 'shiftKey' | 'target'>): IGridSelectionState | false {
 

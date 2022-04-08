@@ -48,7 +48,7 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
     const el = viewPort.elementRef.nativeElement.parentElement
     if (!el) return
     el.prepend(this.elRef.nativeElement)
-    this.canDelete = controller.grid.source().canDelete
+    this.canDelete = controller.dataSource.canDelete
     this.toolbarService.selectionSlice.subscribe(_ => this._checkChanges())
     if (this.toolbarService.gridController) {
       this.addSubscription(this.toolbarService.gridController.gridEvents.GridWasModifiedEvent.on().subscribe(_ => this._checkChanges()))

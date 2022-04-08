@@ -1,10 +1,10 @@
 import { IGridCellFocused } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { BaseCellOperation } from './base-cell-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class FocusedCellChanged extends BaseCellOperation {
+export class FocusedCellChanged extends Operation {
   
-  constructor(factory: ICellOperationFactory) { super(factory) }
+  constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   private readonly className = 'focused'
 

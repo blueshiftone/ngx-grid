@@ -2,7 +2,7 @@ import { fromEvent, Subscription } from 'rxjs'
 
 import { IGridKeyboardEvent } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { BaseGridOperation } from './base-grid-operation.abstract'
+import { Operation } from '../operation.abstract'
 
 const keysToCapture = [
   'Delete',
@@ -25,13 +25,13 @@ const keysToCapture = [
 
 export type TGridCmdKeys = typeof keysToCapture[number] | 'InputKey'
 
-export class KeyBindings extends BaseGridOperation {
+export class KeyBindings extends Operation {
 
   private readonly subscriptions: Set<Subscription> = new Set()
 
   private readonly blacklistActiveElements = ['input', 'textarea', 'select']
   
-  constructor(factory: IGridOperationFactory) { super(factory) }
+  constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): void {
     this.subscriptions.add(fromEvent<KeyboardEvent>(document.documentElement, 'keydown').subscribe(e => {

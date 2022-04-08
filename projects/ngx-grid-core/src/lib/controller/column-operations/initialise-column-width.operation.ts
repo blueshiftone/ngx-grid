@@ -4,9 +4,9 @@ import { buffer, debounceTime, filter, take } from 'rxjs/operators'
 import { IColumnOperationFactory, IGridColumnWidth, IGridColumnWidths } from '../../typings/interfaces'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { DistinctValues } from '../../utils/distinct-values'
-import { BaseColumnOperation } from './base-column-operation.abstract'
+import { Operation } from '../operation.abstract'
 
-export class InitialiseColumnWidth extends BaseColumnOperation {
+export class InitialiseColumnWidth extends Operation {
 
   public values = new Subject<IGridColumnWidth>()
   
@@ -14,7 +14,7 @@ export class InitialiseColumnWidth extends BaseColumnOperation {
   private readonly maxInitialCellWidth     = 300
 
   constructor(factory: IColumnOperationFactory) {
-    super(factory)
+    super(factory.gridController)
     this._run()
   }
 
