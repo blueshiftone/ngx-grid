@@ -30,10 +30,10 @@ import GRID_OVERLAYS, { EGridOverlayTypes } from './ui/grid-overlays/grid-overla
 import { MarkdownEditorComponent } from './ui/grid-overlays/markdown-editor-overlay/markdown-editor-overlay.component'
 import { MultiCellEditInputComponent } from './ui/grid-overlays/multi-cell-edit-input/multi-cell-edit-input.component'
 import { MultiCellEditOverlayComponent } from './ui/grid-overlays/multi-cell-edit-overlay/multi-cell-edit-overlay.component'
-import { MultiSelectGridCellPreviewComponent } from './ui/grid-overlays/multi-select-grid-cell-preview/multi-select-grid-cell-preview.component'
 import {
-  MultiSelectGridDropdownOverlayComponent,
-} from './ui/grid-overlays/multi-select-grid-dropdown-overlay/multi-select-grid-dropdown-overlay.component'
+  MultiSelectForeignKeyDropdownOverlayComponent,
+} from './ui/grid-overlays/multi-select-foreign-key-dropdown-overlay/multi-select-foreign-key-dropdown-overlay.component'
+import { MultiSelectGridCellPreviewComponent } from './ui/grid-overlays/multi-select-grid-cell-preview/multi-select-grid-cell-preview.component'
 import { MultiSelectGridSelectedListComponent } from './ui/grid-overlays/multi-select-grid-selected-list/multi-select-grid-selected-list.component'
 import { MultiSelectStaticCellPreviewComponent } from './ui/grid-overlays/multi-select-static-cell-preview/multi-select-static-cell-preview.component'
 import { MultiSelectStaticListOverlayComponent } from './ui/grid-overlays/multi-select-static-list-overlay/multi-select-static-list-overlay.component'
@@ -50,13 +50,14 @@ import { LocalizedTextComponent } from './ui/localized-text/localized-text.compo
 import { RecordSelectorCellComponent, RecordSelectorComponent, RecordSelectorRowComponent } from './ui/record-selector'
 import { RowIconComponent } from './ui/row/row-icon/row-icon.component'
 import { RowComponent } from './ui/row/row.component'
-import { SeparatorComponent } from './ui/separator/separator.component'
+import { SeparatorComponent } from './ui/separator/separator.component';
+import { LoadingDotsComponent } from './ui/loading-dots/loading-dots.component'
 
 GRID_OVERLAYS.set(EGridOverlayTypes.MarkdownEditor, MarkdownEditorComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.DateEditorOverlay, DateEditorOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.SingleSelectGridDropdownOverlay, SingleSelectGridDropdownOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.StaticDropdownOverlay, StaticDropdownOverlayComponent)
-GRID_OVERLAYS.set(EGridOverlayTypes.MultiSelectGridDropdownOverlay, MultiSelectGridDropdownOverlayComponent)
+GRID_OVERLAYS.set(EGridOverlayTypes.MultiSelectGridDropdownOverlay, MultiSelectForeignKeyDropdownOverlayComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiSelectGridCellPreview, MultiSelectGridCellPreviewComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.RichTextCellPreview, RichTextCellPreviewComponent)
 GRID_OVERLAYS.set(EGridOverlayTypes.MultiSelectGridSelectedList, MultiSelectGridSelectedListComponent)
@@ -83,7 +84,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelect
     SeparatorComponent,
     SingleSelectGridDropdownOverlayComponent,
     StaticDropdownOverlayComponent,
-    MultiSelectGridDropdownOverlayComponent,
+    MultiSelectForeignKeyDropdownOverlayComponent,
     MultiSelectGridCellPreviewComponent,
     ExpandablePreviewPopupComponent,
     RichTextCellPreviewComponent,
@@ -108,6 +109,7 @@ GRID_OVERLAYS.set(EGridOverlayTypes.FileGridCellSelectedList, FileGridCellSelect
     ChipComponent,
     CellActionButtonComponent,
     FileGridCellSelectedListComponent,
+    LoadingDotsComponent,
   ],
   imports: [
     CommonModule,

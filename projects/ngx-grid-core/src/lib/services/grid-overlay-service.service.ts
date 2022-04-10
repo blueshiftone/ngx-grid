@@ -51,7 +51,9 @@ export class GridOverlayService {
     const componentRef    = ref.attach(componentPortal)
     componentRef.changeDetectorRef.detectChanges()
     this._components.set(ref, componentRef)
-    return {afterClosed: promise, overlayRef: ref, component: componentRef}
+    const output = {afterClosed: promise, overlayRef: ref, component: componentRef}
+    this.gridController.gridEvents.GridOverlayOpenedEvent.emit(Object.assign({ originCell }, output))
+    return output
   }
 
   public closeAll(): void {

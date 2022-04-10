@@ -10,12 +10,15 @@
       <span class="material-icons-outlined">grid_on</span>
     </button>
   </div>
-  <button mat-menu-item (click)="updateValue(null); close()" *ngIf="!searchCtrl.value"
-    [ngClass]="{highlighted: highlightedItem === null}"><span class="bubble empty">&nbsp;</span></button>
-  <button mat-menu-item (click)="selectOption(op)" *ngFor="let op of filteredOptions" #options
-    [ngClass]="{highlighted: highlightedItem === op}">
-    <span class="bubble"
-      [dataGridResponsiveBackgroundColor]="{color: op.color ?? defaultColor, themeMode: themeMode}">{{ op.label ??
-      op.value }}</span>
-  </button>
+  <lib-loading-dots [showText]="true" *ngIf="(loadingState | async) === LoadingState.Loading"></lib-loading-dots>
+  <div class="items" *ngIf="(loadingState | async) === LoadingState.Idle">
+    <button mat-menu-item (click)="updateValue(null); close()" *ngIf="!searchCtrl.value"
+      [ngClass]="{highlighted: highlightedItem === null}"><span class="bubble empty">&nbsp;</span></button>
+    <button mat-menu-item (click)="selectOption(op)" *ngFor="let op of filteredOptions" #options
+      [ngClass]="{highlighted: highlightedItem === op}">
+      <span class="bubble"
+        [dataGridResponsiveBackgroundColor]="{color: op.color ?? defaultColor, themeMode: themeMode}">{{ op.label ??
+        op.value }}</span>
+    </button>
+  </div>
 </div>

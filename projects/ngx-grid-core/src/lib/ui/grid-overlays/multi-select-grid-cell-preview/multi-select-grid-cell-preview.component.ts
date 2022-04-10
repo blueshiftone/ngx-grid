@@ -8,8 +8,6 @@ import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
 import { EGridOverlayTypes } from '../grid-overlay-types'
-import { MultiSelectGridDropdownOverlayComponent } from '../multi-select-grid-dropdown-overlay/multi-select-grid-dropdown-overlay.component'
-import { MultiSelectGridSelectedListComponent } from '../multi-select-grid-selected-list/multi-select-grid-selected-list.component'
 
 @Component({
   selector: 'data-grid-multi-select-grid-cell-preview',

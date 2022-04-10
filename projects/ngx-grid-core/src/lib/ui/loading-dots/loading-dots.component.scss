@@ -1,0 +1,15 @@
+:host {
+    margin: 0px 9px;
+    display: flex;
+    align-items: center;
+    opacity: 0.7;
+    height: 20px;
+
+    .txt {
+        font-size: 11px;
+    }
+
+    .loading-dots {
+        margin: 0px 3px;
+    }
+}
