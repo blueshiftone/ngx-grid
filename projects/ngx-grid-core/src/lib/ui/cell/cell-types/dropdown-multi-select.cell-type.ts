@@ -3,9 +3,9 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridSelectListOption, TGridUITheme } from '../../../typings/interfaces'
 import { ColorBrightness } from '../../../utils/color-brightness'
-import { EGridOverlayTypes } from '../../grid-overlays/grid-overlay-types'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
 export class DropdownMultiSelectCellType extends BaseExpandableCellType {
@@ -13,7 +13,7 @@ export class DropdownMultiSelectCellType extends BaseExpandableCellType {
   public mode = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
 
   public get expandableComponentType() {
-    return this._isRelatedGrid ? EGridOverlayTypes.MultiSelectGridCellPreview: EGridOverlayTypes.MultiSelectStaticCellPreview
+    return this._isRelatedGrid ? EGridOverlayType.MultiSelectGridCellPreview: EGridOverlayType.MultiSelectStaticCellPreview
   }
 private readonly readonlyCssClassName = 'multi-select-readonly'
 

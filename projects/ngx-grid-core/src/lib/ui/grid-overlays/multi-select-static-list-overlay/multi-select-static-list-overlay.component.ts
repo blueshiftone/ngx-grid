@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inje
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridOverlayData, IGridSelectListOption } from '../../../typings/interfaces'
 import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'data-grid-multi-select-static-list-overlay',
@@ -50,7 +50,7 @@ export class MultiSelectStaticListOverlayComponent extends BaseOverlayComponent 
   public async select(): Promise<void> {
     if (this._selectIsOpen) return
     this._selectIsOpen = true
-    const overlay = this.overlayService.open(this.data.currentCell, EGridOverlayTypes.StaticDropdownOverlay, {
+    const overlay = this.overlayService.open(this.data.currentCell, EGridOverlayType.StaticDropdownOverlay, {
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement  : this.addBtn?.nativeElement ?? this.elREf.nativeElement,

@@ -4,16 +4,16 @@ import { takeUntil } from 'rxjs/operators'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridFileUpload } from '../../../typings/interfaces'
 import { IGridFileCellValue } from '../../../typings/interfaces/grid-file-cell-value.interface'
-import { EGridOverlayTypes } from '../../grid-overlays/grid-overlay-types'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
 export class FileCellType extends BaseExpandableCellType  {
 
   public mode = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
 
-  public expandableComponentType = EGridOverlayTypes.FileGridCellPreviewOverlay
+  public expandableComponentType = EGridOverlayType.FileGridCellPreviewOverlay
 
   public dropZoneState      = new BehaviorSubject<boolean>(false)
   public dropZoneHoverState = new BehaviorSubject<boolean>(false)

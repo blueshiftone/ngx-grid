@@ -1,11 +1,11 @@
 import { ComponentType } from '@angular/cdk/portal'
 
-export enum EGridOverlayTypes {
+export enum EGridOverlayType {
   MarkdownEditor,
   DateEditorOverlay,
   SingleSelectGridDropdownOverlay,
   StaticDropdownOverlay,
-  MultiSelectGridDropdownOverlay,
+  MultiSelectForeignKeyDropdownOverlay,
   MultiSelectGridCellPreview,
   RichTextCellPreview,
   MultiSelectGridSelectedList,
@@ -20,6 +20,5 @@ export enum EGridOverlayTypes {
   FileGridCellSelectedList,
 }
 
-let GRID_OVERLAYS = new Map<EGridOverlayTypes, ComponentType<any>>()
+export const GRID_OVERLAYS = new Map<EGridOverlayType, ComponentType<any>>()
 
-export default GRID_OVERLAYS

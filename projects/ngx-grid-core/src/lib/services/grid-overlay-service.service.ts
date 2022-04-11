@@ -6,9 +6,9 @@ import { first, takeUntil } from 'rxjs/operators'
 
 import { GridControllerService } from '../controller/grid-controller.service'
 import { GridEventsService } from '../events/grid-events.service'
+import { EGridOverlayType, GRID_OVERLAYS } from '../typings/enums/grid-overlay-type.enum'
 import { EPositionPreference } from '../typings/enums/position-preference.enum'
 import { IGridCellType, IGridOverlayConfigs, IGridOverlayData, IGridOverlayOpened } from '../typings/interfaces'
-import GRID_OVERLAYS, { EGridOverlayTypes as EGridOverlayType } from '../ui/grid-overlays/grid-overlay-types'
 import { OverlayPositionBuilder } from './overlay-position-builder.class'
 
 @Injectable({

@@ -6,10 +6,10 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators'
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EForeignKeyDropdownState } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectListOption } from '../../../typings/interfaces'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'data-grid-single-select-simple-foreign-key-dropdown-overlay',
@@ -132,7 +132,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     this.close()
     this.overlayService.open(
       this.cell,
-      EGridOverlayTypes.SingleSelectGridDropdownOverlay,
+      EGridOverlayType.SingleSelectGridDropdownOverlay,
       {size: {
         width: 550,
         height: 300

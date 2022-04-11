@@ -3,11 +3,11 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridExpandableCellData, IGridFileUpload, IGridOverlayData } from '../../../typings/interfaces'
 import { IGridFileCellValue } from '../../../typings/interfaces/grid-file-cell-value.interface'
 import { FileCellType } from '../../cell/cell-types/file.cell-type'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'data-grid-file-grid-cell-preview-overlay',
@@ -59,7 +59,7 @@ export class FileGridCellPreviewOverlayComponent extends BasePreviewComponent im
 
     this._isOpen = true
 
-    const output = this.data.overlayService.open(this.data.currentCell, EGridOverlayTypes.FileGridCellSelectedList, {
+    const output = this.data.overlayService.open(this.data.currentCell, EGridOverlayType.FileGridCellSelectedList, {
       flexibleDimensions: true,
       positionPreference: EPositionPreference.HorizontalRight,
       referenceElement: this.elRef.nativeElement,
