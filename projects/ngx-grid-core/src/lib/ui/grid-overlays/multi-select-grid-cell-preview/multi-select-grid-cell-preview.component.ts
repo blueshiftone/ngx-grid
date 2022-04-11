@@ -3,13 +3,11 @@ import { startWith, takeUntil } from 'rxjs/operators'
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridOverlayData } from '../../../typings/interfaces'
 import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
-import { MultiSelectGridDropdownOverlayComponent } from '../multi-select-grid-dropdown-overlay/multi-select-grid-dropdown-overlay.component'
-import { MultiSelectGridSelectedListComponent } from '../multi-select-grid-selected-list/multi-select-grid-selected-list.component'
 
 @Component({
   selector: 'data-grid-multi-select-grid-cell-preview',
@@ -61,7 +59,7 @@ export class MultiSelectGridCellPreviewComponent extends BasePreviewComponent im
   public async select(): Promise<void> {
     if (this._selectIsOpen) return
     this._selectIsOpen = true
-    const overlay = this.overlayService.open(this.data.currentCell, EGridOverlayTypes.MultiSelectGridDropdownOverlay, {
+    const overlay = this.overlayService.open(this.data.currentCell, EGridOverlayType.MultiSelectForeignKeyDropdownOverlay, {
       flexibleDimensions: true,
       size: {
         width: 550,
@@ -83,7 +81,7 @@ export class MultiSelectGridCellPreviewComponent extends BasePreviewComponent im
   public async expand(): Promise<void> {
     if (this._listIsOpen) return
     this._listIsOpen = true
-    const overlay = this.overlayService.open(this.cell, EGridOverlayTypes.MultiSelectGridSelectedList, {
+    const overlay = this.overlayService.open(this.cell, EGridOverlayType.MultiSelectGridSelectedList, {
       data: this.data.customData,
       positionPreference: EPositionPreference.HorizontalRight,
       referenceElement: this.elREf.nativeElement,

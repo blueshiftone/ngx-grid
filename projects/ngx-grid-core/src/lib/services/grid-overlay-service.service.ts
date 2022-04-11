@@ -6,9 +6,9 @@ import { first, takeUntil } from 'rxjs/operators'
 
 import { GridControllerService } from '../controller/grid-controller.service'
 import { GridEventsService } from '../events/grid-events.service'
+import { EGridOverlayType, GRID_OVERLAYS } from '../typings/enums/grid-overlay-type.enum'
 import { EPositionPreference } from '../typings/enums/position-preference.enum'
 import { IGridCellType, IGridOverlayConfigs, IGridOverlayData, IGridOverlayOpened } from '../typings/interfaces'
-import GRID_OVERLAYS, { EGridOverlayTypes as EGridOverlayType } from '../ui/grid-overlays/grid-overlay-types'
 import { OverlayPositionBuilder } from './overlay-position-builder.class'
 
 @Injectable({
@@ -51,7 +51,9 @@ export class GridOverlayService {
     const componentRef    = ref.attach(componentPortal)
     componentRef.changeDetectorRef.detectChanges()
     this._components.set(ref, componentRef)
-    return {afterClosed: promise, overlayRef: ref, component: componentRef}
+    const output = {afterClosed: promise, overlayRef: ref, component: componentRef}
+    this.gridController.gridEvents.GridOverlayOpenedEvent.emit(Object.assign({ originCell }, output))
+    return output
   }
 
   public closeAll(): void {

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit } from '@angular/core'
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { EPositionPreference } from '../../../typings/enums/position-preference.enum'
 import { IGridExpandableCellData, IGridOverlayData } from '../../../typings/interfaces'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'data-grid-rich-text-cell-preview',
@@ -28,7 +28,7 @@ export class RichTextCellPreviewComponent extends BasePreviewComponent implement
 
     this._isOpen = true
 
-    const output = this.data.overlayService.open(this.data.currentCell, EGridOverlayTypes.MarkdownEditor, {
+    const output = this.data.overlayService.open(this.data.currentCell, EGridOverlayType.MarkdownEditor, {
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement: this.elRef.nativeElement,

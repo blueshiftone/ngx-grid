@@ -1,8 +1,8 @@
 import { EPositionPreference } from '../../typings/enums'
+import { EGridOverlayType } from '../../typings/enums/grid-overlay-type.enum'
 import { IGridCellValidationState } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { CellValidationMessageComponent } from '../../ui/grid-overlays/cell-validation-message/cell-validation-message.component'
-import { EGridOverlayTypes } from '../../ui/grid-overlays/grid-overlay-types'
 import { Operation } from '../operation.abstract'
 
 export class SetCellValidationDialog extends Operation {
@@ -23,7 +23,7 @@ export class SetCellValidationDialog extends Operation {
 
         const cellTypeComponent = cellComponent.typeComponent!
 
-        cellComponent.overlays.open(cellTypeComponent, EGridOverlayTypes.CellValidationMessage, {
+        cellComponent.overlays.open(cellTypeComponent, EGridOverlayType.CellValidationMessage, {
           data: validationResults, 
           positionPreference: EPositionPreference.VerticalBottom,
           flexibleDimensions: true

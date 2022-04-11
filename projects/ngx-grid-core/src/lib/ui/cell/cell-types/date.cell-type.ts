@@ -3,9 +3,9 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode, EPositionPreference } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType } from '../../../typings/interfaces'
 import { ParseDate } from '../../../utils/parse-date-string'
-import { EGridOverlayTypes } from '../../grid-overlays/grid-overlay-types'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class DateCellType extends BaseCellType {
@@ -34,7 +34,7 @@ export class DateCellType extends BaseCellType {
 
   public override open(): IGridCellType {
     if (!this.isEditable) return this
-    this.openOverlay(EGridOverlayTypes.DateEditorOverlay, {
+    this.openOverlay(EGridOverlayType.DateEditorOverlay, {
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom
     }).afterClosed.then(_ => {

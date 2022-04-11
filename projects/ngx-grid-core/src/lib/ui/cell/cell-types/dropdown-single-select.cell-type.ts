@@ -3,9 +3,9 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode, EPositionPreference } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridSelectListOption, TGridUITheme } from '../../../typings/interfaces'
 import { ColorBrightness } from '../../../utils/color-brightness'
-import { EGridOverlayTypes } from '../../grid-overlays/grid-overlay-types'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class DropdownSingleSelectCellType extends BaseCellType {
@@ -74,12 +74,12 @@ export class DropdownSingleSelectCellType extends BaseCellType {
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
     }
-    let overlayComponentType: EGridOverlayTypes = EGridOverlayTypes.StaticDropdownOverlay
+    let overlayComponentType: EGridOverlayType = EGridOverlayType.StaticDropdownOverlay
     if (this._isRelatedGrid) {
       overlayConfigs.size = {
         height: 300
       }
-      overlayComponentType = EGridOverlayTypes.SingleSelectSimpleForeignKeyDropdownOverlay
+      overlayComponentType = EGridOverlayType.SingleSelectSimpleForeignKeyDropdownOverlay
     }
     this.openOverlay(overlayComponentType, overlayConfigs).afterClosed.then(() => {
       this.gridController.gridEvents.EditingCellChangedEvent.emit(null)

@@ -5,21 +5,21 @@ import { debounceTime, distinctUntilChanged, filter, take, takeUntil } from 'rxj
 import { GridControllerService } from '../../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../../services/grid-overlay-service.service'
 import { EPositionPreference } from '../../../../typings/enums'
+import { EGridOverlayType } from '../../../../typings/enums/grid-overlay-type.enum'
 import {
-  IGridCellComponent,
-  IGridCellType,
-  IGridExpandableCellData,
-  IGridOverlayConfigs,
-  IGridOverlayOpened,
-  IGridSelectionRange,
+    IGridCellComponent,
+    IGridCellType,
+    IGridExpandableCellData,
+    IGridOverlayConfigs,
+    IGridOverlayOpened,
+    IGridSelectionRange,
 } from '../../../../typings/interfaces'
 import { FindParentOfClass, HasParentMatching, HasParentOfClass } from '../../../../utils/find-parent-element-of-class'
-import { EGridOverlayTypes } from '../../../grid-overlays/grid-overlay-types'
 import { BaseCellType } from './base-cell-type.abstract'
 
 export abstract class BaseExpandableCellType extends BaseCellType {
 
-  public abstract expandableComponentType: EGridOverlayTypes
+  public abstract expandableComponentType: EGridOverlayType
 
   private _expandablePreviewClosed = new Subject<void>()
   private _expandablePreviewIsOpen = false

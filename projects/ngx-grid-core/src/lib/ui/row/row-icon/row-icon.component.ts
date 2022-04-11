@@ -20,7 +20,7 @@ export class RowIconComponent implements OnInit {
   }
 
   public get iconValue(): string {
-    if (!this.icon || !this.icon.value) return ''
+    if (!this.icon || this.icon.value === null) return ''
     const icon = this.icon.value as EGridIcon
     return Object.keys(EGridIcon)[Object.values(EGridIcon).indexOf(icon)]
   }

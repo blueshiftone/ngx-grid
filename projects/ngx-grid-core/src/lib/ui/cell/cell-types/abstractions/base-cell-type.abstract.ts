@@ -4,11 +4,11 @@ import { filter } from 'rxjs/operators'
 import { GridControllerService } from '../../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../../typings/enums/cell-mode.enum'
+import { EGridOverlayType } from '../../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridOverlayOpened } from '../../../../typings/interfaces'
 import { IGridDataType } from '../../../../typings/interfaces/grid-data-type.interface'
 import { HasParentOfClass } from '../../../../utils/find-parent-element-of-class'
 import { TO_ARRAY } from '../../../../utils/to-array'
-import { EGridOverlayTypes } from '../../../grid-overlays/grid-overlay-types'
 
 export abstract class BaseCellType implements IGridCellType {
   public abstract mode        : BehaviorSubject<ECellMode>
@@ -67,7 +67,7 @@ export abstract class BaseCellType implements IGridCellType {
     this.valueChanged.next()
   }
 
-  public openOverlay(componentType: EGridOverlayTypes, configs?: IGridOverlayConfigs): IGridOverlayOpened {
+  public openOverlay(componentType: EGridOverlayType, configs?: IGridOverlayConfigs): IGridOverlayOpened {
     return this.overlayService.open(this, componentType, configs)
   }
 

@@ -4,10 +4,10 @@ import { fromEvent } from 'rxjs'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectionSlice } from '../../../typings/interfaces'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'app-single-select-dropdown-overlay',
@@ -61,7 +61,7 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
     this.close()
     this.overlayService.open(
       this.cell,
-      EGridOverlayTypes.SingleSelectSimpleForeignKeyDropdownOverlay,
+      EGridOverlayType.SingleSelectSimpleForeignKeyDropdownOverlay,
       { size: { height: 300 } }
     )
   }

@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { map, pairwise, startWith } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GridDataSource } from '../../../grid-data-source'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { EForeignKeyDropdownState } from '../../../typings/enums'
 import { IGridDataSource, IGridOverlayData, IGridRecordSelectedEvent, IGridRow } from '../../../typings/interfaces'
 import { TPrimaryKey } from '../../../typings/types'
 import { WithoutValues } from '../../../utils/without-values'
@@ -12,12 +13,12 @@ import { RecordSelectorComponent } from '../../record-selector/record-selector.c
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
 
 @Component({
-  selector: 'data-grid-multi-select-grid-dropdown-overlay',
-  templateUrl: './multi-select-grid-dropdown-overlay.component.html',
-  styleUrls: ['./multi-select-grid-dropdown-overlay.component.scss'],
+  selector: 'data-grid-multi-select-foreign-key-dropdown-overlay',
+  templateUrl: './multi-select-foreign-key-dropdown-overlay.component.html',
+  styleUrls: ['./multi-select-foreign-key-dropdown-overlay.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MultiSelectGridDropdownOverlayComponent extends BaseOverlayComponent implements OnInit {
+export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayComponent implements OnInit {
 
   @ViewChild('searchInput', { static: true }) public searchInput!: ElementRef<HTMLInputElement>
   @ViewChild('selector') public selectorComponent?: RecordSelectorComponent
@@ -27,6 +28,17 @@ export class MultiSelectGridDropdownOverlayComponent extends BaseOverlayComponen
   public searchCtrl                 = new FormControl()
 
   public gridConfig = new DataGridConfigs().withRowMultiSelect().withConfigs({ scrollToPreselected: false })
+
+  public loadingState = this.gridController.gridEvents
+    .ForeignKeyDropdownStateChangedEvent
+    .on()
+    .pipe(
+      filter(event => event.coordinates.equals(this.cell.coordinates)),
+      map(event => event.state),
+      startWith(EForeignKeyDropdownState.Idle),
+      distinctUntilChanged())
+
+  public LoadingState = EForeignKeyDropdownState
 
   constructor(
     @Inject(GRID_OVERLAY_DATA) public override data: IGridOverlayData,

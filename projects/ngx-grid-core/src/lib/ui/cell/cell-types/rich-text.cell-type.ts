@@ -3,14 +3,14 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
-import { EGridOverlayTypes } from '../../grid-overlays/grid-overlay-types'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
 export class RichTextCellType extends BaseExpandableCellType {
 
   public mode                    = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
-  public expandableComponentType = EGridOverlayTypes.RichTextCellPreview
+  public expandableComponentType = EGridOverlayType.RichTextCellPreview
 
   private readonly readonlyCssClassName = 'rich-text-readonly'
 

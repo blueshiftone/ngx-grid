@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { fromEvent, Subject } from 'rxjs'
-import { startWith } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { EForeignKeyDropdownState } from '../../../typings/enums'
+import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectListOption } from '../../../typings/interfaces'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
-import { EGridOverlayTypes } from '../grid-overlay-types'
 
 @Component({
   selector: 'data-grid-single-select-simple-foreign-key-dropdown-overlay',
@@ -37,6 +38,17 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
 
   public gridConfig = new DataGridConfigs().withRowSingleSelect()
 
+  public loadingState = this.gridController.gridEvents
+    .ForeignKeyDropdownStateChangedEvent
+    .on()
+    .pipe(
+      filter(event => event.coordinates.equals(this.cell.coordinates)),
+      map(event => event.state),
+      startWith(EForeignKeyDropdownState.Idle),
+      distinctUntilChanged())
+
+  public LoadingState = EForeignKeyDropdownState
+
   constructor(
     @Inject(GRID_OVERLAY_DATA) public override data: IGridOverlayData,
     public override cd: ChangeDetectorRef
@@ -51,19 +63,6 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     this.dataSource = this._getDataSource()
     if (!this.dataSource) return
 
-    this.dataSource.rows.forEach(row => {
-      const primaryKey = row.rowKey
-      const option: IGridSelectListOption = {
-        value: primaryKey,
-        label: this.gridController.grid.GetRelatedDataPreviewString.run(this.dataSource?.dataGridID ?? '', primaryKey)?.toString() ?? primaryKey
-      }
-      this._options.push(option)
-    })
-    this.filteredOptions = [...this._options]
-    window.requestAnimationFrame(_ => {
-      this._searchEl.focus()
-      this._highlightSelected()
-    })
     this.addSubscription(fromEvent<KeyboardEvent>(this.wrapperElement.nativeElement, 'keydown').subscribe(e => {
       switch(e.key.toLowerCase()) {
         case 'arrowdown': this.highlightNext(1); this._stopEvent(e); break
@@ -75,6 +74,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
         case 'escape'   : this._stopEvent(e); this.close(); break
       }
     }))
+
     this.addSubscription(this.searchCtrl.valueChanges.subscribe(_ => this._filterOptions()))
     this.addSubscription(fromEvent(this.wrapperElement.nativeElement, 'scroll').subscribe(_ => {
       this.scrollOffset = this.wrapperElement.nativeElement.scrollTop
@@ -88,6 +88,27 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
       this.gridController.gridEvents.KeyPressPassedThroughEvent.emit(null)
     }
 
+    this._setOptions()
+    this.addSubscription(this.dataSource.onChanges.subscribe(_ => this._setOptions()))
+
+  }
+
+  private _setOptions(): void {
+    if (!this.dataSource) return
+
+    this._options = this.dataSource.rows.map(r => ({
+      value: r.rowKey,
+      label: this.gridController.grid.GetRelatedDataPreviewString.run(this.dataSource?.dataGridID ?? '', r.rowKey)
+    }))
+
+    this.filteredOptions = [...this._options]
+
+    window.requestAnimationFrame(_ => {
+      this._searchEl.focus()
+      this._highlightSelected()
+    })
+
+    this.cd.detectChanges()
   }
 
   public highlightNext(increment: number): void {
@@ -111,7 +132,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     this.close()
     this.overlayService.open(
       this.cell,
-      EGridOverlayTypes.SingleSelectGridDropdownOverlay,
+      EGridOverlayType.SingleSelectGridDropdownOverlay,
       {size: {
         width: 550,
         height: 300
