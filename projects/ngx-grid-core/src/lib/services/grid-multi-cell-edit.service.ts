@@ -59,7 +59,7 @@ export class GridMultiCellEditService {
     const portal            = new ComponentPortal(MultiCellEditOverlayComponent, null, injector)
     const ref               = this._createOverlayRef(positionStrategy, Math.max(175, width), height)
     ref.attach(portal)
-    if (!["DropDownMultiSelect", "RichText"].includes(type.name)) {      
+    if (!["DropdownMultiSelect", "RichText"].includes(type.name)) {      
       this.events.factory.EditingCellChangedEvent.on()
         .pipe(
             delay(200),

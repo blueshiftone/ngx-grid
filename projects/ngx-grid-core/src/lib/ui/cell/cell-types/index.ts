@@ -1,6 +1,6 @@
 import { BooleanCellType as Boolean } from './boolean.cell-type'
 import { DateCellType as Date } from './date.cell-type'
-import { DropdownMultiSelectCellType as DropDownMultiSelect } from './dropdown-multi-select.cell-type'
+import { DropdownMultiSelectCellType as DropdownMultiSelect } from './dropdown-multi-select.cell-type'
 import { DropdownSingleSelectCellType as DropdownSingleSelect } from './dropdown-single-select.cell-type'
 import { FileCellType as File } from './file.cell-type'
 import { MoneyCellType as Money } from './money.cell-type'
@@ -19,7 +19,7 @@ const CELL_TYPES = {
   Date,
   Percent,
   DropdownSingleSelect,
-  DropDownMultiSelect,
+  DropdownMultiSelect,
   File,
 }
 

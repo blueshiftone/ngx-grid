@@ -12,6 +12,6 @@ export const CELL_MULTI_EDITORS: {[key in TCellTypeName]: Array<new (cellValue: 
   Date                : [ editors.DateAddDays, editors.DateSubtractDays, editors.ClearValues ],
   Percent             : [ editors.NumberAdd, editors.NumberSubtract, editors.NumberDivide, editors.NumberMultiply, editors.ClearValues],
   DropdownSingleSelect: [ editors.ClearValues ],
-  DropDownMultiSelect : [ editors.ClearValues ],
+  DropdownMultiSelect : [ editors.ClearValues ],
   File                : [ editors.ClearValues ],
 }
