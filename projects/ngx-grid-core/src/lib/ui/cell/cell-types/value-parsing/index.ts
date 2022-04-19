@@ -26,5 +26,5 @@ export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
   Date                : new ValueParser([Date]),
   Percent             : new ValueParser([Number]),
   DropdownSingleSelect: new ValueParser([MultiSelect]),
-  DropDownMultiSelect : new ValueParser([Array, MultiSelect]),
+  DropdownMultiSelect : new ValueParser([Array, MultiSelect]),
 }

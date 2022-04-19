@@ -129,7 +129,7 @@ export class StaticDropdownOverlayComponent extends BaseOverlayComponent impleme
   }
 
   public get isMultiSelect() {
-    return this.data.currentCell.type.name === 'DropDownMultiSelect'
+    return this.data.currentCell.type.name === 'DropdownMultiSelect'
   }
 
 }

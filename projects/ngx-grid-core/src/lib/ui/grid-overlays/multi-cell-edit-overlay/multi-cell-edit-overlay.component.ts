@@ -21,7 +21,7 @@ export class MultiCellEditOverlayComponent implements OnInit {
     window.requestAnimationFrame(_ => {
       this.cell.startEdit()
       const { name } = this.cell.type
-      if (name === 'RichText' || name === 'DropDownMultiSelect') {
+      if (name === 'RichText' || name === 'DropdownMultiSelect') {
         this.cell.startEdit() // calling StartEdit() a second time opens the editor
       }
     })
