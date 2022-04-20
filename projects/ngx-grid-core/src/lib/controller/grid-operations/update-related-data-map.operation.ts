@@ -7,9 +7,12 @@ export class UpdateRelatedDataMap extends Operation {
 
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
-  public run(sources:[string, IGridDataSource][] = [...this.dataSource.relatedData.entries()]) {
+  public run(sources:[string, IGridDataSource][] | undefined = undefined) {
     if (!this.dataSource) return
-    this.gridOperations.relatedDataMap.clear()
+    if (sources === undefined) {
+      sources = [...this.dataSource.relatedData.entries()]
+      this.gridOperations.relatedDataMap.clear()
+    }
     for (const entry of sources) {
 
       const [gridID, source]        = entry
