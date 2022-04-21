@@ -26,7 +26,8 @@ export class SetCellValidationDialog extends Operation {
         cellComponent.overlays.open(cellTypeComponent, EGridOverlayType.CellValidationMessage, {
           data: validationResults, 
           positionPreference: EPositionPreference.VerticalBottom,
-          flexibleDimensions: true
+          flexibleDimensions: true,
+          hasBackdrop: false
         })
 
       }

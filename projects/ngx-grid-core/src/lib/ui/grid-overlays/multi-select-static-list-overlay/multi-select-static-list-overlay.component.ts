@@ -54,7 +54,6 @@ export class MultiSelectStaticListOverlayComponent extends BaseOverlayComponent 
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement  : this.addBtn?.nativeElement ?? this.elREf.nativeElement,
-      hasBackdrop          : true,
     })
     await overlay.afterClosed
     this._selectIsOpen = false
