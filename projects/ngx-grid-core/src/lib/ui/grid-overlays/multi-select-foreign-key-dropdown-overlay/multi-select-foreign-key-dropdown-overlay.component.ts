@@ -50,17 +50,7 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
   override ngOnInit(): void {
     const list = this.data.currentCell?.type.list
     if (!list) return
-    this.dataSource = this._getDataSource()
-    window.requestAnimationFrame(_ => {
-      this._searchEl.focus()
-      window.requestAnimationFrame(_ => {
-        if (this.selectorComponent) { 
-          for (const pk of this.values) {
-            this.selectorComponent.gridController.row.RemoveRow.buffer(pk)
-          }
-        }
-      })
-    })
+    this._refreshDataSource()
 
     const primaryKeyValues = this.data.currentCell.value
     this.values = primaryKeyValues ?? []
@@ -88,6 +78,12 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
       this.cd.detectChanges()
     }))
 
+    this.addSubscription(this.loadingState.subscribe(dropdownState => {
+      if (dropdownState == EForeignKeyDropdownState.Idle && this.dataSource) {
+        this._refreshDataSource()
+      }
+    }))
+
   }
 
   public checkGridSize(): void {
@@ -109,6 +105,20 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
     if (!gridID) return new GridDataSource()
     const grid = this.gridController.grid.GetRelatedData.run(gridID)
     return grid ? GridDataSource.cloneSource(grid) : new GridDataSource()
+  }
+
+  private _refreshDataSource(): void {
+    this.dataSource = this._getDataSource()
+    window.requestAnimationFrame(_ => {
+      this._searchEl.focus()
+      window.requestAnimationFrame(_ => {
+        if (this.selectorComponent) { 
+          for (const pk of this.values) {
+            this.selectorComponent.gridController.row.RemoveRow.buffer(pk)
+          }
+        }
+      })
+    })
   }
 
   private _getRow(pk: TPrimaryKey): IGridRow | undefined {
