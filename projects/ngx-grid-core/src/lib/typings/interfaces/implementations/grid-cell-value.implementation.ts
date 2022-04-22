@@ -27,10 +27,13 @@ export class GridCellValue implements IGridCellValue {
   }
   public clone(): IGridCellValue {
     let value = this.value;
-    if (Array.isArray(this.value)) {
-      value = [...value]
-    } else if (typeof this.value === 'object') {
-      value = {...value}
+    if (value !== null)
+    {
+      if (Array.isArray(this.value)) {
+        value = [...value]
+      } else if (typeof this.value === 'object') {
+        value = {...value}
+      }
     }
     return new GridCellValue(new GridCellCoordinates(this.rowKey, this.columnKey), value)
   }
