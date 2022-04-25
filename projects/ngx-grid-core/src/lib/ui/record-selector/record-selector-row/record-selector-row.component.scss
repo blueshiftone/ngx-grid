@@ -8,6 +8,9 @@
   font-size: 14px;
   margin-bottom: 8px;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cells {

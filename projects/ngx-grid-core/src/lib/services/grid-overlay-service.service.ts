@@ -76,7 +76,7 @@ export class GridOverlayService {
     const ops: OverlayConfig = {
       scrollStrategy  : this.overlay.scrollStrategies.reposition(),
       panelClass      : ['grid-overlay', position],
-      hasBackdrop     : configs.hasBackdrop === true,
+      hasBackdrop     : configs.hasBackdrop ?? true === true,
       backdropClass   : configs.backdropClass ?? 'transparent-backdrop',
       positionStrategy: new OverlayPositionBuilder(this.overlay)
         .connectedToElement(sourceElement)
