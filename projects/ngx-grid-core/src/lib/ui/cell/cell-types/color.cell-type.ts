@@ -47,7 +47,8 @@ export class ColorCellType extends BaseCellType {
   }
 
   public override open() {
-    
+    if (!this.isEditable) return this
+
     this._generateEditableNode()
 
     if (this._editableInput) this._editableInput.value = this.value
