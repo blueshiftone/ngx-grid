@@ -32,35 +32,46 @@ export class ColorCellType extends BaseCellType {
   public get editableNode() { return this._editableNode || this._generateEditableNode() }
 
   public override receiveValue(value: any = this.value): void {
+
     if (value !== null) {
       const parsed = new ColorParser(value).run()
       if (!parsed.isValid) value = null
       else value = parsed.transformedValue
     }
+
     super.receiveValue(value)
+
     if (!this._displayNode) return;
+    
     this._colorNode.style.backgroundColor = value
   }
 
   public override open() {
+    
     this._generateEditableNode()
+
     if (this._editableInput) this._editableInput.value = this.value
-    window.requestAnimationFrame(_ => {
-      this._editableInput?.click()
-    })
+    
+    window.requestAnimationFrame(_ => this._editableInput?.click())
+
     return this;
   }
 
   private _generateEditableNode(): HTMLElement {
     if (!this._editableNode || !this._editableInput) {
+      
       const [node, input] = this.createBasicInput('color')
+
       this._editableInput = input
+
       const { style } = node
-      style.position = 'absolute'
-      style.top = '0px'
-      style.left = '0px'
-      style.opacity = '0'
+      style.position  = 'absolute'
+      style.top       = '0px'
+      style.left      = '0px'
+      style.opacity   = '0'
+
       this._displayNode.append(node)
+
       this._editableNode = this._displayNode
     }
     return this.displayNode
