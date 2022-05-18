@@ -10,7 +10,7 @@ export abstract class BaseParser implements IParsingTest {
   public return(isValid: boolean, transformedValue: any = undefined): IGridValueParsingResult {
     const { initialValue } = this
     const isInvalid = !isValid
-    if (isValid && typeof transformedValue === 'undefined') transformedValue = initialValue
+    if (isValid && transformedValue === undefined) transformedValue = initialValue
     return { initialValue, isInvalid, isValid, transformedValue, }
   }
 
