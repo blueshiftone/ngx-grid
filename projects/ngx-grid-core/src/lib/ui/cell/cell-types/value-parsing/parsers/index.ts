@@ -1,5 +1,6 @@
 import { ArrayParser as Array } from './array.parser'
 import { BooleanParser as Boolean } from './boolean.parser'
+import { ColorParser as Color } from './color.parser'
 import { DateParser as Date } from './date.parser'
 import { FileParser as File } from './file.parser'
 import { MultiSelectParser as MultiSelect } from './multi-select.parser'
@@ -13,5 +14,6 @@ export {
   MultiSelect,
   Number,
   String, 
-  File
+  File,
+  Color
 }

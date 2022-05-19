@@ -1,7 +1,7 @@
 <app-floating-window (closed)="close()">
   <div class="actions" [style.marginBottom]="options?.length ? '14px' : ''" *ngIf="cell.isEditable">
     <button mat-button color="primary" (click)="select()" class="link" #AddBtn>
-      <span class="material-icons-outlined">add</span>
+      <span class="material-symbols-outlined">add</span>
       <span class="label">{{ localize('locSelectAnOption') }}</span>
     </button>
   </div>

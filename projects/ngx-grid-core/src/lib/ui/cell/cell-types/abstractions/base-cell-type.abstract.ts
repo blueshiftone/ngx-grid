@@ -1,5 +1,5 @@
 import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs'
-import { filter } from 'rxjs/operators'
+import { debounceTime, filter } from 'rxjs/operators'
 
 import { GridControllerService } from '../../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../../services/grid-overlay-service.service'
@@ -108,12 +108,12 @@ export abstract class BaseCellType implements IGridCellType {
     input.value = this.value
 
     div.appendChild(input)
-    input.oninput = e => {
+    this.subscriptions.add(fromEvent(input, 'input').pipe(debounceTime(250)).subscribe(e => { 
       if (!this.setValue(input.value)) {    
         e.preventDefault()
         input.value = this.value
       }
-    }
+    }))
 
     this.subscriptions.add(this.valueChanged.subscribe(_ => input.value = this.value))
 

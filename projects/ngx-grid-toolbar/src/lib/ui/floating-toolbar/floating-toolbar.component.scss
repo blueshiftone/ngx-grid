@@ -62,10 +62,10 @@ button:not(.mat-menu-item) {
   &.icon-button {
     width: 32px;
     & > * {
-      width: 18px;
-      height: 18px;
-      font-size: 18px;
-      line-height: 18px;
+      width: 21px;
+      height: 21px;
+      font-size: 21px;
+      line-height: 21px;
     }
   }
   .label {
@@ -121,6 +121,6 @@ button.mat-menu-item {
   line-height: 32px;
 }
 
-.material-icons-outlined, .mat-icon {
+.material-symbols-outlined, .mat-icon {
   color: var(--sub-icon-color);
 }

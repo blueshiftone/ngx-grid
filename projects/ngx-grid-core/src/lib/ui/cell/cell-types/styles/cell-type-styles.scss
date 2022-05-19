@@ -2,6 +2,7 @@
 .number-readonly,
 .rich-text-readonly,
 .date-readonly,
+.color-readonly,
 .file-cell-type {
   height: 100%;
   width: 100%;
@@ -204,5 +205,14 @@ input[type="number"] {
         opacity: 0.2;
       }
     }
+  }
+}
+
+.color-readonly, .color-editable {
+  min-width: 80px;
+  .bubble {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
   }
 }

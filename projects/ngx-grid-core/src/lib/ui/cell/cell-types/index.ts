@@ -1,4 +1,5 @@
 import { BooleanCellType as Boolean } from './boolean.cell-type'
+import { ColorCellType as Color } from './color.cell-type'
 import { DateCellType as Date } from './date.cell-type'
 import { DropdownMultiSelectCellType as DropdownMultiSelect } from './dropdown-multi-select.cell-type'
 import { DropdownSingleSelectCellType as DropdownSingleSelect } from './dropdown-single-select.cell-type'
@@ -21,6 +22,7 @@ const CELL_TYPES = {
   DropdownSingleSelect,
   DropdownMultiSelect,
   File,
+  Color,
 }
 
 export default CELL_TYPES

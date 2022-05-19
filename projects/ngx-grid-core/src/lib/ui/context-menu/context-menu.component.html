@@ -4,7 +4,7 @@
     <div class="label">{{ localize(item.label) }}</div>
   </button>
   <button class="item more stop-propagation" matRipple [hidden]="!item.children?.length" #trigger="matMenuTrigger" [matMenuTriggerFor]="more" [ngClass]="{ open: trigger.menuOpen }">
-    <span class="material-icons-outlined">expand_more</span>
+    <span class="material-symbols-outlined">expand_more</span>
   </button>
   <mat-menu #more="matMenu" xPosition="after" [hasBackdrop]="false">
     <button class="item mat-menu-item sub-menu" mat-menu-item *ngFor="let child of (item.children ?? [])" (click)="child?.action($event)">
