@@ -10,15 +10,15 @@
           <div class="label"><lib-localized-text>locSetValues</lib-localized-text></div>
         </button>
         <button class="icon-button arrow" matRipple [matMenuTriggerFor]="multiEditors" #multiEditMenuTrigger *ngIf="multiEditorLabels.length">
-          <span style="transform: scale(0.9);" class="material-icons-outlined">expand_more</span>
+          <span class="material-symbols-outlined">expand_more</span>
         </button>
       </div>
-      <button [matTooltip]="locCopySelection" class="copy icon-button" matRipple (click)="copySelection()"><span style="transform: scale(0.9);" class="material-icons-outlined">copy</span></button>
-      <button [matTooltip]="locDeleteRecords" *ngIf="canDelete" class="copy icon-button" matRipple (click)="deleteRecords()"><span class="material-icons-outlined">delete</span></button>
+      <button [matTooltip]="locCopySelection" class="copy icon-button" matRipple (click)="copySelection()"><span class="material-symbols-outlined">content_copy</span></button>
+      <button [matTooltip]="locDeleteRecords" *ngIf="canDelete" class="copy icon-button" matRipple (click)="deleteRecords()"><span class="material-symbols-outlined">delete</span></button>
     </div>
     <div class="actions end">
-      <button class="more icon-button" matRipple><span class="material-icons-outlined">more_horiz</span></button>
-      <button [matTooltip]="locClearSelection" class="close icon-button" matRipple (click)="clearSelection()"><span class="material-icons-outlined">close</span></button>
+      <button class="more icon-button" matRipple><span class="material-symbols-outlined">more_horiz</span></button>
+      <button [matTooltip]="locClearSelection" class="close icon-button" matRipple (click)="clearSelection()"><span class="material-symbols-outlined">close</span></button>
     </div>
   </div>
 </div>

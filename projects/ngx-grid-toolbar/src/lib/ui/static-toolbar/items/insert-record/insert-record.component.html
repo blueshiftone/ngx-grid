@@ -1,10 +1,10 @@
 <div class="button-group">
   <button class="primary-color" matRipple (click)="hasSelection ? insertAboveSelection() : insertAtTop()">
-    <span class="material-icons-outlined icon">add</span>
+    <span class="material-symbols-outlined icon">add</span>
     <span class="label"><lib-localized-text>locInsertRecord</lib-localized-text></span>
   </button>
   <button class="primary-color icon-button" matRipple [matMenuTriggerFor]="insertMenu">
-    <span class="material-icons-outlined icon">keyboard_arrow_down</span>
+    <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
   </button>
 </div>
 <mat-menu #insertMenu="matMenu">

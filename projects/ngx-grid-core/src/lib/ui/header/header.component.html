@@ -13,7 +13,7 @@
     class="cell display">
     <app-resizer (output)="resizeColumn($event.x, columnKey)" (resizeStart)="startResize()"
       (ResizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
-    <span class="material-icons-outlined sort-icon" *ngIf="columnKey === sortingBy">{{ sortingByDirection ? 'north'
+    <span class="material-symbols-outlined sort-icon" *ngIf="columnKey === sortingBy">{{ sortingByDirection ? 'north'
       : 'south' }}</span>
     <data-grid-separator *ngFor="let s of separators(columnKey)" Axis="y" [separator]="s"></data-grid-separator>
     <div class="text-readonly">{{ columnKey }}</div>
