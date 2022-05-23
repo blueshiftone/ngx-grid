@@ -146,9 +146,8 @@ export class GridControllerService {
 
         case 'Backspace': 
           for (const coordinates of this.selection.latestSelection()?.allCellCoordinates() ?? []) {
-            const cellComponent = this.cell.CellComponents.findWithCoords(coordinates)
             if (this.cell.GetCellIsEditable.run(coordinates)) {
-              cellComponent?.typeComponent?.receiveValue(null)
+              this.cell.CellComponents.findWithCoords(coordinates)?.setValue(null)
               this.cell.SetCellDraftValue.buffer(coordinates)
               this.cell.SetCellValue.run(coordinates, null)
             }

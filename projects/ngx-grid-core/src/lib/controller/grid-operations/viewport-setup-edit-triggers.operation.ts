@@ -45,11 +45,11 @@ export class ViewportSetupEditTriggers extends Operation {
       if (!focusedComponent || !e || !focusedComponent.element.classList.contains('is-editable')) return
       if (this._editingCell && this._editingCell === focusedComponent) return
       let validationResult = this.cellOperations.SetCellValue.run(focusedComponent.coordinates, e.valueOfKey)
-      this._emitEdit(focusedComponent, validationResult.isValid ? undefined : e)
       if (validationResult.isValid) {
+        focusedComponent.setValue(validationResult.transformedValue)
         this.cellOperations.SetCellDraftValue.buffer(focusedComponent.coordinates)
-        window.requestAnimationFrame(_ => focusedComponent.setValue(validationResult.transformedValue))
       }
+      this._emitEdit(focusedComponent, validationResult.isValid ? undefined : e)
     }))
 
     this.subscriptions.add(this.gridEvents.GridKeyCmdPressedEvent.on().subscribe(e => {
