@@ -141,8 +141,17 @@ export class GridControllerService {
         case 'Ctrl+C': this.selection.CopySelection.run(); break
 
         case 'Delete': 
-        case 'Backspace':
           (this.selection.latestSelection()?.rowKeys ?? []).forEach(rowKey => this.row.DeleteRow.buffer(rowKey));
+        break
+
+        case 'Backspace': 
+          for (const coordinates of this.selection.latestSelection()?.allCellCoordinates() ?? []) {
+            if (this.cell.GetCellIsEditable.run(coordinates)) {
+              this.cell.CellComponents.findWithCoords(coordinates)?.setValue(null)
+              this.cell.SetCellDraftValue.buffer(coordinates)
+              this.cell.SetCellValue.run(coordinates, null)
+            }
+          }
         break
 
         // Toggle checkboxes

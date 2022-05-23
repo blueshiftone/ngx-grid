@@ -152,7 +152,7 @@ export class DateEditorOverlayComponent extends BaseOverlayComponent implements 
       }
     } else if (val === '') {
       this.date = undefined
-      this.updateValue('')
+      this.updateValue(null)
     }
     this.cd.detectChanges()
   }
