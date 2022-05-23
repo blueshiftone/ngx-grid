@@ -21,6 +21,8 @@ export abstract class BaseCellType implements IGridCellType {
 
   public readonly subscriptions = new Set<Subscription>()
 
+  private readonly _valueDebounceMs = 100
+
   constructor(
     private readonly overlayService: GridOverlayService,
     public  readonly parentCell    : IGridCellComponent,
@@ -106,16 +108,15 @@ export abstract class BaseCellType implements IGridCellType {
     const div   = this.createDiv(cssClass)
     const input = this.createInput(type)
     input.value = this.value
-
     div.appendChild(input)
-    this.subscriptions.add(fromEvent(input, 'input').pipe(debounceTime(250)).subscribe(e => { 
-      if (!this.setValue(input.value)) {    
-        e.preventDefault()
-        input.value = this.value
-      }
-    }))
+    
+    this.subscriptions.add(fromEvent(input, 'input')
+      .pipe(debounceTime(this._valueDebounceMs), filter(_ => this.value !== input.value))
+      .subscribe(_ => this.setValue(input.value)))
 
-    this.subscriptions.add(this.valueChanged.subscribe(_ => input.value = this.value))
+    this.subscriptions.add(fromEvent(input, 'blur')
+      .pipe(debounceTime(this._valueDebounceMs))
+      .subscribe(_ => input.value = this.value))
 
     this.subscriptions.add(this.mode.pipe(filter(mode => mode === ECellMode.Editable)).subscribe(_ => window.requestAnimationFrame(_ => input.select())))
 

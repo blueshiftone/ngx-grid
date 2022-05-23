@@ -10,7 +10,7 @@ import { GridFileUploadService } from '../services/grid-file-upload.service'
 import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
-import { IGridDataSource } from '../typings/interfaces'
+import { IGridCellComponent, IGridCellCoordinates, IGridDataSource } from '../typings/interfaces'
 import { DeleteFromArray } from '../utils/array-delete'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
 import { ColumnOperationFactory } from './column-operations/_column-operation.factory'
@@ -141,8 +141,17 @@ export class GridControllerService {
         case 'Ctrl+C': this.selection.CopySelection.run(); break
 
         case 'Delete': 
-        case 'Backspace':
           (this.selection.latestSelection()?.rowKeys ?? []).forEach(rowKey => this.row.DeleteRow.buffer(rowKey));
+        break
+
+        case 'Backspace': 
+          const cells = (this.selection.latestSelection()?.allCellCoordinates() ?? [])
+            .map<[IGridCellCoordinates, IGridCellComponent | undefined]>(c => [c, this.cell.CellComponents.findWithCoords(c)]);
+          for (const [coordinates, cellComponent] of cells) {
+            if (cellComponent) cellComponent.typeComponent?.receiveValue(null)
+            this.cell.SetCellDraftValue.buffer(coordinates)
+            this.cell.SetCellValue.run(coordinates, null)
+          }
         break
 
         // Toggle checkboxes
