@@ -334,7 +334,7 @@ export interface IMarkdownEditorAction {
 }
 
 export type TCommandFn = (
-  state: EditorState<Schema<any>>,
+  state: EditorState,
   dispatch?: ((tr: Transaction) => void),
   attrs?: { [key: string]: any }
 ) => boolean
