@@ -23,7 +23,7 @@ export class DeleteRow extends Operation {
 
       const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
 
-      if (rowMeta?.canDelete !== true) continue
+      if (rowMeta?.canDelete !== true && rowMeta?.isNew !== true) continue
       
       if (rowMeta?.isNew === true || options.forceRowRemoval === true) {
 

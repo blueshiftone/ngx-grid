@@ -24,6 +24,7 @@ export class SetRowStatus extends Operation {
       if (typeof status === 'string') status = ERowStatus[status]
       
       const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
+      if (status === ERowStatus.Draft && rowMeta?.status === ERowStatus.New) continue
       if (rowMeta?.status !== status) valueChanged = true
 
       this.rowOperations.SetRowMeta.run(rowKey, { status: status })

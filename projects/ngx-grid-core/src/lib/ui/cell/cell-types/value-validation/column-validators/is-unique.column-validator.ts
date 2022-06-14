@@ -52,7 +52,8 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
     }
 
     for (const item of duplicates) {
-      this.patchValidationResult(item, this.error('locValuesInThisColumnMustBeUnique', item))
+      const coords = new GridCellCoordinates(item.rowKey, this.columnKey)
+      this.patchValidationResult(coords, this.error('locValuesInThisColumnMustBeUnique', coords))
     }
   }
 }
