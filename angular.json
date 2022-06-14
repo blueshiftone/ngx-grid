@@ -91,5 +91,7 @@
       }
     }
   },
-  "defaultProject": "ngx-grid-core"
+  "cli": {
+    "analytics": false
+  }
 }
