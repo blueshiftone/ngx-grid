@@ -27,7 +27,13 @@ export class LocalizationService {
   }
 
   public getLocalizedString(str: string): string {
-    return this._locMap.get(str) ?? str
+    if (str.includes('$')) {
+      const [matched, ...captureGroups] = str.match(/\$\{([^\}\\]|\\.)(.+)\}/) ?? []
+      const replacement = this._locMap.get(str.replace(matched, '')) ?? str
+      return str.replace(str.replace(matched, ''), replacement).replace(matched, captureGroups.join(''))
+    } else {
+      return this._locMap.get(str) ?? str
+    }
   }
 
   public setCulture(culture: string): void {

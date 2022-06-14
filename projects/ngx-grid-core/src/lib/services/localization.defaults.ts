@@ -41,4 +41,6 @@ export const GRID_LOCALIZATION_DEFAULTS = new Map<string, string>([
   ["locSelectAnOption", "Select an option"],
   ["locRemoveFile", "Remove File"],
   ["locDownloadFile", "Download File"],
+  ["locValuesInThisColumnMustBeUnique", "Values in this column must be unique"],
+  ["locMaximumCharactersExceeded", "Maximum characters exceeded"],
 ])

@@ -3,11 +3,14 @@ import { IGridRowMeta } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TPrimaryKey } from '../../typings/types'
+import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 
 export class SetRowMeta extends Operation {
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
+
+  private _bufferEmition = new BufferOperation(() => this._emit())
 
   public run(rowKey: TPrimaryKey, input: Partial<Pick<IGridRowMeta, 'metadata' | 'rowKey' | 'status' | 'separators'>>): void {
     
@@ -23,11 +26,17 @@ export class SetRowMeta extends Operation {
 
     Object.assign(rowMeta, input)
 
-    if (rowMeta.isDirty)                                  this.rowOperations.dirtyRowsMap.set(rowKey, rowMeta)
+    if (rowMeta.isDirty)                                 this.rowOperations.dirtyRowsMap.set(rowKey, rowMeta)
     else if(this.rowOperations.dirtyRowsMap.has(rowKey)) this.rowOperations.dirtyRowsMap.delete(rowKey)
 
     this.dataSource.rowMeta.set(rowKey, rowMeta)
-    
+
+    this._bufferEmition.next()
+
+  }
+
+  private async _emit() {
+    this.gridEvents.MetadataChangedEvent.emit()
   }
 
 }

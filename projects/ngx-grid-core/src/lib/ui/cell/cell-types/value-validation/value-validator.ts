@@ -1,7 +1,7 @@
 import { GridControllerService } from '../../../../controller/grid-controller.service'
 import { EMetadataType } from '../../../../typings/enums'
 import { IGridCellCoordinates, IGridValueValidationResult } from '../../../../typings/interfaces'
-import { TValidators, ValidatorMap } from './validators/validator.map'
+import { CellValidatorMap, TCellValidators } from './cell-validators/cell-validator.map'
 
 export class ValueValidator {
 
@@ -22,10 +22,10 @@ export class ValueValidator {
     const cellMetadata = gridController.cell.GetCellMeta.run(cellCoords)?.metadata
     if (!cellMetadata) return output
 
-    const validators = new Set<TValidators>()
+    const validators = new Set<TCellValidators>()
 
     for (const type of getMetaTypes(gridController, cellCoords)) {
-      (ValidatorMap[type] ?? []).forEach(validator => validators.add(validator))
+      (CellValidatorMap[type] ?? []).forEach(validator => validators.add(validator))
     }
 
     for (const validator of validators) {

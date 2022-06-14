@@ -22,6 +22,8 @@ export class DeleteRow extends Operation {
       const [rowKey, options] = arg
 
       const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
+
+      if (rowMeta?.canDelete !== true) continue
       
       if (rowMeta?.isNew === true || options.forceRowRemoval === true) {
 

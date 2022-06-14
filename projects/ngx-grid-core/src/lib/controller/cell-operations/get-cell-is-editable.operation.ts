@@ -8,8 +8,16 @@ export class GetCellIsEditable extends Operation {
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates): boolean {
-    return this.cellOperations.GetCellMetaValue.run<boolean>(coordinates, EMetadataType.CanUpdate)
-      ?? true
+    const cellCanUpdate = this.cellOperations.GetCellMetaValue.run<boolean>(coordinates, EMetadataType.CanUpdate)
+    if (cellCanUpdate === false) {
+      return false
+    } else {
+      const canRowUpdate = this.rowOperations.GetRowMeta.run(coordinates.rowKey)?.canUpdate
+      if (canRowUpdate === false) {
+        return false
+      } else {
+        return true
+      }
+    }
   }
-
 }

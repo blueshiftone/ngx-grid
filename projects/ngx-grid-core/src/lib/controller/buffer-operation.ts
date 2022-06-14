@@ -10,11 +10,11 @@ export class BufferOperation {
     private readonly runFn: (...args: any) => Promise<any>
   ) {}
 
-  public next(args: any[]) {
+  public next(args?: any[]) {
     if (!this._promise) {
       this._promise = new Promise<void>(resolve => {
         this._stream
-          .pipe(bufferTime(5), take(1), switchMap(args => this.runFn(args)))
+          .pipe(bufferTime(0), take(1), switchMap(args => this.runFn(args)))
           .subscribe()
           .add(() => {
             this._promise = undefined

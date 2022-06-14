@@ -72,12 +72,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
     this._lastSeenType = cellType
   }
 
-  public detectChanges() {
-    const newVal = this._getValue()
-    if (this.typeComponent?.value !== newVal || this.typeComponent?.valueHasChanged?.() === true) {
-      this.typeComponent?.receiveValue(newVal)
-    }
-  }
+  public detectChanges = () => this.typeComponent?.receiveValue(this._getValue())
 
   public setValue    = (value: any)             => this.typeComponent?.receiveValue(value)  
   public startEdit   = ()                       => this.typeComponent?.open()

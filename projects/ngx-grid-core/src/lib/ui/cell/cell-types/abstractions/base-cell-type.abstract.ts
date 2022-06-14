@@ -121,8 +121,8 @@ export abstract class BaseCellType implements IGridCellType {
     this.subscriptions.add(this.mode.pipe(filter(mode => mode === ECellMode.Editable)).subscribe(_ => {
       const val = input.value = this.value
       window.requestAnimationFrame(_ => {
-        if (val.toString().length > 1) input.select()
-        else                           input.focus()
+        if ((val ?? '').toString().length > 1) input.select()
+        else input.focus()
       })
     }))
 

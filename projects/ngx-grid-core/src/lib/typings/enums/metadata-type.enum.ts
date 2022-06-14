@@ -4,6 +4,7 @@ export enum EMetadataType {
   CanInsert,
   IsRequired,
   MaxLength,
+  IsUnique,
   Style,
   RecordPreviewTemplateString,
   ForeignEntityName
