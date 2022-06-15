@@ -1,6 +1,6 @@
 {
   "name": "@blueshiftone/ngx-grid-toolbar",
-  "version": "0.5.2",
+  "version": "0.6.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/blueshiftone/ngx-grid",
@@ -8,9 +8,9 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^13.0.0",
-    "@angular/core": "^13.0.0",
-    "@angular/material": "^13.2.4"
+    "@angular/common": "^14.0.1",
+    "@angular/core": "^14.0.1",
+    "@angular/material": "^14.0.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

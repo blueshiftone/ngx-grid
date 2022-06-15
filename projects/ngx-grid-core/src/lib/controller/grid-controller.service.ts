@@ -10,6 +10,7 @@ import { GridFileUploadService } from '../services/grid-file-upload.service'
 import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
+import { ERowStatus } from '../typings/enums'
 import { IGridDataSource } from '../typings/interfaces'
 import { DeleteFromArray } from '../utils/array-delete'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
@@ -172,6 +173,18 @@ export class GridControllerService {
       this.cell.SetCellValidationDialog.run(state)
       const component = this.cell.CellComponents.findWithCoords(state.cellCoordinates)
       if (component) this.cell.SetCellStylesFromMeta.run(component)
+    }))
+
+    // Row status changes
+    addSubscription(gridEvents.RowStatusChangedEvent.onChanges().subscribe(change => {
+      const [prev, next] = change
+
+      // Re-run column validations if change was to/from Deleted status, as this can effect validation results
+      if ([...(prev??[]).map(m => m.status), ...(next??[]).map(m => m.status)].includes(ERowStatus.Deleted)) {
+        for (const col of this.dataSource.columnMeta) {
+          this.cell.ValidateCell.bufferColumnValidation.next([col.columnKey])
+        }
+      }
     }))
     
   }

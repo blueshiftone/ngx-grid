@@ -1,9 +1,11 @@
 import { GridControllerService } from '../../../../../controller/grid-controller.service'
 import { EMetadataType } from '../../../../../typings/enums'
 import { IGridCellCoordinates, IGridValueValidationResult } from '../../../../../typings/interfaces'
-import { BaseValidator, IValueValidator } from './base-validator.abstract'
+import { BaseCellValidator, ICellValidator } from './base-cell-validator.abstract'
 
-export class MaxLength extends BaseValidator implements IValueValidator {
+export class MaxLength extends BaseCellValidator implements ICellValidator {
+
+  public validatorId = EMetadataType.MaxLength
 
   constructor(controller: GridControllerService, coords: IGridCellCoordinates) { super(controller, coords) }
 
@@ -13,7 +15,7 @@ export class MaxLength extends BaseValidator implements IValueValidator {
     const maxLength = this.gridController.cell.GetCellMetaValue.run<number>(this.cellCoords, EMetadataType.MaxLength)
 
     if (maxLength !== null && typeof value === 'string' && value.length > maxLength) {
-      return this.error(`Maximum characters exceeded: ${value.length}/${maxLength}`)
+      return this.error(`locMaximumCharactersExceeded\${: ${value.length}/${maxLength}}`)
     }
 
     return this.passed()

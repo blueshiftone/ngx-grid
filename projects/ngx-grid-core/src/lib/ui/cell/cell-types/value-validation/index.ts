@@ -1,4 +1,4 @@
-import { MaxLength } from './validators'
+import { MaxLength } from './cell-validators'
 
 /* eslint-disable @typescript-eslint/naming-convention */
 export const validators = {

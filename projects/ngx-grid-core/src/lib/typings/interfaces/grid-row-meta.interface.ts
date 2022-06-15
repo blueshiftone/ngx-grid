@@ -13,4 +13,6 @@ export interface IGridRowMeta {
   canDelete  : boolean | null
   canUpdate  : boolean | null
   metadata   : IGridMetadataCollection
+
+  clone(): IGridRowMeta
 }

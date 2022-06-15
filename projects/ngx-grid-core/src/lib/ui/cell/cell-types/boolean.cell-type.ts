@@ -1,6 +1,5 @@
 import { BehaviorSubject } from 'rxjs'
 
-import CELL_TYPES from '.'
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
@@ -27,11 +26,14 @@ export class BooleanCellType extends BaseCellType {
   public override receiveValue(value: any = this.value): void {
     super.receiveValue(value)
     if (!this._checkboxNode) return
-    this._checkboxNode.checked = value ? true : false
-    this._checkboxNode.value   = value ? 'on' : 'off'
+    this._checkboxNode.checked  = value ? true : false
+    this._checkboxNode.value    = value ? 'on' : 'off'
+    this._checkboxNode.disabled = !this.isEditable
   }
   
-  public get displayNode()  { return this._getOuterNode() }
+  public get displayNode()  {
+    return this._getOuterNode()
+  }
   public get editableNode() { return this._getOuterNode() }
 
   private _getOuterNode(): HTMLElement {
@@ -48,6 +50,11 @@ export class BooleanCellType extends BaseCellType {
       this._checkboxNode         = document.createElement('input')
       this._checkboxNode.type    = 'checkbox'
       this._checkboxNode.onclick = e => this.setValue((e.target as HTMLInputElement).checked)
+      this._checkboxNode.disabled = !this.isEditable
+      this.subscriptions.add(this.gridController.gridEvents.MetadataChangedEvent.on().subscribe(_ => {
+        if (!this._checkboxNode) return
+        this._checkboxNode.disabled = !this.isEditable
+      }))
     }
     return this._checkboxNode
   }

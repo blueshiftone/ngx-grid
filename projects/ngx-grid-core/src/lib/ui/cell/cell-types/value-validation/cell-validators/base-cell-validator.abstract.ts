@@ -2,14 +2,15 @@ import { GridControllerService } from '../../../../../controller/grid-controller
 import { EValidationSeverity, IGridCellCoordinates, IGridValueValidationResult } from '../../../../../typings/interfaces'
 import { GridMetadataCollection } from '../../../../../typings/interfaces/implementations'
 
-export interface IValueValidator {
+export interface ICellValidator {
   run(value: any): IGridValueValidationResult
 }
 
-export abstract class BaseValidator implements IValueValidator {
+export abstract class BaseCellValidator implements ICellValidator {
 
   constructor(public gridController: GridControllerService, public cellCoords: IGridCellCoordinates) {}
 
+  public abstract validatorId: any
   public abstract run(value: any): IGridValueValidationResult
 
   public value  : any    = null
@@ -19,7 +20,14 @@ export abstract class BaseValidator implements IValueValidator {
   public return(isValid: boolean, message?: string, severity?: EValidationSeverity): IGridValueValidationResult {
     const { value } = this
     const isInvalid = !isValid
-    return { value, failed: isInvalid, passed: isValid, message: message ?? this.message, severity: severity ?? this.severity }
+    return { 
+      value,
+      failed: isInvalid,
+      passed: isValid,
+      message: message ?? this.message,
+      severity: severity ?? this.severity,
+      validatorId: this.validatorId
+    }
   }
 
   public passed(): IGridValueValidationResult {

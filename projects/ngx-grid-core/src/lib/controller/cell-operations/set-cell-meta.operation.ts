@@ -2,11 +2,14 @@ import { IGridCellCoordinates, IGridCellMeta, IGridMetadataInfo } from '../../ty
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
+import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 
 export class SetCellMeta extends Operation {
   
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
+
+  private _bufferEmition = new BufferOperation(() => this._emit())
   
   public run(coordinates: IGridCellCoordinates, input: Partial<IGridCellMeta> | IGridMetadataInfo[]): void {
 
@@ -26,6 +29,12 @@ export class SetCellMeta extends Operation {
     }    
 
     this.dataSource.cellMeta.set(coordinates.compositeKey, meta)
+
+    this._bufferEmition.next()
+  }
+
+  private async _emit() {
+    this.gridEvents.MetadataChangedEvent.emit()
   }
 
 }

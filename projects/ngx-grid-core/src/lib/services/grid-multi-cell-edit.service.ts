@@ -65,11 +65,8 @@ export class GridMultiCellEditService {
             delay(200),
             filter(value => value === null),
             skip(1),
-            takeUntil(ref.detachments()),
-          ).subscribe(_ => {
-            ref.detach()
-          }
-      )
+            takeUntil(ref.detachments()))
+        .subscribe(_ => ref.detach())
     }
 
     return cellComponent
@@ -130,7 +127,7 @@ export class GridMultiCellEditService {
     
     const cells = selection.allCellCoordinates().filter(coordinates => this.gridController.cell.GetCellIsEditable.run(coordinates))
 
-    if (cells.length < 2 || selection.columnKeys.length > 1) return false
+    if (cells.length < 1 || selection.columnKeys.length > 1) return false
 
     const types = cells.map<IGridDataType>(coordinates => {
       const cellMeta = this.gridController.cell.GetCellMeta.run(coordinates)
@@ -147,7 +144,7 @@ export class GridMultiCellEditService {
         return typeof v?.value !== 'string' ? JSON.stringify(v.value) : v.value
       })).length === 1
 
-      const initialValue = isDistinctValue ? values[0] : (type.name === 'RichText' ? '<p></p>' : null)
+      const initialValue = isDistinctValue ? values[0].value : (type.name === 'RichText' ? '<p></p>' : null)
 
       const editors = CELL_MULTI_EDITORS[type.name]
 

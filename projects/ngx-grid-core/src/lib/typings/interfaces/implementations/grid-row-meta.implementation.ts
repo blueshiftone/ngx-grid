@@ -4,6 +4,7 @@ import { EMetadataType } from '../../enums'
 import { ERowStatus } from '../../enums/row-status.enum'
 import { TPrimaryKey } from '../../types'
 import { IGridSeparator } from '../grid-separator.interface'
+import { GridImplementationFactory } from './grid-implementation.factory'
 
 export class GridRowMeta implements IGridRowMeta {
   public separators?: IGridSeparator[] | undefined
@@ -25,6 +26,16 @@ export class GridRowMeta implements IGridRowMeta {
 
   public get canUpdate(): boolean | null {
     return this.metadata.get<boolean>(EMetadataType.CanUpdate)
+  }
+
+  public clone() {
+    const output = new GridRowMeta({
+      rowKey: this.rowKey,
+      separators: this.separators ? [...this.separators] : undefined,
+      status: this.status
+    })
+    output.metadata = GridImplementationFactory.gridMetadataCollection(this.metadata.items)
+    return output
   }
 
 }
