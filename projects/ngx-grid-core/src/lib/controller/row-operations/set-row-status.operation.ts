@@ -24,7 +24,7 @@ export class SetRowStatus extends Operation {
       if (typeof status === 'string') status = ERowStatus[status]
       
       const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
-      if (status === ERowStatus.Draft && rowMeta?.status === ERowStatus.New) continue
+      if (status === ERowStatus.Draft && (rowMeta?.status === ERowStatus.New || rowMeta?.status === ERowStatus.Deleted)) continue
       if (rowMeta?.status !== status) valueChanged = true
 
       this.rowOperations.SetRowMeta.run(rowKey, { status: status })
@@ -39,7 +39,7 @@ export class SetRowStatus extends Operation {
       this.gridEvents.GridWasModifiedEvent.emit(true) 
       const primaryKeys = DistinctValues(args.map(a => a[0]))
       if (emitEvent) {
-        this.gridEvents.RowStatusChangedEvent.emit(primaryKeys.map(pk => this.rowOperations.GetRowMeta.run(pk)).filter(meta => meta) as IGridRowMeta[])
+        this.gridEvents.RowStatusChangedEvent.emit(primaryKeys.map(pk => this.rowOperations.GetRowMeta.run(pk)).filter(meta => meta).map(m => m?.clone()) as IGridRowMeta[])
       }
     }
 

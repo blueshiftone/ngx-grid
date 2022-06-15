@@ -112,9 +112,9 @@ export class GridContextMenuService {
         icon  : EGridIcon.Copy
       })
 
-      const canDeleteARow = selection.rowKeys.find(r => this.gridController.row.GetRowMeta.run(r)?.canDelete === true) !== undefined
+      const canDeleteARow = selection.rowKeys.find(r => this.gridController.row.GetRowCanDelete.run(r) === true) !== undefined
 
-      if (canDelete && canDeleteARow) {
+      if (canDeleteARow) {
         output.push({
           label: `locDeleteRecord(s)`,
           action: () => selection.rowKeys.forEach(k => this.gridController.row.DeleteRow.buffer(k)),

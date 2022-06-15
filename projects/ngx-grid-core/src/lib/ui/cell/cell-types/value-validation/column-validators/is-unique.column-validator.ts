@@ -1,5 +1,5 @@
 import { GridControllerService } from '../../../../../controller/grid-controller.service'
-import { EMetadataType } from '../../../../../typings/enums'
+import { EMetadataType, ERowStatus } from '../../../../../typings/enums'
 import { IGridCellValidationState, IGridCellValue } from '../../../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../../../typings/interfaces/implementations/grid-cell-coordinates.implementation'
 import { TColumnKey } from '../../../../../typings/types'
@@ -27,6 +27,7 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
       if (cellValue?.validationState?.validationResults.find(v => v.validatorId === this.validatorId)?.failed === true) {
         existingInvalidStates.push(cellValue.validationState)
       }
+      if (this.gridController.row.GetRowStatus.run(row.rowKey) === ERowStatus.Deleted) continue
       if (cellValue?.value !== '' && cellValue?.value !== undefined && cellValue?.value !== null) {
         if (grouped.has(cellValue.value)) {
           const existing = grouped.get(cellValue.value)
@@ -36,6 +37,7 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
         }
       }
     }
+    
 
     const duplicates = [...grouped.values()].filter(cells => cells.length > 1).reduce<IGridCellValue[]>((output, el) => {
       output.push(...el)

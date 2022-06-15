@@ -13,8 +13,12 @@
           <span class="material-symbols-outlined">expand_more</span>
         </button>
       </div>
-      <button [matTooltip]="locCopySelection" class="copy icon-button" matRipple (click)="copySelection()"><span class="material-symbols-outlined">content_copy</span></button>
-      <button [matTooltip]="locDeleteRecords" *ngIf="canDelete" class="copy icon-button" matRipple (click)="deleteRecords()"><span class="material-symbols-outlined">delete</span></button>
+      <button [matTooltip]="locCopySelection" class="copy icon-button" matRipple (click)="copySelection()">
+        <mat-icon svgIcon="Copy"></mat-icon>
+      </button>
+      <button [matTooltip]="locDeleteRecords" *ngIf="canDelete" class="copy icon-button" matRipple (click)="deleteRecords()">
+        <mat-icon svgIcon="Delete"></mat-icon>
+      </button>
     </div>
     <div class="actions end">
       <button class="more icon-button" matRipple><span class="material-symbols-outlined">more_horiz</span></button>

@@ -11,7 +11,7 @@ export class ValidateCell extends Operation {
   
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
-  private _bufferColumnValidation = new BufferOperation((args: string[][]) => this._columnValidation(args))
+  public bufferColumnValidation = new BufferOperation((args: string[][]) => this._columnValidation(args))
   
   public run(cellCoordinates: IGridCellCoordinates): IGridValueValidationResult[] {
 
@@ -23,7 +23,7 @@ export class ValidateCell extends Operation {
     
     if (cellValue) cellValue.validationState = nextState
     if (!nextIsValid || nextIsValid != previousIsValid) this.gridEvents.CellValidationStateChangedEvent.emit(nextState)
-    this._bufferColumnValidation.next([cellCoordinates.columnKey])
+    this.bufferColumnValidation.next([cellCoordinates.columnKey])
     return validationResults
   }
 

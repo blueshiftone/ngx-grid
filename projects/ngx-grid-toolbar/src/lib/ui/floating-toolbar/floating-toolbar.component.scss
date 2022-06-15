@@ -67,6 +67,9 @@ button:not(.mat-menu-item) {
       font-size: 21px;
       line-height: 21px;
     }
+    .mat-icon {
+      transform: scale(0.8);
+    }
   }
   .label {
     font-size: 12px;

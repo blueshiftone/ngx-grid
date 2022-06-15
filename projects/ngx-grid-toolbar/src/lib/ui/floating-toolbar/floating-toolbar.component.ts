@@ -111,8 +111,10 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
       if (distinctType) {
         this.multiEditorLabels = distinctType.editors.map(e => new e(null, distinctType.type.name)).map(editor => editor.label).reverse()
       }
-      const canDeleteARow = this.toolbarService.currentMeta.rows.find(r => r.canDelete === true) !== undefined
-      this.canDelete = this.toolbarService.gridController?.dataSource.canDelete === true && canDeleteARow
+      const controller = this.toolbarService.gridController
+      if (controller) {
+        this.canDelete = this.toolbarService.currentMeta.rows.find(r => controller.row.GetRowCanDelete.run(r) === true) !== undefined
+      }
     }
     this.changeDetection.detectChanges()
   }
