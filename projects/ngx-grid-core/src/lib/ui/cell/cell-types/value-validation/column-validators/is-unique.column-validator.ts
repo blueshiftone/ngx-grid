@@ -7,7 +7,7 @@ import { BaseColumnValidator, IColumnValidator } from './base-column-validator.a
 
 export class IsUnique extends BaseColumnValidator implements IColumnValidator {
 
-  public validatorId = EMetadataType.IsUnique
+  public validatorId = EMetadataType[EMetadataType.IsUnique]
 
   constructor(controller: GridControllerService, columnKey: TColumnKey) { super(controller, columnKey) }
 

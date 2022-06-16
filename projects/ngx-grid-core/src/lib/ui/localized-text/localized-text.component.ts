@@ -34,7 +34,7 @@ export class LocalizedTextComponent  extends AutoUnsubscribe implements AfterVie
     }
     this._el.parentElement.insertBefore(this._txtNode, this._el)
     this._el.remove()
-    this.addSubscription(this.events.factory.LocalizationsChangedEvent.on().subscribe(_ => this._setTextValue()))
+    this.addSubscription(this.loc.changes.subscribe(_ => this._setTextValue()))
   }
 
   ngAfterViewChecked(): void {

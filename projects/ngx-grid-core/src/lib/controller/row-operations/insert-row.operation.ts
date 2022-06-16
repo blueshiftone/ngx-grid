@@ -1,4 +1,5 @@
 import { IGridRow, IRowOperationFactory } from '../../typings/interfaces'
+import { GridCellCoordinates } from '../../typings/interfaces/implementations/grid-cell-coordinates.implementation'
 import { WithDefaultTrue } from '../../utils/with-default-true'
 import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
@@ -20,7 +21,7 @@ export class InsertRow extends Operation {
     const rows         = this.rowOperations.GetAllRows.filteredRows()
     const filteredRows = this._filteredRows
     const sortedRows   = this._sortedRows
-  
+
     for (const arg of args) {
       
       let [insertRow, options] = arg
@@ -47,14 +48,18 @@ export class InsertRow extends Operation {
         }
       }
 
-      this.rowOperations.AddRow.buffer(insertRow, globalIndex)
+      this.rowOperations.AddRow.buffer(insertRow, globalIndex).then(() => {
+        for (const col of this.columnOperations.GetColumns.run()) {
+          const coords = new GridCellCoordinates(insertRow.rowKey, col)
+          this.cellOperations.ValidateCell.run(coords)
+        }
+      })
 
       if (WithDefaultTrue(options.emitEvent) === true) {
         this.gridEvents.RowInsertedEvent.emit(insertRow)
       }
 
     }
-
   }
 
   private get _sortedRows() {

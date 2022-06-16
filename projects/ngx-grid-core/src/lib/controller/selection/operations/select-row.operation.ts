@@ -14,7 +14,7 @@ export class SelectRow {
     const startPos = new GridCellCoordinates(rowKey, utils.getFirstColumn())
     const endPos   = new GridCellCoordinates(rowKey, utils.getLastColumn())
     
-    if (this.controller.state === null) this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run([startPos, endPos])
+    if (this.controller.state === null) this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run([startPos, endPos])  
 
     this.controller.ReplaceSelection.run([startPos, endPos])
 

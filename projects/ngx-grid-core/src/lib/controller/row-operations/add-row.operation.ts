@@ -1,4 +1,3 @@
-import { EMetadataType } from '../../typings/enums'
 import { ERowStatus } from '../../typings/enums/row-status.enum'
 import { IGridRow } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
@@ -31,11 +30,9 @@ export class AddRow extends Operation {
 
       buffers.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New))
       
-      for (const columnKey of this.dataSource.columns) {
-        const colMeta = this.columnOperations.GetColumnMeta.run(columnKey)
-        const canUpdate = colMeta?.metadata.get<boolean>(EMetadataType.CanUpdate) !== false
-        if (canUpdate && firstEditableCell === null) firstEditableCell = columnKey
-        this.cellOperations.SetCellMeta.run(new GridCellCoordinates(rowKey, columnKey), [{ key: EMetadataType.CanUpdate, value: canUpdate }])
+      for (const columnKey of this.columnOperations.GetColumns.run()) {
+        const isEditable = this.cellOperations.GetCellIsEditable.run(new GridCellCoordinates(rowKey, columnKey))
+        if (isEditable && firstEditableCell === null) firstEditableCell = columnKey
       }
     }
 

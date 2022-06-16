@@ -6,4 +6,5 @@ export type TColumnValidators = typeof ColumnValidatorClasses[keyof typeof Colum
 
 export const ColumnValidatorMap: Partial<{ [ key in keyof typeof EMetadataType ]: TColumnValidators[] }> = {
   IsUnique: [ ColumnValidatorClasses.IsUnique ],
+  ExactlyOneRecordWithValue: [ ColumnValidatorClasses.ExactlyOneRecordWithValue ],
 }

@@ -78,7 +78,7 @@ export class CellComponents extends Operation {
   private _updateCellComponent(cell: IGridCellComponent): void {
     this.cellOperations.SetCellSelectionClasses.run(cell)
     this.cellOperations.SetFocusedCellClasses.run(cell)
-    this.cellOperations.SetCellStylesFromMeta.run(cell) 
+    this.cellOperations.SetCellStylesFromMeta.run(cell)
   }
 
 }

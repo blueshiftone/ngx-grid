@@ -120,7 +120,7 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
         })
         
         if (this.controller.latestSelection()?.includesRow(rowKey)) nextState.currentSelection.removeRange(...coords)
-        else                                                      nextState.currentSelection.addRange(...coords)
+        else nextState.currentSelection.addRange(...coords)
 
         if (!nextState.currentSelection.cellCount && !nextState.currentSelection.secondarySelection?.cellCount) this._emitSelection(null)
         else this._emitSelection(nextState.currentSelection)

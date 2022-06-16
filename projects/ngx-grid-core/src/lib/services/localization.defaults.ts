@@ -42,5 +42,8 @@ export const GRID_LOCALIZATION_DEFAULTS = new Map<string, string>([
   ["locRemoveFile", "Remove File"],
   ["locDownloadFile", "Download File"],
   ["locValuesInThisColumnMustBeUnique", "Values in this column must be unique"],
+  ["locThisColumnMustContainOnlyOneCellWithTheValueOf", "This column must contain only one cell with the value of"],
+  ["locOneCellInThisColumnMustHaveTheValueOf", "One cell in this column must have the value of"],
   ["locMaximumCharactersExceeded", "Maximum characters exceeded"],
+  ["locThisIsARequiredField", "This is a required field"],
 ])

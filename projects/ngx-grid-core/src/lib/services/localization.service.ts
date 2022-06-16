@@ -17,22 +17,23 @@ export class LocalizationService {
   public culture : string   = this.prefs.get<string>(LocalizationService.cultureSettingsKey, LocalizationService.defaultCulture)
 
   private _locMap: Map<string, string> = new Map()
+  private _defaultLocMap: Map<string, string> = new Map()
 
   constructor(
     private readonly prefs : LocalPreferencesService,
   ) {
     for (const entry of GRID_LOCALIZATION_DEFAULTS.entries()) {
-      this._locMap.set(entry[0], entry[1])
+      this._defaultLocMap.set(entry[0], entry[1])
     }
   }
 
   public getLocalizedString(str: string): string {
     if (str.includes('$')) {
       const [matched, ...captureGroups] = str.match(/\$\{([^\}\\]|\\.)(.+)\}/) ?? []
-      const replacement = this._locMap.get(str.replace(matched, '')) ?? str
+      const replacement = this._locMap.get(str.replace(matched, '')) ?? this._defaultLocMap.get(str.replace(matched, '')) ?? str
       return str.replace(str.replace(matched, ''), replacement).replace(matched, captureGroups.join(''))
     } else {
-      return this._locMap.get(str) ?? str
+      return this._locMap.get(str) ?? this._defaultLocMap.get(str) ?? str
     }
   }
 
@@ -48,7 +49,13 @@ export class LocalizationService {
   }
 
   public getLocalizations(): ILocalization[] {
-    return [...this._locMap.entries()].map(e => ({ key: e[0], value: e[1] }))
+    const entries = [...this._locMap.entries()]
+    for (const entry of this._defaultLocMap.entries()) {
+      if (!this._locMap.has(entry[0])) {
+        entries.push(entry)
+      }
+    }
+    return entries.map(e => ({ key: e[0], value: e[1] }))
   }
 }
 
