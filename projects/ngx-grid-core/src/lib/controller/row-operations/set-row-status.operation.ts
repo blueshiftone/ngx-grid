@@ -22,7 +22,7 @@ export class SetRowStatus extends Operation {
       let [rowKey, status, options] = arg
 
       if (typeof status === 'string') status = ERowStatus[status]
-      
+
       const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
       if (status === ERowStatus.Draft && (rowMeta?.status === ERowStatus.New || rowMeta?.status === ERowStatus.Deleted)) continue
       if (rowMeta?.status !== status) valueChanged = true

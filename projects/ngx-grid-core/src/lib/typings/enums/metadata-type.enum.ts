@@ -5,6 +5,7 @@ export enum EMetadataType {
   IsRequired,
   MaxLength,
   IsUnique,
+  ExactlyOneRecordWithValue,
   Style,
   RecordPreviewTemplateString,
   ForeignEntityName

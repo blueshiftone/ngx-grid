@@ -3,19 +3,21 @@ import { EMetadataType } from '../../../../../typings/enums'
 import { IGridCellCoordinates, IGridValueValidationResult } from '../../../../../typings/interfaces'
 import { BaseCellValidator, ICellValidator } from './base-cell-validator.abstract'
 
-export class MaxLength extends BaseCellValidator implements ICellValidator {
+export class IsRequired extends BaseCellValidator implements ICellValidator {
 
-  public validatorId = EMetadataType[EMetadataType.MaxLength]
+  public validatorId = EMetadataType[EMetadataType.IsRequired]
 
   constructor(controller: GridControllerService, coords: IGridCellCoordinates) { super(controller, coords) }
 
   public run(value: any): IGridValueValidationResult<number> {
     this.value = value
     
-    const maxLength = this.gridController.cell.GetCellMetaValue.run<number>(this.cellCoords, EMetadataType.MaxLength)
+    const enabled = this.gridController.cell.GetCellMetaValue.run<boolean>(this.cellCoords, EMetadataType.IsRequired) === true
 
-    if (maxLength !== null && typeof value === 'string' && value.length > maxLength) {
-      return this.error(`locMaximumCharactersExceeded\${: ${value.length}/${maxLength}}`)
+    if (enabled) {
+      if (value === '' || value === null || value === undefined) {
+        return this.warning(`locThisIsARequiredField`)
+      }
     }
 
     return this.passed()

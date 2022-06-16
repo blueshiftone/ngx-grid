@@ -116,8 +116,8 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     this.cd.detectChanges()
   }
 
-  public label(columnName: string): string {
-    return this.gridController.column.GetColumnLabel.run(columnName)
+  public label(columnKey: string): string {
+    return this.gridController.column.GetColumnLabel.run(columnKey)
   }
 
   public separators(columnName: string): IGridSeparator[] {

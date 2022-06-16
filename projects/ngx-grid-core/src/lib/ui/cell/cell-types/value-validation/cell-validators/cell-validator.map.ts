@@ -6,4 +6,5 @@ export type TCellValidators = typeof CellValidatorClasses[keyof typeof CellValid
 
 export const CellValidatorMap: Partial<{ [ key in keyof typeof EMetadataType ]: TCellValidators[] }> = {
   MaxLength: [ CellValidatorClasses.MaxLength ],
+  IsRequired: [ CellValidatorClasses.IsRequired ]
 }

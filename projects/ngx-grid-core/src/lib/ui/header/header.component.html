@@ -16,6 +16,6 @@
     <span class="material-symbols-outlined sort-icon" *ngIf="columnKey === sortingBy">{{ sortingByDirection ? 'north'
       : 'south' }}</span>
     <data-grid-separator *ngFor="let s of separators(columnKey)" Axis="y" [separator]="s"></data-grid-separator>
-    <div class="text-readonly">{{ columnKey }}</div>
+    <div class="text-readonly"><lib-localized-text>{{ label(columnKey) }}</lib-localized-text></div>
     </div>
 </div>

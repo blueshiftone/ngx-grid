@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { fromEvent, Subscription } from 'rxjs'
-import { filter, take } from 'rxjs/operators'
+import { combineLatest, fromEvent, Subscription } from 'rxjs'
+import { filter, startWith, take } from 'rxjs/operators'
 
 import { GridEventsService } from '../events/grid-events.service'
 import { GridDataSource } from '../grid-data-source'
@@ -11,7 +11,9 @@ import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
 import { ERowStatus } from '../typings/enums'
-import { IGridDataSource } from '../typings/interfaces'
+import { IGridCellComponent, IGridDataSource } from '../typings/interfaces'
+import { GridCellCoordinates } from '../typings/interfaces/implementations/grid-cell-coordinates.implementation'
+import { TPrimaryKey } from '../typings/types'
 import { DeleteFromArray } from '../utils/array-delete'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
 import { ColumnOperationFactory } from './column-operations/_column-operation.factory'
@@ -121,13 +123,11 @@ export class GridControllerService {
     // Grid filter changed
     addSubscription(gridEvents.GridFilterStringChangedEvent.on().subscribe(filter => this.row.FilterRows.run(filter)))
 
+    // Handle paste event
     addSubscription(fromEvent<ClipboardEvent>(window, 'paste').subscribe(clipboard => {
-      const htmlData  = clipboard.clipboardData?.getData('text/html')
-      const plainData = clipboard.clipboardData?.getData('text/plain')
-      this.grid.GridPaste.run({ 
-        html     : htmlData,
-        plainText: plainData
-      })
+      const html = clipboard.clipboardData?.getData('text/html')
+      const plainText = clipboard.clipboardData?.getData('text/plain')
+      this.grid.GridPaste.run({ html, plainText })
     }))
 
     // Update viewport size when data changes
@@ -175,16 +175,39 @@ export class GridControllerService {
       if (component) this.cell.SetCellStylesFromMeta.run(component)
     }))
 
-    // Row status changes
-    addSubscription(gridEvents.RowStatusChangedEvent.onChanges().subscribe(change => {
-      const [prev, next] = change
-
-      // Re-run column validations if change was to/from Deleted status, as this can effect validation results
-      if ([...(prev??[]).map(m => m.status), ...(next??[]).map(m => m.status)].includes(ERowStatus.Deleted)) {
-        for (const col of this.dataSource.columnMeta) {
-          this.cell.ValidateCell.bufferColumnValidation.next([col.columnKey])
+    // Listen to events to re-run column validators
+    addSubscription(
+      combineLatest([
+        gridEvents.RowStatusChangedEvent.onChanges().pipe(startWith([undefined, undefined] as const)),
+        gridEvents.RowsRevertedEvent.on().pipe(startWith<TPrimaryKey[]>([]))
+      ])
+      .subscribe(event => {
+        const [ statusChangeEvent, revertedEvent ] = event
+        const [prev, next] = statusChangeEvent
+        if ([...(prev??[]).map(m => m.status), ...(next??[]).map(m => m.status)].includes(ERowStatus.Deleted) || revertedEvent.length) {
+          for (const col of this.dataSource.columnMeta) {
+            this.cell.ValidateCell.bufferColumnValidation.next([col.columnKey])
+          }
         }
+      }))
+
+    // React to metadata changes
+    addSubscription(gridEvents.MetadataChangedEvent.on().subscribe(change => {
+      let affectedCellComponents: IGridCellComponent[] = []
+      if  (change.columnKey !== undefined && change.rowKey !== undefined) {
+        const coords = new GridCellCoordinates(change.rowKey, change.columnKey)
+        const cell = this.cell.CellComponents.findWithCoords(coords)
+        if (cell) affectedCellComponents.push(cell)
+      } else if (change.rowKey !== undefined) {
+        for (const col of this.column.GetColumns.run()) {
+          const coords = new GridCellCoordinates(change.rowKey, col)
+          const cell = this.cell.CellComponents.findWithCoords(coords)
+          if (cell) affectedCellComponents.push(cell)
+        }
+      } else {
+        affectedCellComponents = this.cell.CellComponents.getAll()
       }
+      affectedCellComponents.forEach(c => this.cell.SetCellStylesFromMeta.run(c))
     }))
     
   }
