@@ -9,8 +9,8 @@ export class GetCellMetaValue extends Operation {
 
   public run<T>(coordinates: IGridCellCoordinates, type: EMetadataType): T | null {
     return this.cellOperations.GetCellMeta.run(coordinates)?.metadata?.get<T>(type)
-      ?? this.rowOperations.GetRowMeta.run(coordinates.rowKey)?.metadata?.get<T>(type)
       ?? this.columnOperations.GetColumnMeta.run(coordinates.columnKey)?.metadata?.get<T>(type)
+      ?? this.rowOperations.GetRowMeta.run(coordinates.rowKey)?.metadata?.get<T>(type)
       ?? this.dataSource.metadata?.get<T>(type)
       ?? null
   }
