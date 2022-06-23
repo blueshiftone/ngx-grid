@@ -16,6 +16,7 @@ export class PercentCellType extends BaseCellType {
 
   private _displayNode? : HTMLElement
   private _editableNode?: HTMLElement
+  private _signNode?: HTMLElement
   private _valueNode?   : HTMLElement
 
   constructor(
@@ -31,15 +32,18 @@ export class PercentCellType extends BaseCellType {
     super.receiveValue(value)
     if (!this._valueNode) return;
     this._valueNode.innerText = this._displayValue
+    if (this._signNode) {
+      this._signNode.style.display = value === null ? 'none' : ''
+    }
   }
 
   private _generateDisplayNode(): HTMLElement {
     const outerNode = this.createDiv(this.readonlyCssClassName)
     this._valueNode = this.createDiv('value')
-    const signNode  = this.createDiv('sign')
-    signNode.innerText = '%'
+    this._signNode  = this.createDiv('sign')
+    this._signNode.innerText = '%'
     outerNode.appendChild(this._valueNode)
-    outerNode.appendChild(signNode)
+    outerNode.appendChild(this._signNode)
     this.receiveValue()
     return this._displayNode = outerNode
   }
@@ -51,6 +55,7 @@ export class PercentCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
+    if (this.value === null) return ''
     let val = typeof this.value === 'number' ? this.value : parseFloat(this.value)
     const bits = (val * 100).toFixed(this.decimalPlaces).toString().split('.').map(v => v === 'NaN' ? '0' : v)
     return `${bits[0] ?? '0'}${this.decimalPlaces ? '.' : ''}${(bits[1] ?? '').padEnd(this.decimalPlaces, '0')}`

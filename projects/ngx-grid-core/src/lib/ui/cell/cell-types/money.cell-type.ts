@@ -40,6 +40,9 @@ export class MoneyCellType extends BaseCellType {
     super.receiveValue(value)
     if (!this._valueNode) return;
     this._valueNode.innerText = this._displayValue
+    if (this._currencySymbolNode) {
+      this._currencySymbolNode.style.display = value === null ? 'none' : ''
+    }
   }
 
   private _generateDisplayNode(): HTMLElement {
@@ -61,6 +64,7 @@ export class MoneyCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
+    if (this.value === null) return ''
     if (typeof this.value !== 'number') return this.value
     const bits = this.value.toFixed(this.decimalPlaces).toString().split('.')
     return `${parseInt(bits[0] || '0').toLocaleString(this.gridController.localize.culture)}.${(bits[1] || '').padEnd(this.decimalPlaces, '0')}`
