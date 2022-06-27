@@ -51,6 +51,7 @@ export abstract class BaseCellType implements IGridCellType {
   }
 
   public setValue(value: any): boolean {
+    if (value === '') value = null
     let validationResult = this.gridController.cell.SetCellValue.run(this.coordinates, value)
     if (validationResult.isValid) {
       this.receiveValue(value)
