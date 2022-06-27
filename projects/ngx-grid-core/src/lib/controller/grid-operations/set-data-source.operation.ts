@@ -44,6 +44,7 @@ export class SetDataSource extends Operation {
       })
       this.gridOperations.SetRelatedData.run(dataGridID, relatedGrid)
       this._watchRelatedDataSource(dataGridID, relatedGrid)
+      this.gridEvents.RelatedGridAddedEvent.emit(relatedGrid)
     }
     return relatedGrid
   }

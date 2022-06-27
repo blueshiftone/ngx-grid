@@ -1,13 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core'
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
+import { DOCUMENT } from '@angular/common'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { fromEvent, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators'
+import { BehaviorSubject, fromEvent, Observable } from 'rxjs'
+import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EForeignKeyDropdownState } from '../../../typings/enums'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectListOption } from '../../../typings/interfaces'
+import { HasParentMatching } from '../../../utils/find-parent-element-of-class'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
 
@@ -19,26 +22,27 @@ import { BaseOverlayComponent } from '../base-grid-overlay.component'
 })
 export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOverlayComponent implements OnInit {
 
-  @ViewChild    ('wrapper', { static: true }) public wrapperElement!   : ElementRef<HTMLDivElement>
-  @ViewChild    ('searchInput', { static: true }) public searchInput!  : ElementRef<HTMLInputElement>
-  @ViewChild    ('grid') public gridComponent?                         : DataGridComponent
-  @ViewChildren('options', { read: ElementRef }) public optionElements?: QueryList<ElementRef>
+  public  itemHeight     = 30
+  private _scrollPadding = 10
 
-  public dataSource?    : IGridDataSource
-  public searchCtrl                               = new FormControl()
+  @ViewChild('wrapper', { static: true }) public wrapperElement!: ElementRef<HTMLDivElement>
+  @ViewChild('searchInput', { static: true }) public searchInput!: ElementRef<HTMLInputElement>
+  @ViewChild('grid') public gridComponent?: DataGridComponent
+  @ViewChild('virtualScrollViewport', { read: CdkVirtualScrollViewport }) public virtualScrollViewport?: CdkVirtualScrollViewport
+
+  public dataSource?: IGridDataSource
+
+  public searchCtrl        = new FormControl()
+  public scrollOffsetAsync = this.virtualScrollViewport?.scrolledIndexChange ?? new Observable()
+  public gridConfig        = new DataGridConfigs().withRowSingleSelect()
+  public selectedOption    = new BehaviorSubject<IGridSelectListOption | null>(null)
+
   public override value: Array<string | number>   = []
   public filteredOptions: IGridSelectListOption[] = []
 
-  public scrollOffset = 0
-
-  public highlightedItem?: IGridSelectListOption | null
-  public highlightedElement = new Subject<HTMLElement>()
-
   private _options: IGridSelectListOption[] = []
 
-  public gridConfig = new DataGridConfigs().withRowSingleSelect()
-
-  public loadingState = this.gridController.gridEvents
+  public dropdownState = this.gridController.gridEvents
     .ForeignKeyDropdownStateChangedEvent
     .on()
     .pipe(
@@ -47,10 +51,11 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
       startWith(EForeignKeyDropdownState.Idle),
       distinctUntilChanged())
 
-  public LoadingState = EForeignKeyDropdownState
+  public ForeignKeyDropdownState = EForeignKeyDropdownState
 
   constructor(
     @Inject(GRID_OVERLAY_DATA) public override data: IGridOverlayData,
+    @Inject(DOCUMENT) public doc: Document,
     public override cd: ChangeDetectorRef
   ) {
     super(data, cd)
@@ -58,28 +63,23 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
 
   override ngOnInit(): void {
     const list = this.data.currentCell?.type.list
-    this.value = [ this.data.currentCell?.value ].filter(v => v !== null && typeof v !== 'undefined')
-    if (!list) return
-    this.dataSource = this._getDataSource()
-    if (!this.dataSource) return
+    this.value = [this.data.currentCell?.value].filter(v => v !== null && typeof v !== 'undefined')
+
+    if (list === undefined) throw new Error(`Cell does not appear to be a dropdown type. It is missing the list property.`)
 
     this.addSubscription(fromEvent<KeyboardEvent>(this.wrapperElement.nativeElement, 'keydown').subscribe(e => {
-      switch(e.key.toLowerCase()) {
+      switch (e.key.toLowerCase()) {
         case 'arrowdown': this.highlightNext(1); this._stopEvent(e); break
-        case 'arrowup'  : this.highlightNext(-1); this._stopEvent(e); break
-        case 'enter'    : 
-          if (typeof this.highlightedItem !== 'undefined') this.selectOption(this.highlightedItem ?? null)
-          this._stopEvent(e);
-        break
-        case 'escape'   : this._stopEvent(e); this.close(); break
+        case 'arrowup': this.highlightNext(-1); this._stopEvent(e); break
+        case 'enter':
+          this.selectOption(this.selectedOption.value)
+          this._stopEvent(e)
+          break
+        case 'escape': this._stopEvent(e); this.close(); break
       }
     }))
 
     this.addSubscription(this.searchCtrl.valueChanges.subscribe(_ => this._filterOptions()))
-    this.addSubscription(fromEvent(this.wrapperElement.nativeElement, 'scroll').subscribe(_ => {
-      this.scrollOffset = this.wrapperElement.nativeElement.scrollTop
-      this.cd.detectChanges()
-    }))
     this.addSubscription(this.cell.valueChanged.pipe(startWith()).subscribe(_ => this._highlightSelected()))
 
     const keyboardEventPassedThrough = this.gridController.gridEvents.KeyPressPassedThroughEvent.state
@@ -88,9 +88,33 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
       this.gridController.gridEvents.KeyPressPassedThroughEvent.emit(null)
     }
 
-    this._setOptions()
-    this.addSubscription(this.dataSource.onChanges.subscribe(_ => this._setOptions()))
+    this.dataSource = this._getDataSource()
+    if (this.dataSource !== undefined) {
+      this._initDatasource(this.dataSource)
+    } else {
+      this.addSubscription(this.gridController.gridEvents.RelatedGridAddedEvent.on().pipe(filter(e => e.dataGridID === this.gridId), take(1)).subscribe(dataSource => {
+        this.dataSource = dataSource
+        this._initDatasource(dataSource)
+      }))
+    }
 
+    window.setTimeout(() => {
+      this.addSubscription(fromEvent<MouseEvent>(this.doc.documentElement, 'click').subscribe(e => {
+        const focusedCellElement = this.gridController.cell.CellComponents.findWithCoords(this.gridController.gridEvents.CellFocusChangedEvent.state)?.element
+        const targetEl = e.target as HTMLElement
+        if (
+          !HasParentMatching(this.data.overlayRef.overlayElement, targetEl)
+          && (!focusedCellElement || !HasParentMatching(focusedCellElement, targetEl))
+        ) {
+          this.data.overlayRef.dispose()
+        }
+      }))
+    })
+  }
+
+  private _initDatasource(dataSource: IGridDataSource) {
+    this._setOptions()
+    this.addSubscription(dataSource.onChanges.subscribe(_ => this._setOptions()))
   }
 
   private _setOptions(): void {
@@ -101,7 +125,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
       label: this.gridController.grid.GetRelatedDataPreviewString.run(this.dataSource?.dataGridID ?? '', r.rowKey)
     }))
 
-    this.filteredOptions = [...this._options]
+    this._filterOptions()
 
     window.requestAnimationFrame(_ => {
       this._searchEl.focus()
@@ -112,20 +136,46 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
   }
 
   public highlightNext(increment: number): void {
-    let currentIndex = -2
-    if (typeof this.highlightedItem !== 'undefined') {
-      currentIndex = this.highlightedItem ? this.filteredOptions.indexOf(this.highlightedItem) : -1
+    const selectedOption = this.selectedOption.value
+    let index = (selectedOption !== null ? this.filteredOptions.indexOf(selectedOption) + increment : 0)
+    if (index < 0) index = this.filteredOptions.length - 1
+    const nextOption = this.filteredOptions[index] ?? this.filteredOptions[0]
+    this.selectedOption.next(nextOption)
+    this._scrollIndexIntoView(index, increment > 0 ? 'down' : 'up')
+  }
+
+  private _scrollIndexIntoView(index: number, direction: 'up' | 'down') {
+    
+    const viewportSize = (this.virtualScrollViewport?.getViewportSize() ?? 0) 
+
+    const viewportElement = this.virtualScrollViewport?.elementRef.nativeElement
+
+    if (viewportElement) {
+      window.requestAnimationFrame(_ => {
+        
+        const highlightedElement = viewportElement.getElementsByClassName('highlighted')[0] as HTMLElement | undefined
+
+        if (highlightedElement !== undefined) {
+
+          const highlightedElementOffsetTop = index * this.itemHeight
+
+          if (
+            (viewportElement.scrollTop + viewportSize < highlightedElementOffsetTop + this.itemHeight) ||
+            (viewportElement.scrollTop > highlightedElementOffsetTop)
+          ) {
+
+            if (direction === 'down') {
+              viewportElement?.scrollTo({ top: (highlightedElementOffsetTop + this.itemHeight + this._scrollPadding) - viewportSize })
+            } else {
+              viewportElement?.scrollTo({ top: highlightedElementOffsetTop - this._scrollPadding })
+            }
+          }
+          
+        } else {
+          this.virtualScrollViewport?.scrollToIndex(index)
+        }
+      })
     }
-    const index = Math.max(-1, Math.min(currentIndex + increment, this.filteredOptions.length - 1))
-    this.highlightedItem = this.filteredOptions[index] ?? null
-    if (index > -1) {
-      const el = this.optionElements?.get(index)
-      if (el) this.highlightedElement.next(el.nativeElement)
-    } else {
-      const el = this.wrapperElement.nativeElement.firstElementChild
-      if (el) this.highlightedElement.next(el as HTMLElement)
-    }
-    this.cd.detectChanges()
   }
 
   public openGrid(): void {
@@ -133,10 +183,12 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     this.overlayService.open(
       this.cell,
       EGridOverlayType.SingleSelectGridDropdownOverlay,
-      {size: {
-        width: 550,
-        height: 300
-      }}
+      {
+        size: {
+          width: 550,
+          height: 300
+        }
+      }
     )
   }
 
@@ -147,12 +199,11 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
   private _highlightSelected(): void {
     const currentIndex = this.filteredOptions.findIndex(op => op.value === this.cell.value)
     if (currentIndex > -1) {
-      const el = this.optionElements?.get(currentIndex)
-      if (typeof el !== 'undefined') {
-        this.highlightedItem = this.filteredOptions[currentIndex]
-        this.highlightedElement.next(el.nativeElement)
-        this.cd.detectChanges()
+      const selectedOption = this.filteredOptions[currentIndex]
+      if (selectedOption.value !== null) {
+        this.selectedOption.next(this.filteredOptions[currentIndex])
       }
+      this._scrollIndexIntoView(currentIndex, 'down')
     }
   }
 
@@ -169,24 +220,27 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
   private get _searchEl(): HTMLInputElement { return this.searchInput.nativeElement }
 
   private _getDataSource(): IGridDataSource | undefined {
-    const gridID = this.data.currentCell?.type.list?.relatedGridID
-    if (!gridID) return undefined
-    return this.gridController.grid.GetRelatedData.run(gridID)
+    if (this.gridId === undefined) return undefined
+    return this.gridController.grid.GetRelatedData.run(this.gridId)
   }
 
   private _filterOptions(): void {
     const searchFilter = this.searchCtrl.value?.toLowerCase()
     if (!searchFilter) this.filteredOptions = [...this._options]
-    else this.filteredOptions = this._options.filter(o =>
-      {
-        return (o.label || '').toString().toLowerCase().includes(searchFilter) ||
-        o.value.toString().toLowerCase().includes(searchFilter)
-      }
+    else this.filteredOptions = this._options.filter(o => {
+      return (o.label || '').toString().toLowerCase().includes(searchFilter) ||
+        (o.value ?? '').toString().toLowerCase().includes(searchFilter)
+    }
     )
+    this.filteredOptions.unshift({ value: null, label: ' ' })
   }
 
   public get defaultColor(): string | undefined {
     return this.data.currentCell.type.list?.color
+  }
+
+  public get gridId() {
+    return this.data.currentCell?.type.list?.relatedGridID
   }
 
 }

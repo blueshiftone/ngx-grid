@@ -42,7 +42,7 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
       key = key.toString().toLowerCase()
       const matchedIndex = options.map(op => {
         const output: IGridSelectListOption = {
-          value: op.value.toString().toLowerCase(),
+          value: op.value?.toString().toLowerCase() ?? null,
           label: op.label?.toLowerCase()
         }
         return output
