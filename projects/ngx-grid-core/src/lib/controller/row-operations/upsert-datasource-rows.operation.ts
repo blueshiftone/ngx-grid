@@ -16,6 +16,7 @@ export class UpsertDatasourceRows extends Operation {
         for (const item of row.valuesArray) {
           const coords = new GridCellCoordinates(row.rowKey, item.columnKey)
           this.cellOperations.SetCellValue.run(coords, item.value.value, { emitEvent: false })
+          this.cellOperations.CellComponents.findWithCoords(coords)?.detectChanges()
         }
       }
     }

@@ -112,7 +112,7 @@ export class StaticDropdownOverlayComponent extends BaseOverlayComponent impleme
   private _filterOptions(): void {
     if (!this.searchCtrl.value) this.filteredOptions = [...this._options]
     else this.filteredOptions = this._options.filter(o =>
-      o.value.toString().toLowerCase().includes(this.searchCtrl.value.toLowerCase()) ??
+      (o.value ?? '').toString().toLowerCase().includes(this.searchCtrl.value.toLowerCase()) ??
       (o.label || '').toString().toLowerCase().includes(this.searchCtrl.value.toLowerCase())
     )
   }

@@ -4,7 +4,7 @@
 
 .wrapper {
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   margin-top: 1px;
   background-color: var(--app-bg);
   border: 1px solid var(--divider-color);
@@ -24,6 +24,9 @@
       margin: 1.5px 0;
       border-radius: 15px;
       line-height: 15px;
+      text-overflow: ellipsis;
+      max-width: 190px;
+      overflow: hidden;
       &:not(.empty) {
         background: var(--primary-color-40);
       }
@@ -34,8 +37,6 @@
 .search {
   display: flex;
   align-items: center;
-  position: sticky;
-  top: 0;
   z-index: 1;
   > * {
     display: inline-block;
@@ -63,4 +64,8 @@
 .open-grid {
   opacity: 0.7;
   span { transform: scale(0.8) }
+}
+
+cdk-virtual-scroll-viewport {
+  height: calc(100% - 40px);
 }
