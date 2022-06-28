@@ -1,11 +1,11 @@
 <app-floating-window (closed)="close()">
-  <div class="actions" [style.marginBottom]="options?.length ? '14px' : ''" *ngIf="cell.isEditable">
+  <div class="actions" [style.marginBottom]="options?.length ? '14px' : ''" *ngIf="editable">
     <button mat-button color="primary" (click)="select()" class="link" #AddBtn>
       <span class="material-symbols-outlined">add</span>
       <span class="label">{{ localize('locSelectAnOption') }}</span>
     </button>
   </div>
-  <data-grid-chip [color]="option.color ?? defaultColor" [editable]="cell.isEditable" [theme]="themeMode"
+  <data-grid-chip [color]="option.color ?? defaultColor" [editable]="editable" [theme]="themeMode"
     *ngFor="let option of options" [label]="option.label ?? option.value?.toString()" (removeAction)="remove(option)"
     chipStyle="rounded"></data-grid-chip>
 </app-floating-window>

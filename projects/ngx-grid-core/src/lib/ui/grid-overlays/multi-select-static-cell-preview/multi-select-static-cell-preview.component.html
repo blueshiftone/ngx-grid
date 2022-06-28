@@ -1,10 +1,10 @@
 <data-grid-expandable-preview-popup (action)="$event === 'expandButton' ? expand() : select()" [overlayData]="data">
-  <data-grid-chip chipStyle="rounded" [color]="option.color ?? defaultColor" [editable]="cell.isEditable"
+  <data-grid-chip chipStyle="rounded" [color]="option.color ?? defaultColor" [editable]="editable"
     [theme]="themeMode" *ngFor="let option of options" [label]="option.label ?? option.value?.toString()"
     (removeAction)="remove(option)">
   </data-grid-chip>
   <data-grid-cell-action-button actionType="more" (action)="expand()" *ngIf="totalOptionsCount > 2">
   </data-grid-cell-action-button>
-  <data-grid-cell-action-button actionType="add" (action)="select()" *ngIf="cell.isEditable">
+  <data-grid-cell-action-button actionType="add" (action)="select()" *ngIf="editable">
   </data-grid-cell-action-button>
 </data-grid-expandable-preview-popup>

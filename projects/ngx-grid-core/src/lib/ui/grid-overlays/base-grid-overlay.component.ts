@@ -9,7 +9,7 @@ import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 })
 export class BaseOverlayComponent extends AutoUnsubscribe implements OnInit {
 
-  public editable: boolean = true
+  public get editable() { return this.cell.isEditable }
   public value   : any
 
   constructor(

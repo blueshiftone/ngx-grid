@@ -1,6 +1,6 @@
 <data-grid-expandable-preview-popup (action)="$event === 'expandButton' || !editable ? expand() : select()"
   [overlayData]="data">
-  <data-grid-chip [color]="defaultColor" [theme]="themeMode" [editable]="cell.isEditable" *ngFor="let chip of chips"
+  <data-grid-chip [color]="defaultColor" [theme]="themeMode" [editable]="editable" *ngFor="let chip of chips"
     [label]="chip.label" (removeAction)="remove(chip.value)"></data-grid-chip>
   <data-grid-cell-action-button actionType="more" (action)="expand()" *ngIf="totalChipCount > 2">
   </data-grid-cell-action-button>

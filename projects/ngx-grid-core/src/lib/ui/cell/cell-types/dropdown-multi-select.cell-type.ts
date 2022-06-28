@@ -19,6 +19,7 @@ private readonly readonlyCssClassName = 'multi-select-readonly'
 
   private _displayNode?: HTMLElement
   private _editableNode?: HTMLElement
+  public defaultColor = `rgba(255, 136, 0, 0.4)`
 
   constructor(
     gridController: GridControllerService,
@@ -61,7 +62,7 @@ private readonly readonlyCssClassName = 'multi-select-readonly'
     return output.join('\n')
   }
 
-  private _createChip(txt: string | number, color?: string): string {
+  private _createChip(txt: string | number, color: string = this.defaultColor): string {
     let chipStyles: string[]  = []
     let chipClasses: string[] = []
     

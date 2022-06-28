@@ -7,6 +7,7 @@ import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridOverlayData } from '../../../typings/interfaces'
 import { TPrimaryKey } from '../../../typings/types'
 import { DeleteFromArray } from '../../../utils/array-delete'
+import { DropdownMultiSelectCellType } from '../../cell/cell-types/dropdown-multi-select.cell-type'
 import { BasePreviewComponent } from '../base-grid-preview-overlay.component'
 
 @Component({
@@ -98,7 +99,7 @@ export class MultiSelectGridCellPreviewComponent extends BasePreviewComponent im
   }
 
   public get defaultColor(): string | undefined {
-    return this.data.currentCell.type.list?.color
+    return this.data.currentCell.type.list?.color ?? (this.data.currentCell as DropdownMultiSelectCellType).defaultColor
   }
 
 }

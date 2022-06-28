@@ -9,7 +9,7 @@
         [style.background]="'conic-gradient(var(--text-color) '+(upload.progress | async)+'%, transparent 0)'"></div>
       <div class="progressTxt">{{ upload.progress | async }}%</div>
     </data-grid-chip>
-    <data-grid-chip [color]="chipColor" [editable]="cell.isEditable" [theme]="themeMode" *ngFor="let file of files"
+    <data-grid-chip [color]="chipColor" [editable]="editable" [theme]="themeMode" *ngFor="let file of files"
       [label]="file.fileName" (removeAction)="remove(file)" (clickAction)="requestDownload(file)">
       <mat-icon svgIcon="Paperclip"></mat-icon>
     </data-grid-chip>
