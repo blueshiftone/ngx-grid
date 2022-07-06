@@ -17,8 +17,8 @@ import { AutoUnsubscribe } from '../../../../utils/auto-unsubscribe'
 })
 export class CommitRecordsComponent extends AutoUnsubscribe implements IToolbarComponent, OnInit {
   
-  public readonly isEnabled: boolean               = true
-  public readonly sortOrder: number                = 1
+  public isEnabled: boolean = true
+  public readonly sortOrder: number = 1
   public readonly placement: EToolbarItemPlacement = EToolbarItemPlacement.Primary
 
   constructor(
@@ -29,6 +29,10 @@ export class CommitRecordsComponent extends AutoUnsubscribe implements IToolbarC
 
   ngOnInit(): void {
     this.addSubscription(this.toolbarService.selectionSlice.subscribe(_ => this.changeDetection.detectChanges()))
+    this.addSubscription(this.toolbarService.isCommitEnabled.subscribe(v => {
+      this.isEnabled = v
+      this.changeDetection.detectChanges()
+    }))
   }
 
   public get hasInvalidValues(): boolean {
@@ -36,7 +40,7 @@ export class CommitRecordsComponent extends AutoUnsubscribe implements IToolbarC
     if (!controller) return false
     const meta = controller.cell.GetAllCellMetaForDirtyRows.run() ?? []
     const values = meta.map(m => controller.cell.GetCellValue.run(m.coords)).filter(c => c) as IGridCellValue[]
-    return typeof values.find(val => val.validationState?.nextIsValid === false) !== 'undefined'
+    return values.find(val => val.validationState?.nextIsValid === false && val.validationState.validationResults.find(v => v.nonBlocking !== true) !== undefined) !== undefined
   }
 
   public get isVisible(): boolean {
@@ -52,7 +56,7 @@ export class CommitRecordsComponent extends AutoUnsubscribe implements IToolbarC
     return meta.rows.filter(row => row.isDirty).length
   }
 
-  public commitSelected = () => this.toolbarService.gridController?.grid.CommitSelected.run()
-  public commitAll      = () => this.toolbarService.gridController?.grid.CommitAll.run()
+  public commitSelected = () => this.toolbarService.gridController?.grid.CommitSelected.run({ dryRun: true })
+  public commitAll      = () => this.toolbarService.gridController?.grid.CommitAll.run({ dryRun: true })
 
 }

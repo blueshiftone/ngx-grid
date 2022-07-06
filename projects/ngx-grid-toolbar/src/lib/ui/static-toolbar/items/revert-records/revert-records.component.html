@@ -1,5 +1,5 @@
 
-<div class="button-group">
+<div class="button-group" [ngClass]="{disabled: !isEnabled}">
   <button class="main text" matRipple (click)="revertAll(); toolbarService.setItems()">
     <mat-icon svgIcon="Undo"></mat-icon>
     <span class="label"><lib-localized-text>locRevertAllRecords</lib-localized-text></span>

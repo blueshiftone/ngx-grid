@@ -1,7 +1,7 @@
 import { ERowStatus } from '../../typings/enums/row-status.enum'
 import { IGridRow, IGridRowComponent, IRowOperationFactory } from '../../typings/interfaces'
 import { TPrimaryKey } from '../../typings/types'
-import { WithDefaultTrue } from '../../utils/with-default-true'
+import { WithDefaultTrue } from '../../utils/with-default'
 import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 

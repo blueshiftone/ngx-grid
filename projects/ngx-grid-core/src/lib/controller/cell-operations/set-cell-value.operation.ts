@@ -2,7 +2,7 @@ import { IGridCellCoordinates, IGridCellValue, IGridValueParsingResult } from '.
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { GridCellCoordinates, GridCellValue } from '../../typings/interfaces/implementations'
 import { CELL_VALUE_PARSERS } from '../../ui/cell/cell-types/value-parsing'
-import { WithDefaultTrue } from '../../utils/with-default-true'
+import { WithDefaultTrue } from '../../utils/with-default'
 import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 

@@ -50,6 +50,11 @@
   line-height: 13px;
   box-sizing: border-box;
   cursor: default;
+  &.activity-locked {
+    cursor: default;
+    opacity: 0.6;
+    pointer-events: none!important;
+  }
   &.row-thumb:hover {
     background-color: var(--highlight-color);
     cursor: pointer;

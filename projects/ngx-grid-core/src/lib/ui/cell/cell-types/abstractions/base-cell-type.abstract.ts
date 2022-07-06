@@ -3,7 +3,7 @@ import { debounceTime, filter } from 'rxjs/operators'
 
 import { GridControllerService } from '../../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../../services/grid-overlay-service.service'
-import { ECellMode } from '../../../../typings/enums/cell-mode.enum'
+import { ECellActivityState, ECellMode } from '../../../../typings/enums'
 import { EGridOverlayType } from '../../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridOverlayOpened } from '../../../../typings/interfaces'
 import { IGridDataType } from '../../../../typings/interfaces/grid-data-type.interface'
@@ -51,6 +51,9 @@ export abstract class BaseCellType implements IGridCellType {
   }
 
   public setValue(value: any): boolean {
+    if (this.gridController.cell.GetCellMeta.run(this.coordinates).activityState === ECellActivityState.Locked) {
+      return false
+    }
     if (value === '') value = null
     let validationResult = this.gridController.cell.SetCellValue.run(this.coordinates, value)
     if (validationResult.isValid) {

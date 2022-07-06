@@ -105,8 +105,7 @@ export class GridOverlayService {
       overlayRef    : ref,
       overlayService: this,
       gridController: this.gridController,
-      gridOverlay   : this,
-      customData: customData,
+      customData,
     }
     return Injector.create({ providers: [{ provide: GRID_OVERLAY_DATA, useValue: data }] })
   }
