@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core'
 import { MatMenuTrigger } from '@angular/material/menu'
 import { DataGridComponent } from '@blueshiftone/ngx-grid-core'
 import { fromEvent } from 'rxjs'
@@ -19,7 +30,10 @@ import { IsHTMLNode } from '../../utils/is-html-node'
     ToolbarService,
   ]
 })
-export class ToolbarComponent extends AutoUnsubscribe implements OnInit {
+export class ToolbarComponent extends AutoUnsubscribe implements OnInit, OnChanges {
+
+  @Input() public isCommitEnabled = true
+  @Input() public isRevertEnabled = true
 
   @ViewChild('primary',          { static: true, read: ElementRef })       public primaryContainer!    : ElementRef
   @ViewChild('secondary',        { static: true, read: ElementRef })       public secondaryContainer!  : ElementRef
@@ -35,6 +49,17 @@ export class ToolbarComponent extends AutoUnsubscribe implements OnInit {
     public readonly changeDetection: ChangeDetectorRef,
     private readonly localizations: LocalizationService
   ) { super() }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if ((changes['isCommitEnabled']?.previousValue !== undefined || changes['isCommitEnabled']?.currentValue !== undefined) &&
+      changes['isCommitEnabled']?.previousValue !== changes['isCommitEnabled']?.currentValue) {
+      this.toolbarService.isCommitEnabled.next(this.isCommitEnabled)
+    }
+    if ((changes['isRevertEnabled']?.previousValue !== undefined || changes['isRevertEnabled']?.currentValue !== undefined) &&
+      changes['isRevertEnabled']?.previousValue !== changes['isRevertEnabled']?.currentValue) {
+      this.toolbarService.isRevertEnabled.next(this.isRevertEnabled)
+    }
+  }
 
   ngOnInit(): void {
     if (!this.gridComponent) return

@@ -6,10 +6,9 @@ import { IGridCellType } from './grid-cell-type.interface'
 
 
 export interface IGridOverlayData<TData = any> {
-  currentCell   : IGridCellType
-  overlayRef    : OverlayRef
-  overlayService: GridOverlayService
-  gridController: GridControllerService
-  gridOverlay   : GridOverlayService
-  customData    : TData
+  currentCell        : IGridCellType
+  overlayRef         : OverlayRef
+  overlayService     : GridOverlayService
+  gridController     : GridControllerService
+  customData         : TData
 }

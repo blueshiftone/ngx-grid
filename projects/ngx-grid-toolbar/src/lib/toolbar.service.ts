@@ -26,6 +26,9 @@ export class ToolbarService {
   public selectionSlice = new BehaviorSubject<IGridSelectionSlice | null>(null)
   public staticToolbarItems: IToolbarComponent[] = []
 
+  public isCommitEnabled = new BehaviorSubject<boolean>(true)
+  public isRevertEnabled = new BehaviorSubject<boolean>(true)
+
   public staticContainers: {
     primary?: ElementRef<HTMLElement>,
     secondary?: ElementRef<HTMLElement>,

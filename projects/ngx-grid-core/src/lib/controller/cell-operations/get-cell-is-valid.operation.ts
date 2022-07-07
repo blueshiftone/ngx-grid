@@ -1,6 +1,6 @@
 import { IGridCellCoordinates } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { WithDefaultTrue } from '../../utils/with-default-true'
+import { WithDefaultTrue } from '../../utils/with-default'
 import { Operation } from '../operation.abstract'
 
 export class GetCellIsValid extends Operation {

@@ -1,6 +1,6 @@
 import { IGridRow, IRowOperationFactory } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations/grid-cell-coordinates.implementation'
-import { WithDefaultTrue } from '../../utils/with-default-true'
+import { WithDefaultTrue } from '../../utils/with-default'
 import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 

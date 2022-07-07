@@ -16,7 +16,7 @@ import { AutoUnsubscribe } from '../../../../utils/auto-unsubscribe'
 })
 export class RevertRecordsComponent extends AutoUnsubscribe implements IToolbarComponent, OnInit {
   
-  public readonly isEnabled: boolean = true
+  public isEnabled: boolean = true
   public readonly sortOrder: number = 2
   public readonly placement: EToolbarItemPlacement = EToolbarItemPlacement.Primary
 
@@ -28,6 +28,10 @@ export class RevertRecordsComponent extends AutoUnsubscribe implements IToolbarC
 
   ngOnInit(): void {
     this.addSubscription(this.toolbarService.selectionSlice.subscribe(_ => this.changeDetection.detectChanges()))
+    this.addSubscription(this.toolbarService.isRevertEnabled.subscribe(v => {
+      this.isEnabled = v
+      this.changeDetection.detectChanges()
+    }))
   }
 
   public get isVisible(): boolean {

@@ -1,4 +1,4 @@
-<div class="button-group">
+<div class="button-group" [ngClass]="{disabled: !isEnabled}">
   <button class="main text" matRipple (click)="commitAll(); toolbarService.setItems()">
     <mat-icon [svgIcon]="hasInvalidValues ? 'ExclamationMark' : 'Check'" [style.color]="hasInvalidValues ? 'var(--red-themed)' : null"></mat-icon>
     <span class="label"><lib-localized-text>locCommitAllRecords</lib-localized-text></span>

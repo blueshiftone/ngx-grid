@@ -16,7 +16,11 @@ export class ValidateCell extends Operation {
   public run(cellCoordinates: IGridCellCoordinates): IGridValueValidationResult[] {
 
     const cellValue         = this.cellOperations.GetCellValue.run(cellCoordinates)
-    const validationResults = ValueValidator.validate(cellValue?.value, this.cellOperations.gridController, cellCoordinates)
+    const validationResults = [
+      ...this.gridOperations.RemoteValidation.getValidationResults(cellCoordinates),
+      ...ValueValidator.validate(cellValue?.value, this.cellOperations.gridController, cellCoordinates),
+    ]
+
     const previousIsValid   = this.cellOperations.GetCellIsValid.run(cellCoordinates)
     const nextIsValid       = validationResults.length === 0
     const nextState         = { cellCoordinates, validationResults, previousIsValid, nextIsValid }
