@@ -63,7 +63,7 @@ export class CharParser {
           const textStr = this._takeCharsUntil('"')
           const item = { html: '', originalChars: `${char}${textStr.join('')}` }
           textStr.pop()
-          item.html = `<span class="txt-str">${textStr.join('')}</span>`
+          item.html = `<span class="txt-str">${this._convertHtmlChars(textStr.join(''))}</span>`
           output.push(item)
         break;
         case `_`:
@@ -73,7 +73,7 @@ export class CharParser {
         default:  
           if (this._allowedDisplayChars.has(char)) {
             
-            output.push({ html: `<span class="txt-str">${char}</span>`, originalChars: char })
+            output.push({ html: `<span class="txt-str">${this._convertHtmlChars(char)}</span>`, originalChars: char })
 
           } else if (this._allowedNumberChars.has(char)) {
 
@@ -123,5 +123,15 @@ export class CharParser {
   }
 
   public toString() { return this._chars.join('') }
+
+  private _convertHtmlChars = (str: string) => str.replace(/[&<>'"]/g, (match) => {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[match] ?? match
+  });
 
 }
