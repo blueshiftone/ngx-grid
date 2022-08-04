@@ -7,14 +7,13 @@ interface IPropertyMetadataInfoRaw {
   value: any
 }
 
-
 export class GridMetadataCollection implements IGridMetadataCollection
 {
 
-  private _metadata: Set<IGridMetadataInfoConverted>
+  private _metadata = new Map<EMetadataType, any>()
 
   constructor(metadata: IGridMetadataInfoConverted[] = []) {
-    this._metadata = new Set(metadata)
+    metadata.forEach(m => this._metadata.set(m.key, m.value))
   }
 
   public static fromRawMetadata(metadata: IPropertyMetadataInfoRaw[]): IGridMetadataCollection
@@ -33,22 +32,17 @@ export class GridMetadataCollection implements IGridMetadataCollection
   }
 
   public get<T>(type: EMetadataType): T | null {
-    return ([...this._metadata].find(x => x.key === type)?.value as T) ?? null
+    return this._metadata.get(type) ?? null
   }
 
   public set<T>(type: EMetadataType, value: T): void {
-    let metadata = [...this._metadata].find(x => x.key === type) ?? { key: type, value }
-    metadata.value = value
-    this._metadata.add(metadata)
+    this._metadata.set(type, value)
   }
 
-  public get items() { return [...this._metadata] }
+  public get items() { return [...this._metadata.entries()].map(e => ({ key: e[0], value: e[1] })) }
 
   public clear(type?: EMetadataType): void {
-    if (type) {
-      const existing = [...this._metadata].find(x => x.key === type)
-      if (existing) this._metadata.delete(existing)
-    }
+    if (type) this._metadata.delete(type)
     else this._metadata.clear()
   }
 

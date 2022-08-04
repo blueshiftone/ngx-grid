@@ -5,6 +5,7 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { EMetadataType, ERowStatus } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { NumberFormatParser } from '../../../utils/number-format-parser/number-format-parser'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class NumberCellType extends BaseCellType {
@@ -13,7 +14,6 @@ export class NumberCellType extends BaseCellType {
 
   private readonly editableCssClassName = 'number-editable'
   private readonly readonlyCssClassName = 'number-readonly'
-  private decimalPlaces = 2
 
   private _displayNode?: HTMLElement
   private _editableNode?: HTMLElement
@@ -28,10 +28,9 @@ export class NumberCellType extends BaseCellType {
   public get editableNode() { return this._editableNode || this._generateEditableNode() }
 
   public override receiveValue(value: any = this.value): void {
-    this.decimalPlaces = this.gridController.cell.GetCellMetaValue.run<number>(this.coordinates, EMetadataType.DecimalPlaces) ?? this.decimalPlaces
     super.receiveValue(value)
     if (!this._displayNode) return;
-    this._displayNode.innerText = this._displayValue
+    this._displayNode.innerHTML = this._displayValue
   }
 
   private _generateDisplayNode(): HTMLElement {
@@ -52,9 +51,13 @@ export class NumberCellType extends BaseCellType {
     const isNewRow     = meta?.status === ERowStatus.New
     const isPrimarykey = source.primaryColumnKey === this.parentCell.columnKey
     if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
-    let val = typeof this.value === 'number' ? this.value : parseFloat(this.value)
-    const bits = val.toFixed(this.decimalPlaces).toString().split('.').map(v => v === 'NaN' ? '0' : v)
-    return `${parseInt(bits[0] || '0').toLocaleString(this.gridController.localize.culture)}${this.decimalPlaces > 0 ? '.' : ''}${(bits[1] || '').padEnd(this.decimalPlaces, '0')}`
+    let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
+    const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)
+    if (formatString !== null) {
+      return NumberFormatParser.getParser(formatString).getHtml(val)
+    } else {
+      return val.toString()
+    }
   }
 
   public override setValue(value: any): boolean {

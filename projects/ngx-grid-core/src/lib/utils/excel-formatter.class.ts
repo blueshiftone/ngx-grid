@@ -67,12 +67,12 @@ export class ExcelFormatter {
       case 'File' :
         value = value?.fileName ?? ''
       break
-      case 'Percent': 
-        msoNumberFormat = `0%`
-      break
-      case 'Money': 
-        msoNumberFormat = `"_-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;\\\\-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;_-\\0022${this.currencySymbol}\\0022* \\0022-\\0022??_-\\;_-\\@_-"`;
-      break
+      // case 'Percent': 
+      //   msoNumberFormat = `0%`
+      // break
+      // case 'Money': 
+      //   msoNumberFormat = `"_-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;\\\\-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;_-\\0022${this.currencySymbol}\\0022* \\0022-\\0022??_-\\;_-\\@_-"`;
+      // break
       case 'Number': 
         msoNumberFormat = `Fixed`; 
       break
