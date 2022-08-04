@@ -5,9 +5,9 @@ export enum EMetadataType {
   IsRequired,
   MaxLength,
   IsUnique,
-  DecimalPlaces,
   ExactlyOneRecordWithValue,
   Style,
   RecordPreviewTemplateString,
-  ForeignEntityName
+  ForeignEntityName,
+  NumberFormatString
 }

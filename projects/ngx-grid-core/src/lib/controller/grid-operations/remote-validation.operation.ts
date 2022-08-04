@@ -29,8 +29,12 @@ export class RemoteValidation extends Operation {
       }
       this.cellOperations.ValidateCell.run(coords)
     })
-    this.selection.SelectCell.run(coordinates[0]);
-    this.selection.ScrollIntoView.run(coordinates[0]);
+    const visibleColumns = this.columnOperations.GetColumns.run()
+    const visibleCoordinates = coordinates.filter(c => visibleColumns.includes(c.columnKey))
+    if (visibleCoordinates.length) {
+      this.selection.SelectCell.run(visibleCoordinates[0]);
+      this.selection.ScrollIntoView.run(visibleCoordinates[0]);
+    }
   }
 
   public getValidationResults(coordinates: IGridCellCoordinates): IGridValueValidationResult<any>[] {

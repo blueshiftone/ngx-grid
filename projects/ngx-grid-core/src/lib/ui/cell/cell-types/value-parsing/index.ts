@@ -11,10 +11,8 @@ export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
   Text                : new ValueParser([parsers.String]),
   RichText            : new ValueParser([parsers.String]),
   Color               : new ValueParser([parsers.String, parsers.Color]),
-  Money               : new ValueParser([parsers.Number]),
   Number              : new ValueParser([parsers.Number]),
   Date                : new ValueParser([parsers.Date]),
-  Percent             : new ValueParser([parsers.Number]),
   DropdownSingleSelect: new ValueParser([parsers.MultiSelect]),
   DropdownMultiSelect : new ValueParser([parsers.Array, parsers.MultiSelect]),
 }
