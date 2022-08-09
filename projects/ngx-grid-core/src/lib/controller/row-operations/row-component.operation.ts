@@ -2,13 +2,12 @@ import { IGridCellComponent, IGridRowComponent } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
-import { ArrayFromMap } from '../../utils/array-from-map'
-import { DistinctValues } from '../../utils/distinct-values'
 import { Operation } from '../operation.abstract'
 
 export class RowComponents extends Operation {
 
   private readonly rowComponentsByKey = new Map<TPrimaryKey, IGridRowComponent>()
+  private readonly rowComponents = new Set<IGridRowComponent>()
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
@@ -22,6 +21,7 @@ export class RowComponents extends Operation {
 
   public added(row: IGridRowComponent) {
     this.rowComponentsByKey.set(row.rowKey, row)
+    this.rowComponents.add(row)
     this._updateRowComponent(row)
   }
 
@@ -37,10 +37,11 @@ export class RowComponents extends Operation {
 
   public removed(row: IGridRowComponent) {
     this.rowComponentsByKey.delete(row.rowKey)
+    this.rowComponents.delete(row)
   }
 
-  public getAll(): IGridRowComponent[] {
-    return DistinctValues(ArrayFromMap(this.rowComponentsByKey))
+  public getAll(): Set<IGridRowComponent> {
+    return this.rowComponents
   }
 
   public filterWitPrimaryKeyIn(primaryKeys: Set<TPrimaryKey>): IGridRowComponent[] {

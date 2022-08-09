@@ -36,7 +36,7 @@ export class SetCellSelectionClasses extends Operation {
 
   }
 
-  public clear(cells: IGridCellComponent[]): void {
+  public clear(cells: IGridCellComponent[] | Set<IGridCellComponent>): void {
     const classes = [ 'selected', 'subtracting', 'multi-select', 'top-edge', 'right-edge', 'bottom-edge', 'left-edge', 'overlapping-selection', 'overlapping-top-edge', 'overlapping-right-edge', 'overlapping-bottom-edge', 'overlapping-left-edge' ]
     cells.forEach(cell => classes.forEach(className => cell.toggleClass(className, false)))
   }

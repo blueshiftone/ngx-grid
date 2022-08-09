@@ -2,14 +2,13 @@ import { IGridCellComponent, IGridCellCoordinates } from '../../typings/interfac
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
-import { ArrayFromMap } from '../../utils/array-from-map'
-import { DistinctValues } from '../../utils/distinct-values'
 import { Operation } from '../operation.abstract'
 
 export class CellComponents extends Operation {
 
   private readonly cellComponentsByElement = new WeakMap<HTMLElement, IGridCellComponent>()
-  private readonly cellComponentsByCoords  = new Map<string, IGridCellComponent>()
+  private readonly cellComponentsByCoords  = new Map<string,          IGridCellComponent>()
+  private readonly cellComponents          = new Set<IGridCellComponent>()
   
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
@@ -32,12 +31,15 @@ export class CellComponents extends Operation {
   public added(cell: IGridCellComponent) {
     this.cellComponentsByCoords .set(cell.coordinates.compositeKey, cell)
     this.cellComponentsByElement.set(cell.element, cell)
+    this.cellComponents.add(cell)
     this._updateCellComponent(cell)
   }
 
   public changed(cell: IGridCellComponent, oldCoords: IGridCellCoordinates) {
     this.cellComponentsByElement.set(cell.element, cell)
-    if(this.cellComponentsByCoords.get(oldCoords.compositeKey) === cell) this.cellComponentsByCoords.delete(oldCoords.compositeKey)
+    if(this.cellComponentsByCoords.get(oldCoords.compositeKey) === cell) {
+      this.cellComponentsByCoords.delete(oldCoords.compositeKey)
+    }
     this.cellComponentsByCoords.set(cell.coordinates.compositeKey, cell)
     const focusedCell    = this.gridEvents.CellFocusChangedEvent.state
     const focusNextValue = focusedCell?.equals(cell.coordinates) ?? false
@@ -46,6 +48,7 @@ export class CellComponents extends Operation {
   }
 
   public removed(cell: IGridCellComponent) {
+    this.cellComponents.delete(cell)
     this.cellComponentsByCoords.delete(cell.coordinates.compositeKey)
   }
 
@@ -60,15 +63,20 @@ export class CellComponents extends Operation {
   }
 
   public findForColumn(columnKey: string): Set<IGridCellComponent> {
-    return new Set(this.getAll().filter(c => c.columnKey === columnKey))
+    let output = new Set<IGridCellComponent>()
+    this.cellComponents.forEach(cell => {
+      if (cell.columnKey === columnKey)
+      output.add(cell)
+    })
+    return output
   }
 
   public findForElement(el: HTMLElement): IGridCellComponent | undefined {
     return this.cellComponentsByElement.get(el)
   }
 
-  public getAll(): IGridCellComponent[] {
-    return DistinctValues(ArrayFromMap(this.cellComponentsByCoords))
+  public getAll(): Set<IGridCellComponent> {
+    return this.cellComponents
   }
 
   public override onDestroy() {

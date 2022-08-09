@@ -13,7 +13,7 @@ export class SetRowFocusedClasses extends Operation {
     row.toggleClass(this.className, focused?.isRow(row.rowKey) === true)
   }
 
-  public clear(rows: IGridRowComponent[]): void {
+  public clear(rows: IGridRowComponent[] | Set<IGridRowComponent>): void {
     rows.forEach(r => r.toggleClass(this.className, false))
   }
 
