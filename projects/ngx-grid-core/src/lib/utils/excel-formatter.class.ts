@@ -1,4 +1,5 @@
 import { GridControllerService } from '../controller/grid-controller.service'
+import { EMetadataType } from '../typings/enums'
 import { IGridSelectionSlice } from '../typings/interfaces'
 import { GridCellCoordinates } from '../typings/interfaces/implementations'
 
@@ -44,9 +45,10 @@ export class ExcelFormatter {
   private _formatValAsHTML(value: any, colIndex: number, rowIndex: number): string {
     const columnKey   = this.selectionSlice.columnKeys[colIndex]
     const rowKey      = this.selectionSlice.rowKeys[rowIndex]
-    const cellType    = this.gridController.cell.GetCellType.run(new GridCellCoordinates(rowKey, columnKey))
+    const coords      = new GridCellCoordinates(rowKey, columnKey)
+    const cellType    = this.gridController.cell.GetCellType.run(coords)
     const columnWidth = this.gridController.column.GetColumnWidth.run(columnKey)
-
+    
     if (cellType.name === 'RichText') { // convert html to plain text
       const node = document.createElement('div')
       node.innerHTML = value
@@ -67,14 +69,17 @@ export class ExcelFormatter {
       case 'File' :
         value = value?.fileName ?? ''
       break
-      case 'Percent': 
-        msoNumberFormat = `0%`
-      break
-      case 'Money': 
-        msoNumberFormat = `"_-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;\\\\-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;_-\\0022${this.currencySymbol}\\0022* \\0022-\\0022??_-\\;_-\\@_-"`;
-      break
       case 'Number': 
-        msoNumberFormat = `Fixed`; 
+        const numberFormatString = this.gridController.cell.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
+        if (numberFormatString) {
+          if (numberFormatString.includes('%')) {
+            msoNumberFormat = '0%'
+          }
+          else if (numberFormatString.includes(this.currencySymbol)) {
+            msoNumberFormat = `"_-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;\\\\-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;_-\\0022${this.currencySymbol}\\0022* \\0022-\\0022??_-\\;_-\\@_-"`;
+          }
+        }
+        if (msoNumberFormat === '') msoNumberFormat = `Fixed`; 
       break
       case 'Date': 
         msoNumberFormat = `"Short Date"`; 

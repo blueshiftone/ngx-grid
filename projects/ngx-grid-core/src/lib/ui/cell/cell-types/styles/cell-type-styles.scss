@@ -15,9 +15,7 @@
 }
 
 .text-editable,
-.money-editable,
-.number-editable,
-.percent-editable {
+.number-editable {
   display: block;
   position: relative;
   width: 100%;
@@ -61,27 +59,6 @@
   }
 }
 
-.money-readonly,
-.percent-readonly {
-  align-items: center;
-  display: flex;
-  width: 100%;
-  padding: 0 7px;
-  box-sizing: border-box;
-  .value {
-    flex-grow: 1;
-    text-align: right;
-  }
-  & > *:last-child {
-    margin-left: 4px;
-  }
-  .value,
-  .sign {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
 input[type="number"] {
   text-align: right;
   /* Remove arrows/spinners */
@@ -96,6 +73,31 @@ input[type="number"] {
 .number-readonly {
   text-align: right;
   padding-left: 10px;
+  
+  .number-color {
+    width: 100%;
+  }
+}
+
+.number-readonly, .number-readonly > .number-color {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+
+  .greedy {
+    flex-grow: 1;
+  }
+
+  .spacer-char {
+    white-space: pre;
+    visibility: hidden;
+    opacity: 0;
+    user-select: none;
+  }
+
+  .txt-str {
+    white-space: pre;
+  }
 }
 
 .file-cell-type,
