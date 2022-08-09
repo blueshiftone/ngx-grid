@@ -11,5 +11,3 @@ export class SetColumnWidth extends Operation {
   }
 
 }
-
-

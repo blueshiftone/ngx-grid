@@ -19,7 +19,7 @@ export class SetRowSelectionClasses extends Operation {
     row.toggleClass('pre-selected', this._preSelected === row.rowKey)
   }
 
-  public clear(rows: IGridRowComponent[]): void {
+  public clear(rows: IGridRowComponent[] | Set<IGridRowComponent>): void {
     rows.forEach(r => r.toggleClass(this.rowInSelectionClassName, false))
   }
 

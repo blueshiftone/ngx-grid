@@ -13,7 +13,7 @@ export class SetFocusedCellClasses extends Operation {
     cell.toggleClass(this.className, focused?.isCell(cell.coordinates) ?? false)
   }
 
-  public clear(cells: IGridCellComponent[]): void {
+  public clear(cells: IGridCellComponent[] | Set<IGridCellComponent>): void {
     cells.forEach(c => c.toggleClass(this.className, false))
   }
 

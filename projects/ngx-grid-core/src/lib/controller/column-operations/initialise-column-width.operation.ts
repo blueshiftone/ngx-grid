@@ -23,7 +23,7 @@ export class InitialiseColumnWidth extends Operation {
   }
 
   private _run(): void {
-    this.values.pipe(buffer(this.values.pipe(debounceTime(0))), take(1)).subscribe(initialWidths => {   
+    this.values.pipe(buffer(this.values.pipe(debounceTime(0))), take(1)).subscribe(initialWidths => {
       initialWidths.push(...this._getExistingColumnWidths())
       const keys = DistinctValues(initialWidths.map(v => v.columnKey))
       const colWidths = initialWidths.reduce<IGridColumnWidths>((output, element) => {

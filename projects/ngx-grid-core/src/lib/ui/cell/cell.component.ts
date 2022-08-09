@@ -30,6 +30,8 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
 
   @Input() public rowComponent!: IGridRowComponent
 
+  @Input() public columnKey! : TColumnKey
+
   constructor(
     public  readonly overlays      : GridOverlayService,
     private readonly gridController: GridControllerService,
@@ -51,7 +53,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
         this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columnKey, width: this.element.getBoundingClientRect().width })
       })
     }
-  } 
+  }
 
   override appOnDestroy(): void {
     this.gridController.cell.CellComponents.removed(this)
@@ -79,8 +81,6 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
   public stopEdit    = ()                       => this.typeComponent?.close()
   public toggleClass = (c: string, on: boolean) => this.element.classList.toggle(c, on)
 
-  public get index      (): number               { return Array.prototype.indexOf.call(this.element.parentElement?.children ?? [], this.element) - 1 }
-  public get columnKey  (): TColumnKey           { return this.rowComponent.columns[this.index] }
   public get rowKey     (): TPrimaryKey          { return this.rowComponent.rowKey }
   public get element    (): HTMLElement          { return this.elRef.nativeElement }
   public get coordinates(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columnKey)}

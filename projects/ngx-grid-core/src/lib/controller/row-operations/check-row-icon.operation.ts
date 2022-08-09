@@ -15,7 +15,7 @@ export class CheckRowIcon extends Operation {
     row.icon.next(null)
   }
 
-  public clear(rows: IGridRowComponent[]) {
+  public clear(rows: IGridRowComponent[] | Set<IGridRowComponent>) {
     for (const r of rows) { this.run(r) }
   }
 

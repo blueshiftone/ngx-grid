@@ -83,7 +83,7 @@ export class GridControllerService {
     addSubscription(gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
       if(colWidths.changedOne) {
         const column = this.cell.CellComponents.findForColumn(colWidths.changedOne)
-        this.column.SetColumnWidth.run(column, colWidths.columns.find(c => c.columnKey === colWidths.changedOne)?.width || 0)
+        this.column.SetColumnWidth.run(column, colWidths.columns.find(c => c.columnKey === colWidths.changedOne)?.width ?? 0)
       } else {
         for (const el of colWidths.columns) {
           const column = this.cell.CellComponents.findForColumn(el.columnKey)
@@ -193,16 +193,16 @@ export class GridControllerService {
 
     // React to metadata changes
     addSubscription(gridEvents.MetadataChangedEvent.on().subscribe(change => {
-      let affectedCellComponents: IGridCellComponent[] = []
+      let affectedCellComponents = new Set<IGridCellComponent>()
       if  (change.columnKey !== undefined && change.rowKey !== undefined) {
         const coords = new GridCellCoordinates(change.rowKey, change.columnKey)
         const cell = this.cell.CellComponents.findWithCoords(coords)
-        if (cell) affectedCellComponents.push(cell)
+        if (cell) affectedCellComponents.add(cell)
       } else if (change.rowKey !== undefined) {
         for (const col of this.column.GetColumns.run()) {
           const coords = new GridCellCoordinates(change.rowKey, col)
           const cell = this.cell.CellComponents.findWithCoords(coords)
-          if (cell) affectedCellComponents.push(cell)
+          if (cell) affectedCellComponents.add(cell)
         }
       } else {
         affectedCellComponents = this.cell.CellComponents.getAll()

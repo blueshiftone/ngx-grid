@@ -55,9 +55,14 @@ export class GridSetupFileDrag extends Operation {
 
           this.gridEvents.GridFileDragStateChangedEvent.emit(true)
 
-          const cellTypeComponents = this.cellOperations.CellComponents.getAll().filter(c => c.typeComponent instanceof FileCellType).map(c => c.typeComponent as FileCellType)
+          const cellTypeComponents = new Set<FileCellType>()
 
-          cellTypeComponents.forEach(c => c.dragStart())
+          this.cellOperations.CellComponents.getAll().forEach(c => {
+            if (c.typeComponent instanceof FileCellType) {
+              cellTypeComponents.add(c.typeComponent)
+              c.typeComponent.dragStart()
+            }
+          })
 
           const dragoverStreamSubscription = dragoverStream
             .pipe(
@@ -88,7 +93,7 @@ export class GridSetupFileDrag extends Operation {
             fileCell?.dragStop()
           })
 
-          }
+        }
 
         dragoverStream.next(e.target as HTMLElement)
       }
