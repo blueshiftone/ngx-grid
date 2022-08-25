@@ -41,6 +41,7 @@ export const GRID_LOCALIZATION_DEFAULTS = new Map<string, string>([
   ["locSelectAnOption", "Select an option"],
   ["locRemoveFile", "Remove File"],
   ["locDownloadFile", "Download File"],
+  ["locRecords", "Records"],
   ["locValuesInThisColumnMustBeUnique", "Values in this column must be unique"],
   ["locThisColumnMustContainOnlyOneCellWithTheValueOf", "This column must contain only one cell with the value of"],
   ["locOneCellInThisColumnMustHaveTheValueOf", "One cell in this column must have the value of"],

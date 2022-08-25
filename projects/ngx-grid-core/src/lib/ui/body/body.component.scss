@@ -9,3 +9,27 @@
     width: 100%;
   }
 }
+
+.row.status {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.status-row {
+  position: absolute;
+  left: 0;
+  height: 25px;
+  border-top: 1px solid var(--divider-color);
+  display: flex;
+  align-items: center;
+
+  .txt {
+    font-size: 10px;
+    padding: 0 10px;
+    opacity: 0.7;
+  }
+
+  .greedy {
+    flex-grow: 1;
+  }
+}

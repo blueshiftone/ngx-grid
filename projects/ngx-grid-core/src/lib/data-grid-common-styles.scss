@@ -4,15 +4,19 @@
   white-space: nowrap;
   height: 25px;
   width: calc(100% + 999999px);
+
   &.focused {
     background-color: var(--highlight-color-10);
   }
+
   &.row-in-selection:not(.focused) {
     background-color: var(--highlight-color);
   }
+
   &.pre-selected {
     background-color: var(--light-dull-highlight);
   }
+
   &.row-in-selection {
     ::ng-deep {
       .row-thumb:after {
@@ -28,6 +32,7 @@
       }
     }
   }
+
   ::ng-deep {
     .col-selected {
       background-color: var(--highlight-color);
@@ -49,26 +54,31 @@
   font-size: 13px;
   line-height: 13px;
   box-sizing: border-box;
-  cursor: default;
+  cursor: cell;
+
   &.activity-locked {
     cursor: default;
     opacity: 0.6;
-    pointer-events: none!important;
+    pointer-events: none !important;
   }
+
   &.row-thumb:hover {
     background-color: var(--highlight-color);
     cursor: pointer;
   }
+
   &:not(.display) {
     &:not(.selected):hover {
       outline: 1px solid var(--primary-color-40);
       outline-offset: -1px;
       z-index: 2;
     }
+
     &.is-editable {
       background-color: var(--primary-color-10);
     }
   }
+
   &.row-thumb {
     background: var(--app-bg);
     z-index: 4;
@@ -81,6 +91,7 @@
   &.is-invalid,
   &.overlapping-selection {
     z-index: 3;
+
     &:after,
     &.overlapping-selection:before {
       content: " ";
@@ -94,33 +105,41 @@
       z-index: 3;
       pointer-events: none;
     }
+
     &:not(.focused):not(.subtracting) {
+
       &.selected:after,
       &.overlapping-selection:before {
         background-color: var(--primary-color-contrast-30);
       }
     }
+
     &.top-edge:not(.overlapping-selection):after,
     &.overlapping-top-edge:after {
       border-top-style: solid;
     }
+
     &.bottom-edge:not(.overlapping-selection):after,
     &.overlapping-bottom-edge:after {
       border-bottom-style: solid;
     }
+
     &.left-edge:not(.overlapping-selection):after,
     &.overlapping-left-edge:after {
       border-left-style: solid;
     }
+
     &.right-edge:not(.overlapping-selection):after,
     &.overlapping-right-edge:after {
       border-right-style: solid;
     }
+
     &.multi-select {
       &:after {
         border-color: var(--heavy-dull-highlight);
         border-width: 1px;
       }
+
       &.focused:before {
         border: 1px solid var(--primary-color);
         content: " ";
@@ -133,26 +152,31 @@
       }
     }
   }
+
   &.dropdown-single-select {
     justify-content: flex-start;
   }
+
   ::ng-deep {
     .is-required-asterix {
       display: none;
     }
   }
+
   &.is-invalid:not(.validation-id-IsRequired) {
     &:after {
       opacity: 0.4;
       border-color: var(--red-themed);
       border-style: solid;
     }
+
     &.focused {
       &:after {
         opacity: 0.8;
       }
     }
   }
+
   &.is-invalid.validation-id-IsRequired {
     ::ng-deep {
       .is-required-asterix {
@@ -170,10 +194,11 @@
       }
     }
   }
+
   /* Edit indicator */
   &.has-draft-value {
     ::ng-deep {
-      > *:first-child {
+      >*:first-child {
         &:before {
           content: " ";
           position: absolute;
@@ -187,18 +212,20 @@
         }
       }
     }
+
     &.top-edge {
       ::ng-deep {
-        > *:first-child {
+        >*:first-child {
           &:before {
             top: 1px;
           }
         }
       }
     }
+
     &.left-edge {
       ::ng-deep {
-        > *:first-child {
+        >*:first-child {
           &:before {
             left: 1px;
           }

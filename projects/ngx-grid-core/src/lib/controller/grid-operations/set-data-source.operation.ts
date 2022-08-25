@@ -1,5 +1,5 @@
 import { SubscriptionLike } from 'rxjs'
-import { startWith, take } from 'rxjs/operators'
+import { startWith } from 'rxjs/operators'
 
 import { GridDataSource } from '../../grid-data-source'
 import { EMetadataType } from '../../typings/enums'
@@ -19,7 +19,6 @@ export class SetDataSource extends Operation {
     this.onDestroy()
     this.gridOperations.gridController.dataSource.onDestroy()
     this.gridOperations.gridController.dataSource = source
-    source.onChanges.pipe(take(1)).subscribe(_ => this.gridOperations.SetGridFocus.run())
     this._subs.add(source.onChanges.pipe(startWith(null)).subscribe(_ => {
       this.gridEvents.GridInitialisedEvent.emit(false)
       this.gridEvents.GridDataChangedEvent.emit(source)

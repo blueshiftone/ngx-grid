@@ -19,6 +19,7 @@ import { ContextMenuComponent } from './ui/context-menu/context-menu.component'
 import { ContextMenuDirective } from './ui/context-menu/context-menu.directive'
 import { DataGridComponent } from './ui/data-grid/data-grid.component'
 import { ErrorDialogComponent } from './ui/dialogs/error-dialog/error-dialog.component'
+import { BottomPlusScrollbarDirective } from './ui/directives/absolute-position-minus-scrollbars.directive'
 import { KeepVisibleDirective } from './ui/directives/keep-visible.directive'
 import { ResponsiveBackgroundColorDirective } from './ui/directives/responsive-background-color.directive'
 import { CellValidationMessageComponent } from './ui/grid-overlays/cell-validation-message/cell-validation-message.component'
@@ -31,7 +32,7 @@ import { MarkdownEditorComponent } from './ui/grid-overlays/markdown-editor-over
 import { MultiCellEditInputComponent } from './ui/grid-overlays/multi-cell-edit-input/multi-cell-edit-input.component'
 import { MultiCellEditOverlayComponent } from './ui/grid-overlays/multi-cell-edit-overlay/multi-cell-edit-overlay.component'
 import {
-    MultiSelectForeignKeyDropdownOverlayComponent,
+  MultiSelectForeignKeyDropdownOverlayComponent,
 } from './ui/grid-overlays/multi-select-foreign-key-dropdown-overlay/multi-select-foreign-key-dropdown-overlay.component'
 import { MultiSelectGridCellPreviewComponent } from './ui/grid-overlays/multi-select-grid-cell-preview/multi-select-grid-cell-preview.component'
 import { MultiSelectGridSelectedListComponent } from './ui/grid-overlays/multi-select-grid-selected-list/multi-select-grid-selected-list.component'
@@ -39,10 +40,10 @@ import { MultiSelectStaticCellPreviewComponent } from './ui/grid-overlays/multi-
 import { MultiSelectStaticListOverlayComponent } from './ui/grid-overlays/multi-select-static-list-overlay/multi-select-static-list-overlay.component'
 import { RichTextCellPreviewComponent } from './ui/grid-overlays/rich-text-cell-preview/rich-text-cell-preview.component'
 import {
-    SingleSelectGridDropdownOverlayComponent,
+  SingleSelectGridDropdownOverlayComponent,
 } from './ui/grid-overlays/single-select-grid-dropdown-overlay/single-select-grid-dropdown-overlay.component'
 import {
-    SingleSelectSimpleForeignKeyDropdownOverlayComponent,
+  SingleSelectSimpleForeignKeyDropdownOverlayComponent,
 } from './ui/grid-overlays/single-select-simple-foreign-key-dropdown-overlay/single-select-simple-foreign-key-dropdown-overlay.component'
 import { StaticDropdownOverlayComponent } from './ui/grid-overlays/static-dropdown-overlay/static-dropdown-overlay.component'
 import { HeaderComponent } from './ui/header/header.component'
@@ -110,6 +111,7 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
     CellActionButtonComponent,
     FileGridCellSelectedListComponent,
     LoadingDotsComponent,
+    BottomPlusScrollbarDirective,
   ],
   imports: [
     CommonModule,

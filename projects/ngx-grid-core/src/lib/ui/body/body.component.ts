@@ -1,5 +1,5 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
 import { concat, interval, merge } from 'rxjs'
 import { take } from 'rxjs/operators'
 
@@ -20,9 +20,13 @@ import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 })
 export class BodyComponent extends AutoUnsubscribe implements OnInit {
 
+  @Input() public name?: string
+
   @ViewChild('viewport', { static: true }) public viewPort!: CdkVirtualScrollViewport
 
   public rows: IGridRow[] = []
+
+  public dataChanges = this.events.factory.GridDataChangedEvent.on()
 
   private readonly autoScrollConfigs: IGridViewportAutoScrollConfigs = {
     triggerAreaSize: 60,
