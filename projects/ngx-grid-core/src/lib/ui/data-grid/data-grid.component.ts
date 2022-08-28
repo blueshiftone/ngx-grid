@@ -45,6 +45,7 @@ import { WINDOW } from '../../utils/window'
 })
 export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChanges {
 
+  @Input() public name           : string = 'Data Grid'
   @Input() public config         : IGridConfiguration = new DataGridConfigs()
   @Input() public data!          : IGridDataSource
   @Input() public preselectedRows: Array<number | string> = []
@@ -120,6 +121,8 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     this.addSubscription(this.config.uiTheme.subscribe(theme => {
       this._gridEvents.GridUIThemeChangedEvent.emit(theme)
     }))
+
+    this.addSubscription(fromEvent<MouseEvent>(this._el, 'click').subscribe(_ => this.gridController.grid.SetGridFocus.run()))
 
   }
 

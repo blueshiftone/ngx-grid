@@ -98,7 +98,6 @@ export class GridControllerService {
       gridEvents.EditingCellChangedEvent.emit(null)
       this.cell.FocusedCellChanged.run(focusedCellChange)
       this.row.FocusedRowChanged.run(focusedCellChange)
-      this.grid.SetGridFocus.run()
       if (nextFocused && !this.cell.GetCellIsValid.run(nextFocused)) {
         const state = this.cell.GetCellValue.run(nextFocused)?.validationState
         if (state) window.requestAnimationFrame(_ => this.cell.SetCellValidationDialog.run(state))
@@ -223,6 +222,7 @@ export class GridControllerService {
     this.selection.onDestroy()
     this.dataSource.onDestroy()
     DeleteFromArray(DATA_GRIDS_FOCUSED_TREE, this.grid.GetGridId.run())
+    this.events.factory.GridDestroyedEvent.emit()
   }
 
   public get isInitialised(): boolean { return this.grid.GetIsInitialised.run() }

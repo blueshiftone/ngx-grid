@@ -90,32 +90,45 @@ export class StandardSelectionStrategy implements IGridSelectionStrategy {
       }
     }
 
-    const move = (e: IGridKeyboardEvent) => this.controller.MoveSelectionFromFocus.run(configs(e))
+    const move = (e: IGridKeyboardEvent) => {
+      if (this.controller.gridController.row.GetAllRows.filteredRows().length === 0) return
 
-    this.controller.keyboardEvents.arrowDown  = (e: IGridKeyboardEvent) => move(e).toCellBelow()
-    this.controller.keyboardEvents.arrowUp    = (e: IGridKeyboardEvent) => move(e).toCellAbove()
-    this.controller.keyboardEvents.arrowLeft  = (e: IGridKeyboardEvent) => move(e).toCellLeft()
-    this.controller.keyboardEvents.arrowRight = (e: IGridKeyboardEvent) => move(e).toCellRight()
+      // Select first cell in the grid if a slection doesn't exist
+      if (!this.controller.gridEvents.CellSelectionChangedEvent.state?.cellCount) {
+        this.controller.SelectCell.run(new GridCellCoordinates(
+          this.controller.gridController.row.GetAllRows.filteredRows()[0].rowKey,
+          this.controller.gridController.column.GetColumns.run()[0]
+        ))
+        return
+      }
+      
+      return this.controller.MoveSelectionFromFocus.run(configs(e))
+    }
+
+    this.controller.keyboardEvents.arrowDown  = (e: IGridKeyboardEvent) => move(e)?.toCellBelow()
+    this.controller.keyboardEvents.arrowUp    = (e: IGridKeyboardEvent) => move(e)?.toCellAbove()
+    this.controller.keyboardEvents.arrowLeft  = (e: IGridKeyboardEvent) => move(e)?.toCellLeft()
+    this.controller.keyboardEvents.arrowRight = (e: IGridKeyboardEvent) => move(e)?.toCellRight()
     
     this.controller.keyboardEvents.ctrlA      = () => this.controller.SelectAll.run()
 
     this.controller.keyboardEvents.home = (e: IGridKeyboardEvent) => {
       if (e.hasCtrlKey) this.controller.MoveSelectionFromFocus.run({ hasModifier: e.hasShiftKey }).toStartOfGrid()
-      else move(e).toStartOfRow()
+      else move(e)?.toStartOfRow()
     }
 
     this.controller.keyboardEvents.end = (e: IGridKeyboardEvent) => {
       if (e.hasCtrlKey) this.controller.MoveSelectionFromFocus.run({ hasModifier: e.hasShiftKey }).toEndOfGrid()
-      else move(e).toEndOfRow()
+      else move(e)?.toEndOfRow()
     }
 
     this.controller.keyboardEvents.tab = (e: IGridKeyboardEvent) => {
       if (e.hasShiftKey) this.controller.MoveSelectionFromFocus.run({ hasModifier: e.hasCtrlKey }).toCellLeft()
-      else move(e).toCellRight()
+      else move(e)?.toCellRight()
     }
 
-    this.controller.keyboardEvents.pageUp   = (e: IGridKeyboardEvent) => move(e).toPageUp()
-    this.controller.keyboardEvents.pageDown = (e: IGridKeyboardEvent) => move(e).toPageDown()
+    this.controller.keyboardEvents.pageUp   = (e: IGridKeyboardEvent) => move(e)?.toPageUp()
+    this.controller.keyboardEvents.pageDown = (e: IGridKeyboardEvent) => move(e)?.toPageDown()
 
     this.controller.keyboardEvents.any = () => this.controller.EmitNextSelectionSlice.run()
 

@@ -37,6 +37,7 @@ export class KeyBindings extends Operation {
     this.subscriptions.add(fromEvent<KeyboardEvent>(document.documentElement, 'keydown').subscribe(e => {
       if (!this.gridOperations.HasGridFocus.run() || this._documentHasEditableFocus || this.gridOperations.GetIsDisabled.run()) return
       for (const key of keysToCapture) {
+        if (key === 'Tab') continue
         if (isKey(key, e)) {
           this.gridEvents.GridKeyCmdPressedEvent.emit({
             key: key,
