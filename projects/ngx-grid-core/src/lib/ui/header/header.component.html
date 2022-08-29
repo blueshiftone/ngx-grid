@@ -1,7 +1,7 @@
-<div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="setValues(); dragStopped();"
-  (cdkDropListSorted)="changeColumnOrder($event)" class="row header" [ngClass]="{Dragging: isDragging}">
+<div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dragStopped();"
+  (cdkDropListSorted)="changeColumnOrder($event)" class="row header" [ngClass]="{Dragging: (isDragging | async)}">
   <div class="cell row-thumb display"></div>
-  <div #columns
+  <div #columnElement
     (click)="sortColumn(index)"
     (cdkDragStarted)="dragStarted()"
     cdkDrag
@@ -9,7 +9,7 @@
     [cdkDragDisabled]="dragDisabled"
     [ngClass]="{ 'col-selected': columnsSelected[columnKey] }"
     Type="Text"
-    *ngFor="let columnKey of columns; let index = index"
+    *ngFor="let columnKey of (columns | async); let index = index"
     class="cell display">
     <app-resizer (output)="resizeColumn($event.x, columnKey)" (resizeStart)="startResize()"
       (ResizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>

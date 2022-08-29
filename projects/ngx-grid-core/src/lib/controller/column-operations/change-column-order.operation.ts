@@ -1,10 +1,18 @@
 import { IGridColumnOrder, IGridColumns } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
+import { TColumnKey } from '../../typings/types'
 import { Operation } from '../operation.abstract'
 
 export class ChangeColumnOrder extends Operation {
 
   constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
+
+  public allColumns(columns: TColumnKey[]) {
+    const newOrder: IGridColumnOrder[] = columns.map((c, i) => ({ order: i, columnKey: c }))
+    this.columnOperations.prefsService.set(this._prefsKey, newOrder)
+    this.gridEvents.ColumnOrderSavedEvent.emit(newOrder)
+    this.gridEvents.ColumnOrderChangedEvent.emit(newOrder)
+  }
 
   public run(changedIndexes: [number, number]) {
     let   [prevIndex, nextIndex]   = changedIndexes
