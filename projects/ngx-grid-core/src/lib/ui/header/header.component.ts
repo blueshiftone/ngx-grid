@@ -1,6 +1,7 @@
 import { CdkDragSortEvent } from '@angular/cdk/drag-drop'
 import { DOCUMENT } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, QueryList, ViewChildren } from '@angular/core'
+import { BehaviorSubject, merge } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -21,13 +22,13 @@ import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 })
 export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
-  @ViewChildren('columns', { read: ElementRef }) public columnElements?: QueryList<ElementRef>
+  @ViewChildren('columnElement', { read: ElementRef }) public columnElements?: QueryList<ElementRef>
 
-  public columns: string[]                         = []
+  public columns = new BehaviorSubject<string[]>([])
   public dragDisabled                              = false
   public sortingBy: string | null                  = null
   public sortingByDirection: ESortDirection        = ESortDirection.Natural
-  public isDragging                                = false
+  public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
 
   private _isResizing = false
@@ -43,7 +44,12 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   ngOnInit(): void {
         
-    this.addSubscription(this._gridEvents.GridDataChangedEvent.onWithInitialValue().subscribe(_ => this.setValues()))
+    this.addSubscription(
+      merge(
+        this._gridEvents.GridDataChangedEvent.onWithInitialValue(),
+        this._gridEvents.ColumnOrderChangedEvent.on()
+      )
+      .subscribe(_ => this.setColumnKeys()))
 
     this.addSubscription(this._gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
       const sortBy = this._gridEvents.ColumnSortByChangedEvent.state
@@ -68,7 +74,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
     this.addSubscription(this._gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
       colWidths.columns.forEach(col => {
-        const el = this.columnElements?.get(this.columns.indexOf(col.columnKey))
+        const el = this.columnElements?.get(this.columns.value.indexOf(col.columnKey))
         if (el) el.nativeElement.style.width = `${col.width}px`;
       })
     }))
@@ -77,7 +83,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public startResize = () => this._isResizing  = true
   public endResize   = () => setTimeout(() => this._isResizing = false)
-  public sortColumn  = (i: number) => !this._isResizing && this.gridController.column.SortColumn.run(this.columns[i])
+  public sortColumn  = (i: number) => !this._isResizing && this.gridController.column.SortColumn.run(this.columns.value[i])
   public disableDrag = () => this.dragDisabled = true
   public enableDrag  = () => this.dragDisabled = false
 
@@ -95,25 +101,26 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public dragStarted = () => {
     this._setCursor('move');
-    this.isDragging = true;
+    this.isDragging.next(true);
     this.cd.detectChanges()
   }
+  
   public dragStopped = () => {
     this._setCursor('');
-    this.isDragging = false;
-    this.cd.detectChanges()
+    this.isDragging.next(false);
+    this.setColumnKeys()
   }
 
-  public setValues(): void {
-    this.columns = this.gridController.column.GetColumns.run()
-    if (this.columns.length && !this.gridController.isInitialised) {
+  public setColumnKeys(): void {
+    if (this.isDragging.value) return
+    this.columns.next(this.gridController.column.GetColumns.run())
+    if (this.columns.value.length && !this.gridController.isInitialised) {
       window.requestAnimationFrame(_ => {
         this.columnElements?.forEach((el, idx) => {
-          this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns[idx], width: el.nativeElement.getBoundingClientRect().width })
+          this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns.value[idx], width: el.nativeElement.getBoundingClientRect().width })
         })
       })
     }
-    this.cd.detectChanges()
   }
 
   public label(columnKey: string): string {
