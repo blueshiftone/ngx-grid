@@ -1,5 +1,5 @@
 export enum ESortDirection {
-  DESC,
-  ASC,
+  Asc,
+  Desc,
   Natural
 }

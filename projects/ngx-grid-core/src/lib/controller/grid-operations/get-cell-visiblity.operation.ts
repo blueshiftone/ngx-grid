@@ -1,10 +1,10 @@
-import { IGridCellCoordinates, IGridCellVisibilityBounds, IGridSorted } from '../../typings/interfaces'
+import { IFieldSortConfig, IGridCellCoordinates, IGridCellVisibilityBounds } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { Operation } from '../operation.abstract'
 
 export class GetCellVisibility extends Operation {
 
-  public static sortBy: IGridSorted | null = null
+  public static sortBy: IFieldSortConfig | null = null
 
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
     

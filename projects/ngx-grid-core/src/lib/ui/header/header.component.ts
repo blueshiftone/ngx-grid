@@ -53,8 +53,8 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
     this.addSubscription(this._gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
       const sortBy = this._gridEvents.ColumnSortByChangedEvent.state
-      this.sortingBy          = sortBy ? sortBy.columnName : null
-      this.sortingByDirection = sortBy ? sortBy.sortOrder : ESortDirection.Natural
+      // this.sortingBy          = sortBy ? sortBy.columnName : null
+      // this.sortingByDirection = sortBy ? sortBy.direction : ESortDirection.Natural
       this.cd.detectChanges()
     }))
 
@@ -83,7 +83,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public startResize = () => this._isResizing  = true
   public endResize   = () => setTimeout(() => this._isResizing = false)
-  public sortColumn  = (i: number) => !this._isResizing && this.gridController.column.SortColumn.run(this.columns.value[i])
+  public sortColumn  = (i: number) => !this._isResizing && this.gridController.column.SortColumn.run(this.columns.value[i], ESortDirection.Desc)
   public disableDrag = () => this.dragDisabled = true
   public enableDrag  = () => this.dragDisabled = false
 
