@@ -115,10 +115,12 @@ export class GridDataSource implements IGridDataSource {
     ))
   }
 
+  upsertRows(rows: IGridRow[]): IGridRow[]
   upsertRows(...rows: IGridRow[]): IGridRow[]
   upsertRows(index: number, ...rows: IGridRow[]): IGridRow[]
-  upsertRows(param1: number | IGridRow, ...rows: IGridRow[]): IGridRow[] {
-    if (typeof param1 === 'object') rows.unshift(param1)
+  upsertRows(param1: number | IGridRow | IGridRow[], ...rows: IGridRow[]): IGridRow[] {
+    if (Array.isArray(param1)) rows = param1
+    else if (typeof param1 === 'object') rows.unshift(param1)
     const index = Number.isInteger(param1) ? (param1 as number) : -1
     const output: IGridRow[] = []
     for (const row of rows) {

@@ -10,7 +10,6 @@ import { GridFileUploadService } from '../services/grid-file-upload.service'
 import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
-import { WorkerService } from '../services/worker.service'
 import { ERowStatus } from '../typings/enums'
 import { IGridCellComponent, IGridDataSource } from '../typings/interfaces'
 import { GridCellCoordinates } from '../typings/interfaces/implementations/grid-cell-coordinates.implementation'
@@ -46,7 +45,6 @@ export class GridControllerService {
     public  readonly datePipe: DatePipe,
     public  readonly dialogs : MatDialog,
     public  readonly uploads : GridFileUploadService,
-    public  readonly workers : WorkerService,
     icons: IconsService,
   ) {
 
