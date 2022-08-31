@@ -27,6 +27,7 @@ export interface IGridDataSource extends IDestroyable {
   metadata         : IGridMetadataCollection
 
   getRow              (key: TPrimaryKey)                        : IGridRow | undefined
+  upsertRows          (rows: IGridRow[])                        : IGridRow[]
   upsertRows          (...rows: IGridRow[])                     : IGridRow[]
   upsertRows          (index: number, ...rows: IGridRow[])      : IGridRow[]
   removeRows          (...rows: (TPrimaryKey | IGridRow)[])     : void

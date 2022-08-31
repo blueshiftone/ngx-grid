@@ -6,7 +6,7 @@ export class GetColumnLabel extends Operation {
   constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(columnKey: string): string {
-    return this.columnOperations.GetColumnMeta.run(columnKey)?.name || columnKey
+    return this.columnOperations.GetColumnMeta.run(columnKey)?.name ?? columnKey
   }
 
 }

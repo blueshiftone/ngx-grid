@@ -26,8 +26,6 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public columns = new BehaviorSubject<string[]>([])
   public dragDisabled                              = false
-  public sortingBy: string | null                  = null
-  public sortingByDirection: ESortDirection        = ESortDirection.Natural
   public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
 
@@ -52,9 +50,6 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       .subscribe(_ => this.setColumnKeys()))
 
     this.addSubscription(this._gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
-      const sortBy = this._gridEvents.ColumnSortByChangedEvent.state
-      this.sortingBy          = sortBy ? sortBy.columnName : null
-      this.sortingByDirection = sortBy ? sortBy.sortOrder : ESortDirection.Natural
       this.cd.detectChanges()
     }))
 
@@ -83,7 +78,15 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public startResize = () => this._isResizing  = true
   public endResize   = () => setTimeout(() => this._isResizing = false)
-  public sortColumn  = (i: number) => !this._isResizing && this.gridController.column.SortColumn.run(this.columns.value[i])
+  public sortColumn  = (i: number) => {
+    if (this._isResizing) return
+    const columnKey = this.columns.value[i]
+    const sortOrder = this.currentSortOrder(columnKey)
+    // Run the column operation RequestColumnSort 
+    // toggle sort direction
+    // asc -> desc -> natural
+    this.gridController.column.RequestColumnSort.run(columnKey, sortOrder === ESortDirection.Asc ? ESortDirection.Desc : sortOrder === ESortDirection.Desc ? ESortDirection.Natural : ESortDirection.Asc)
+  }
   public disableDrag = () => this.dragDisabled = true
   public enableDrag  = () => this.dragDisabled = false
 
@@ -121,6 +124,20 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         })
       })
     }
+  }
+
+  private currentSortOrder(colKey: string) {
+    return this._gridEvents.ColumnSortByChangedEvent.state?.sortConfig.get(colKey)?.direction ?? ESortDirection.Natural
+  }
+
+  public columnHasSort(colKey: string) {
+    // return true if the column has a sort order
+    return this.currentSortOrder(colKey) !== ESortDirection.Natural
+  }
+
+  public columnSortIconKey(colKey: string) {
+    // return the sort icon key for the column (north or south)
+    return this.currentSortOrder(colKey) === ESortDirection.Asc ? 'north' : 'south'
   }
 
   public label(columnKey: string): string {
