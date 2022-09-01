@@ -1,17 +1,10 @@
 import { Subject, SubscriptionLike } from 'rxjs'
-import { debounceTime, first } from 'rxjs/operators'
+import { debounceTime } from 'rxjs/operators'
 
 import { EMetadataType } from './typings/enums'
-import {
-  IGridCellMeta,
-  IGridCellValue,
-  IGridColumnMeta,
-  IGridDataSource,
-  IGridMetadataCollection,
-  IGridRow,
-  IGridRowMeta,
-} from './typings/interfaces'
+import { IGridCellMeta, IGridCellValue, IGridColumn, IGridDataSource, IGridMetadataCollection, IGridRow, IGridRowMeta } from './typings/interfaces'
 import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from './typings/interfaces/implementations'
+import { GridColumn } from './typings/interfaces/implementations/grid-column.implementation'
 import { GridImplementationFactory } from './typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey } from './typings/types/column-key.type'
 import { TPrimaryKey } from './typings/types/primary-key.type'
@@ -19,46 +12,37 @@ import { Randomish } from './utils/randomish'
 
 export class GridDataSource implements IGridDataSource {
 
-  public readonly columns: string[]    = []
-  public readonly rows   : IGridRow[]  = []
-  public dataSetName                   = ''
-  public dataGridID                    = ''
-  public primaryColumnKey              = 'ID'
-  public visibleColumns: string[]      = []
-  public hiddenColumns : string[]      = []
-  public disabled                      = false
-  public columnMeta: IGridColumnMeta[] = []
-  public maskNewIds: boolean           = false
-
+  public readonly columns: IGridColumn[] = []
+  public readonly rows   : IGridRow[]    = []
+  public dataSetName                     = ''
+  public dataGridID                      = ''
+  public primaryColumnKey                = 'ID'
+  public disabled                        = false
+  public maskNewIds: boolean             = false
+  
   public onChanges = new Subject<IGridDataSource>()
   
-  public relatedData: Map<string,          IGridDataSource> = new Map()
-  public cellMeta   : Map<string,          IGridCellMeta>   = new Map()
-  public rowMeta    : Map<string | number, IGridRowMeta>    = new Map()
+  public relatedData: Map<string,      IGridDataSource> = new Map()
+  public cellMeta   : Map<string,      IGridCellMeta>   = new Map()
+  public rowMeta    : Map<TPrimaryKey, IGridRowMeta>    = new Map()
+  public columnMeta : Map<TColumnKey,  IGridColumn> = new Map()
 
   public metadata: IGridMetadataCollection = new GridMetadataCollection()
 
   private _subs = new Set<SubscriptionLike>()
 
   private _rowMap        = new Map<TPrimaryKey, IGridRow>()
-  private _colSetCache   = new Set<string>()
+  private _colMap        = new Map<TColumnKey, IGridColumn>()
   private _changesStream = new Subject<void>()
-  private _colSetStream  = new Subject<void>()
 
   constructor(input?: Partial<IGridDataSource>) {
     if (input) Object.assign(this, input)
     
-    for (const row of this.rows)    this._rowMap.set(row.rowKey, row)
-
-    if (!this.columns.length) {
-      this._subs.add(this.onChanges.pipe(first(source => source.columns.length > 0)).subscribe(source => {
-        if (!this.visibleColumns.length) this.visibleColumns.push(...source.columns)
-      }))
-    }
+    for (const row of this.rows) this._rowMap.set(row.rowKey, row)
+    for (const col of this.columns) this._colMap.set(col.columnKey, col)
 
     this._subs.add(this._changesStream.pipe(debounceTime(1)).subscribe(_ => {
       this.onChanges.next(this)
-      this._colSetCache.clear()
     }))
 
   }
@@ -84,10 +68,8 @@ export class GridDataSource implements IGridDataSource {
       dataGridID      : g.dataGridID,
       dataSetName     : g.dataSetName,
       primaryColumnKey: g.primaryColumnKey,
-      visibleColumns  : g.visibleColumns,
-      hiddenColumns   : g.hiddenColumns,
+      columns         : g.columns,
       disabled        : g.disabled,
-      columnMeta      : g.columnMeta,
       metadata        : g.metadata,
       cellMeta        : g.cellMeta,
       rowMeta         : g.rowMeta,
@@ -109,6 +91,10 @@ export class GridDataSource implements IGridDataSource {
     return this._rowMap.get(key)
   }
 
+  public getColumn(key: TColumnKey): IGridColumn | undefined {
+    return this._colMap.get(key)
+  }
+
   public createRowFromObject(rowObj: {[key: TColumnKey]: any}): IGridRow {
     return GridImplementationFactory.gridRow(this.primaryColumnKey, new Map<TColumnKey, IGridCellValue>(
       Object.keys(rowObj).map(key => ([key, new GridCellValue(new GridCellCoordinates(rowObj[this.primaryColumnKey], key), rowObj[key])]))
@@ -128,6 +114,7 @@ export class GridDataSource implements IGridDataSource {
       if (existingRow) {
         for (const value of row.values.values()) {
           existingRow.setValue(value.columnKey, value.value)
+          this.upsertColumns(new GridColumn(value.columnKey))
         }
         output.push(existingRow)
       } else {
@@ -136,7 +123,6 @@ export class GridDataSource implements IGridDataSource {
         this._rowMap.set(row.rowKey, row)
         output.push(row)
       }
-      this.upsertColumns(...[...output[output.length-1].values.values()].map(v => v.columnKey))
     }
     this._changesStream.next()
     return output
@@ -158,19 +144,17 @@ export class GridDataSource implements IGridDataSource {
     this._changesStream.next()
   }
 
-  public upsertColumns(...columnKeys: string[]): void {
-    for (const colKey of columnKeys) {
-      if (!this._colSetCache.has(colKey)) {
-        this._colSetCache.add(colKey)
-        if (!this.columns.includes(colKey)) this.columns.push(colKey)
+  public upsertColumns(...columns: IGridColumn[]): void {
+    for (const col of columns) {
+      if (!this._colMap.has(col.columnKey)) {
+        this._colMap.set(col.columnKey, col)
       }
     }
-    this._colSetStream.next()
   }
 
   public clearData(): void {
     this._rowMap.clear()
-    this._colSetCache.clear()
+    this._colMap.clear()
     this.rows.length = 0
     this.columns.length = 0
     this._changesStream.next()

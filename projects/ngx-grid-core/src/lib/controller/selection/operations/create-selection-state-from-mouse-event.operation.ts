@@ -24,7 +24,7 @@ export class CreateSelectionStateFromMouseEvent {
 
   private _cellIsBeingEdited(cell: IGridCellComponent): boolean {
     const editingCell = this._getEditingCell()    
-    return editingCell?.rowComponent.rowKey === cell.rowKey && editingCell.columnKey === cell.columnKey
+    return editingCell?.rowComponent.rowKey === cell.rowKey && editingCell.column.columnKey === cell.column.columnKey
   }
 
   private _getActiveCell() : IGridCellComponent | undefined { return this._gridEvents.CellMouseEnteredEvent.state }

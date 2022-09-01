@@ -3,9 +3,9 @@ import { BehaviorSubject, Subject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
-import { IGridCellComponent, IGridCellCoordinates, IGridCellType, IGridDataType, IGridRowComponent } from '../../../typings/interfaces'
+import { IGridCellComponent, IGridCellCoordinates, IGridCellType, IGridColumn, IGridDataType, IGridRowComponent } from '../../../typings/interfaces'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
-import { TColumnKey, TPrimaryKey } from '../../../typings/types'
+import { TPrimaryKey } from '../../../typings/types'
 import { AutoUnsubscribe } from '../../../utils/auto-unsubscribe'
 import { TO_KEBAB } from '../../../utils/string-converter'
 import CELL_TYPES from '../../cell/cell-types'
@@ -23,7 +23,7 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
 
   @ViewChild('CellValueElement', {static: true}) public cellValueElement!: ElementRef<HTMLDivElement>
 
-  @Input() public columnKey: TColumnKey = ''
+  @Input() public column!: IGridColumn
   @Input() public rowComponent!: IGridRowComponent
 
   public focus                         = new BehaviorSubject<any>(false)
@@ -66,10 +66,10 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
 
   public get element     (): HTMLElement          { return this.cellValueElement.nativeElement }
   public get rowKey      (): TPrimaryKey          { return this.rowComponent.rowKey }
-  public get coordinates (): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columnKey) }
+  public get coordinates (): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.column.columnKey) }
   public get style       (): CSSStyleDeclaration  { return this.element.style }
   public get type        (): IGridDataType        { return this.gridController.cell.GetCellType.run(this.coordinates) }
-  public get label       (): string               { return this.gridController.column.GetColumnLabel.run(this.columnKey) }
+  public get label       (): string               { return this.column.name ?? this.column.columnKey }
 
   private _setCellTypeClass(newClass: string): void {
     if (this._lastSeenType) this.toggleClass(this._lastSeenType?.name, false)

@@ -49,8 +49,8 @@ export class InsertRow extends Operation {
       }
 
       this.rowOperations.AddRow.buffer(insertRow, globalIndex).then(() => {
-        for (const col of this.columnOperations.GetColumns.run()) {
-          const coords = new GridCellCoordinates(insertRow.rowKey, col)
+        for (const col of this.dataSource.columns) {
+          const coords = new GridCellCoordinates(insertRow.rowKey, col.columnKey)
           this.cellOperations.ValidateCell.run(coords)
         }
       })

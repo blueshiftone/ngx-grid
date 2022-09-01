@@ -9,8 +9,8 @@ export class RevertRecords extends Operation {
 
   public async run(rowMetas: IGridRowMeta[]) {
     
-    const columns                              = this.columnOperations.GetColumns.run()
-    const buffering                            = new Set<Promise<void>>()
+    const columns   = this.dataSource.columns
+    const buffering = new Set<Promise<void>>()
     const rowComponents: IGridRowComponent[]   = []
     const cellComponents: IGridCellComponent[] = []
 
@@ -23,7 +23,7 @@ export class RevertRecords extends Operation {
       if (row.isNew) buffering.add(this.rowOperations.DeleteRow.buffer(row.rowKey, { emitEvent: false }))
 
       for (const col of columns) {
-        const cellCoords = new GridCellCoordinates(row.rowKey, col)
+        const cellCoords = new GridCellCoordinates(row.rowKey, col.columnKey)
         const cellMeta   = this.cellOperations.GetCellMeta.run(cellCoords)
         if (cellMeta && this.cellOperations.HasDraftValue.run(cellCoords)) {
           this.cellOperations.ClearCellDraftValue.buffer(cellCoords)

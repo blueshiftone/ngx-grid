@@ -29,7 +29,7 @@ export class RowComponents extends Operation {
     if (this.rowComponentsByKey.get(oldRowKey) === row) this.rowComponentsByKey.delete(oldRowKey)
     this.rowComponentsByKey.set(row.rowKey, row)
     cells.forEach(cell => {
-      const oldCoords = new GridCellCoordinates(oldRowKey, cell.columnKey)
+      const oldCoords = new GridCellCoordinates(oldRowKey, cell.column.columnKey)
       this.cellOperations.CellComponents.changed(cell, oldCoords)
     })
     this._updateRowComponent(row)

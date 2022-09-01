@@ -13,7 +13,7 @@ export class ExactlyOneRecordWithValue extends BaseColumnValidator implements IC
 
   public run(): any {
 
-    const colMeta = this.gridController.column.GetColumnMeta.run(this.columnKey)
+    const colMeta = this.gridController.dataSource.getColumn(this.columnKey)
 
     const value = colMeta?.metadata.get(EMetadataType.ExactlyOneRecordWithValue) as any
 

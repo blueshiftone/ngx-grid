@@ -13,7 +13,7 @@ export class ValueValidator {
 
     const getMetaTypes = (gridController: GridControllerService, cellCoords: IGridCellCoordinates) => {
       const cellMeta = gridController.cell.GetCellMeta.run(cellCoords)?.metadata
-      const colMeta = gridController.column.GetColumnMeta.run(cellCoords.columnKey)?.metadata
+      const colMeta = gridController.dataSource.getColumn(cellCoords.columnKey)?.metadata
       return new Set([...(cellMeta?.getAllMetaTypes() ?? []), ...(colMeta?.getAllMetaTypes() ?? [])].map(x => EMetadataType[x] as keyof typeof EMetadataType))
     }
 

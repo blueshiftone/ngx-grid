@@ -32,8 +32,8 @@ export class ChangePrimaryKey extends Operation {
     }
 
     // Update cell meta maps and cells
-    for (const columnKey of this.dataSource.columns) {
-      const cellMeta = cellOperations.GetCellMeta.run(new GridCellCoordinates(oldRowKey, columnKey))
+    for (const col of this.dataSource.columns) {
+      const cellMeta = cellOperations.GetCellMeta.run(new GridCellCoordinates(oldRowKey, col.columnKey))
       if (cellMeta) cellMeta.coords.rowKey = newRowKey
     }
     cellOperations.CellComponents.findWithCoords(new GridCellCoordinates(oldRowKey, primaryColumnKey))?.typeComponent?.receiveValue(newRowKey);

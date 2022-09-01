@@ -34,7 +34,6 @@ export class HyperlinkPopupComponent implements OnInit {
     iframe.contentWindow.document.write(
       `<html>
         <head>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap">
           <style type="text/css">
             html {
               color-scheme: ${colorScheme};
@@ -44,7 +43,7 @@ export class HyperlinkPopupComponent implements OnInit {
             } 
             body {
               margin: 0;
-              font: 400 14px / 20px Roboto, "Helvetica Neue", sans-serif
+              font: 400 14px / 20px Roboto, "Helvetica Neue", Arial, sans-serif
             }
             input {
               border: none;

@@ -1,4 +1,4 @@
-import { IGridColumnOrder, IGridColumns } from '../../typings/interfaces'
+import { IGridColumn } from '../../typings/interfaces'
 import { IColumnOperationFactory } from '../../typings/interfaces/grid-column-operation-factory.interface'
 import { TColumnKey } from '../../typings/types'
 import { Operation } from '../operation.abstract'
@@ -7,11 +7,24 @@ export class ChangeColumnOrder extends Operation {
 
   constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
+  private _updateColumnOrder(changedColumns: Map<TColumnKey, number>) {
+    // changedColumns.forEach((order, columnKey) => {
+    //   let columnMeta = this.columnOperations.GetColumnMeta.run(columnKey)
+    //   if (!columnMeta) {
+    //     columnMeta = {
+    //       columnKey,
+    //       metadata: GridImplementationFactory.gridMetadataCollection()
+    //     }
+    //     this.dataSource.columnMeta.set(columnKey, columnMeta)
+    //   }
+    //   columnMeta.sortOrder = order
+    // })
+  }
+
   public allColumns(columns: TColumnKey[]) {
-    const newOrder: IGridColumnOrder[] = columns.map((c, i) => ({ order: i, columnKey: c }))
-    this.columnOperations.prefsService.set(this._prefsKey, newOrder)
-    this.gridEvents.ColumnOrderSavedEvent.emit(newOrder)
-    this.gridEvents.ColumnOrderChangedEvent.emit(newOrder)
+    const changedColumns = new Map<TColumnKey, number>()
+    columns.forEach((columnKey, i) => changedColumns.set(columnKey, i))
+    this.gridEvents.ColumnOrderChangedEvent.emit(changedColumns)
   }
 
   public run(changedIndexes: [number, number]) {
@@ -22,45 +35,30 @@ export class ChangeColumnOrder extends Operation {
     if (prevIndexStart < nextIndex) while (prevIndexStart <= nextIndex) indexesChanged.push(prevIndexStart++)
     else                            while (prevIndexStart >= nextIndex) indexesChanged.push(prevIndexStart--)
 
-    const columns: IGridColumnOrder[]= indexesChanged.map(i => ({
-      order    : this._columns.indexOf(this._visibleColumns[i]),
-      columnKey: this._visibleColumns[i]
-    }))
+    const changedColumns = new Map<TColumnKey, number>()
 
-    const newOrderIndexes = columns.map(i => i.order)
+    // for (const i of indexesChanged) {
+    //   const order = this._columns.indexOf(this._visibleColumns[i]),
+    //   const columnKey = this._visibleColumns[i]
+    //   changedColumns.set(columnKey, order)
+    // }
 
-    newOrderIndexes.unshift(newOrderIndexes.pop() as number)
-    columns.forEach((el, i) => el.order = newOrderIndexes[i])
+    // console.log(indexesChanged, changedColumns)
 
-    const savedColumnKeys = this._savedOrder.map(c => c.columnKey)
-    const currentOrder = [...this._savedOrder, ...this._visibleColumns.map((c, i) => ({ order: i, columnKey: c })).filter(itm => !savedColumnKeys.includes(itm.columnKey))]
+    // const newOrderIndexes = changedColumns.map(i => i.order)
 
-    const newOrder = currentOrder.map(c => columns.find(itm => itm.columnKey === c.columnKey) ?? c)
+    // newOrderIndexes.unshift(newOrderIndexes.pop() as number)
+    // changedColumns.forEach((el, i) => el.order = newOrderIndexes[i])
 
-    this.columnOperations.prefsService.set(this._prefsKey, newOrder)
+    // const currentOrder = this._visibleColumns.map((c, i) => ({ order: i, columnKey: c }))
+
+    // const newOrder = currentOrder.map(c => changedColumns.find(itm => itm.columnKey === c.columnKey) ?? c)
     
-    this.gridEvents.ColumnOrderSavedEvent.emit(newOrder)
-    this.gridEvents.ColumnOrderChangedEvent.emit(columns)
+    // this.gridEvents.ColumnOrderChangedEvent.emit(changedColumns)
   }
 
-  private get _columns(): string[] {
-    return this._latestGridColumns?.allColumns || []
-  }
-
-  private get _visibleColumns(): string[] {
-    return this._latestGridColumns?.visibleColumns || []
-  }
-
-  private get _latestGridColumns(): IGridColumns | undefined {
-    return this.gridEvents.ColumnsUpdatedEvent.state
-  }
-
-  private get _savedOrder() {
-    return this.columnOperations.prefsService.get<IGridColumnOrder[]>(this._prefsKey, [])
-  }
-
-  private get _prefsKey(): string {
-    return this.columnOperations.getPrefsKey('GridColumnSortOrder')
+  private get _columns(): IGridColumn[] {
+    return this.dataSource.columns
   }
 
 }

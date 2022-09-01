@@ -7,9 +7,9 @@ export class GetCellType extends Operation {
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
   public run(coordinates: IGridCellCoordinates): IGridDataType {
-    return this.cellOperations.GetCellMeta.run(coordinates)?.type || this._getColMeta(coordinates.columnKey)?.type || { name: 'Text' }
+    return this.cellOperations.GetCellMeta.run(coordinates)?.type || this._getCol(coordinates.columnKey)?.type || { name: 'Text' }
   }
 
-  private _getColMeta  = (columnKey: string) => this.dataSource.columnMeta.find(c => c.columnKey === columnKey)
+  private _getCol  = (columnKey: string) => this.dataSource.getColumn(columnKey)
 
 }

@@ -23,6 +23,18 @@ const keysToCapture = [
   'Ctrl+C',
 ] as const
 
+const keysToSwallow = new Set([
+  'PageUp',
+  'PageDown',
+  'Space',
+  'ArrowLeft',
+  'ArrowUp',
+  'ArrowRight',
+  'ArrowDown',
+  'End',
+  'Home',
+])
+
 export type TGridCmdKeys = typeof keysToCapture[number] | 'InputKey'
 
 export class KeyBindings extends Operation {
@@ -44,8 +56,10 @@ export class KeyBindings extends Operation {
             hasCtrlKey: e.ctrlKey || e.metaKey,
             hasShiftKey: e.shiftKey
           })
-          e.preventDefault()
-          e.stopPropagation()
+          if (this._hasSelection && (e.shiftKey || e.ctrlKey || (keysToSwallow.has(key)))) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
           return
         }
       }
@@ -98,6 +112,10 @@ export class KeyBindings extends Operation {
     return activeEl &&
       (this.blacklistActiveElements.includes((activeEl.tagName || '').toLowerCase()) ||
         activeEl.hasAttribute('contenteditable')) || false
+  }
+
+  private get _hasSelection(): boolean {
+    return (this.gridEvents.CellSelectionChangedEvent.state?.cellCount ?? 0) > 0
   }
 
 }

@@ -51,8 +51,8 @@ export class CheckRowIcon extends Operation {
     },
     draftValue: (row: IGridRowComponent) => {
       let hasDraft = false
-      for (const columnKey of row.columns) {
-        hasDraft = this.cellOperations.HasDraftValue.run(new GridCellCoordinates(row.rowKey, columnKey))
+      for (const column of row.columns) {
+        hasDraft = this.cellOperations.HasDraftValue.run(new GridCellCoordinates(row.rowKey, column.columnKey))
         if (hasDraft) break
       }
       if (hasDraft) row.icon.next(EGridIcon.EditPen)

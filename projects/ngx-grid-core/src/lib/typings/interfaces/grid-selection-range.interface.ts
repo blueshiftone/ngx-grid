@@ -1,4 +1,4 @@
-import { IGridRow } from '.'
+import { IGridColumn, IGridRow } from '.'
 import { TColumnKey } from '../types/column-key.type'
 import { TPrimaryKey } from '../types/primary-key.type'
 import { IGridCellCoordinates } from './grid-cell-coordinates.interface'
@@ -50,12 +50,12 @@ export interface IGridSelectionRange {
 
   globalUtils: {
     getRowKeyFromIndex   : (rowIndex: number)                         => TPrimaryKey | undefined,
-    getColumnKeyFromIndex: (columIndex: number)                       => TColumnKey,
+    getColumnKeyFromIndex: (columIndex: number)                       => IGridColumn,
     getRowIndex          : (rowKey: TPrimaryKey)                      => number,
     getRowFromRowKey     : (rowKey: TPrimaryKey)                      => IGridRow | undefined,
-    getColumnIndex       : (columnKey: TColumnKey)                    => number,
-    getFirstColumn       : ()                                         => TColumnKey,
-    getLastColumn        : ()                                         => TColumnKey,
+    getColumnIndex       : (columnKey: string)                        => number,
+    getFirstColumn       : ()                                         => IGridColumn,
+    getLastColumn        : ()                                         => IGridColumn,
     getFirstRow          : ()                                         => TPrimaryKey,
     getLastRow           : ()                                         => TPrimaryKey,
     incrementColumn      : (columnKey: TColumnKey, increment: number) => TColumnKey,

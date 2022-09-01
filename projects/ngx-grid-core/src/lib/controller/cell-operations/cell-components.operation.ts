@@ -13,9 +13,9 @@ export class CellComponents extends Operation {
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public changePrimaryKey(oldKey: TPrimaryKey, newKey: TPrimaryKey) {
-    for (const columnKey of this.dataSource.columns) {
-      const oldCoordKey = new GridCellCoordinates(oldKey, columnKey).compositeKey
-      const newCoordKey = new GridCellCoordinates(newKey, columnKey).compositeKey
+    for (const column of this.dataSource.columns) {
+      const oldCoordKey = new GridCellCoordinates(oldKey, column.columnKey).compositeKey
+      const newCoordKey = new GridCellCoordinates(newKey, column.columnKey).compositeKey
       const cell = this.cellComponentsByCoords.get(oldCoordKey)
       if (cell) {
         this.cellComponentsByCoords.delete(oldCoordKey)
@@ -65,7 +65,7 @@ export class CellComponents extends Operation {
   public findForColumn(columnKey: string): Set<IGridCellComponent> {
     let output = new Set<IGridCellComponent>()
     this.cellComponents.forEach(cell => {
-      if (cell.columnKey === columnKey)
+      if (cell.column.columnKey === columnKey)
       output.add(cell)
     })
     return output

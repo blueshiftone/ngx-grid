@@ -2,7 +2,7 @@ import { GridControllerService } from '../../../../../controller/grid-controller
 import {
   IGridCellCoordinates,
   IGridCellMeta,
-  IGridColumnMeta,
+  IGridColumn,
   IGridRow,
   IGridSelectListOption,
   IGridValueParsingResult,
@@ -19,7 +19,7 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
   public run(gridController: GridControllerService, cellCoords: TAtLeast<IGridCellCoordinates, 'columnKey'>): IGridValueParsingResult<TPrimaryKey[]> {
     
     const cellMeta = gridController.cell.GetCellMeta.run(new GridCellCoordinates(cellCoords.rowKey ?? '', cellCoords.columnKey,))
-    const colMeta  = gridController.column.GetColumnMeta.run(cellCoords.columnKey)
+    const colMeta  = gridController.dataSource.getColumn(cellCoords.columnKey)
     const gridID   = cellMeta?.type?.list?.relatedGridID ?? colMeta?.type?.list?.relatedGridID
 
     if (typeof gridID !== 'undefined') return this._foreignKeyParser(gridController, cellMeta, colMeta)
@@ -29,10 +29,10 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
 
   private _staticKeyParser(
     cellMeta: IGridCellMeta | undefined,
-    colMeta: IGridColumnMeta | undefined
+    col: IGridColumn | undefined
   ): IGridValueParsingResult<string[]> {
 
-    const options = cellMeta?.type?.list?.staticOptions ?? colMeta?.type?.list?.staticOptions ?? []
+    const options = cellMeta?.type?.list?.staticOptions ?? col?.type?.list?.staticOptions ?? []
 
     const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k)
 
@@ -69,10 +69,10 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
   private _foreignKeyParser(
     gridController: GridControllerService,
     cellMeta: IGridCellMeta | undefined,
-    colMeta: IGridColumnMeta | undefined
+    col: IGridColumn | undefined
   ): IGridValueParsingResult<TPrimaryKey[]> {
 
-    const gridID   = cellMeta?.type?.list?.relatedGridID ?? colMeta?.type?.list?.relatedGridID
+    const gridID   = cellMeta?.type?.list?.relatedGridID ?? col?.type?.list?.relatedGridID
 
     if (!gridID) return this.failed()
     
@@ -100,9 +100,9 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
       for(const row of rows) {
         let outputString = grid.rowTemplateString
         for (const col of columns) {
-          if (outputString.includes(col)) {
-            const regex = new RegExp(`\\{\\{(?:\\s+)?${col}(?:\\s+)?\\}\\}`, 'g')
-            outputString = outputString.replace(regex, row.getValue(col)?.value)
+          if (outputString.includes(col.columnKey)) {
+            const regex = new RegExp(`\\{\\{(?:\\s+)?${col.columnKey}(?:\\s+)?\\}\\}`, 'g')
+            outputString = outputString.replace(regex, row.getValue(col.columnKey)?.value)
           }
         }
         previewStringMap.set(outputString, row)

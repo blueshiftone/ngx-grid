@@ -16,11 +16,11 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { EGridIcon } from '../../../services/icon.service'
-import { IGridCellCoordinates, IGridRow, IGridRowComponent } from '../../../typings/interfaces'
+import { IGridCellCoordinates, IGridColumn, IGridRow, IGridRowComponent } from '../../../typings/interfaces'
 import { IGridRecordSelectedEvent } from '../../../typings/interfaces/grid-record-selected-event.interface'
 import { GridCellCoordinates } from '../../../typings/interfaces/implementations'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
-import { TColumnKey, TPrimaryKey } from '../../../typings/types'
+import { TPrimaryKey } from '../../../typings/types'
 import { AutoUnsubscribe } from '../../../utils/auto-unsubscribe'
 import { RecordSelectorCellComponent } from '../record-selector-cell/record-selector-cell.component'
 
@@ -41,7 +41,7 @@ export class RecordSelectorRowComponent extends AutoUnsubscribe implements IGrid
 
   @Output() public selected = new EventEmitter<IGridRecordSelectedEvent>()
 
-  public columns: TColumnKey[] = []
+  public columns: IGridColumn[] = []
   public icon                  = new BehaviorSubject<EGridIcon | null>(null)
   public rowComponent          = this
 
@@ -70,8 +70,8 @@ export class RecordSelectorRowComponent extends AutoUnsubscribe implements IGrid
     })
   }
 
-  public get firstCellPosition(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[0]) }
-  public get lastCellPosition() : IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[this.columns.length-1]) }
+  public get firstCellPosition(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[0].columnKey) }
+  public get lastCellPosition() : IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[this.columns.length-1].columnKey) }
   
   public get element() { return this.elRef.nativeElement }
 
@@ -94,7 +94,7 @@ export class RecordSelectorRowComponent extends AutoUnsubscribe implements IGrid
   
   private _setColumns(): void {
     this.columns.length = 0
-    this.columns.push(...this.gridController.column.GetColumns.run())
+    this.columns.push(...this.gridController.dataSource.columns)
   }
 
 }

@@ -11,8 +11,8 @@ export class SelectRow {
 
     const utils = GridImplementationFactory.gridSelectionRange(this.controller.gridEvents).globalUtils
     
-    const startPos = new GridCellCoordinates(rowKey, utils.getFirstColumn())
-    const endPos   = new GridCellCoordinates(rowKey, utils.getLastColumn())
+    const startPos = new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey)
+    const endPos   = new GridCellCoordinates(rowKey, utils.getLastColumn().columnKey)
     
     if (this.controller.state === null) this.controller.state = this.controller.CreateSelectionStateFromCoordinates.run([startPos, endPos])  
 

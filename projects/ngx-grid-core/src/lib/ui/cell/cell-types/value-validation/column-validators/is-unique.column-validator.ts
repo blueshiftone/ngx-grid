@@ -13,7 +13,7 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
 
   public run(): any {
 
-    const isUnique = this.gridController.column.GetColumnMeta.run(this.columnKey)?.metadata.get(EMetadataType.IsUnique) === true
+    const isUnique = this.gridController.dataSource.getColumn(this.columnKey)?.metadata.get(EMetadataType.IsUnique) === true
 
     if (isUnique !== true) return
 

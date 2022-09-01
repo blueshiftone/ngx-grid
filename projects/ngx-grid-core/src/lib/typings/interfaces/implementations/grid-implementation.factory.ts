@@ -1,7 +1,8 @@
-import { GridColumnWidths, GridFocusedCell, GridRow, GridRowMeta, GridSelectionRange } from '.'
+import { GridColumn, GridColumnWidths, GridFocusedCell, GridRow, GridRowMeta, GridSelectionRange } from '.'
 import {
   IGridCellCoordinates,
   IGridCellFocused,
+  IGridColumn,
   IGridColumnWidth,
   IGridColumnWidths,
   IGridMetadataCollection,
@@ -23,6 +24,7 @@ export class GridImplementationFactory {
   public static gridFocusedCell        = (pos: IGridCellCoordinates)                         : IGridCellFocused        => new GridFocusedCell(pos)
   public static gridRowMeta            = (meta: Partial<IGridRowMeta>)                       : IGridRowMeta            => new GridRowMeta(meta)
   public static gridRow                = (primaryKeyColumn: TColumnKey, values: TRowValues)  : IGridRow                => new GridRow(primaryKeyColumn, values)
+  public static gridColumn             = (columnKey: TColumnKey)                             : IGridColumn             => new GridColumn(columnKey)
   public static gridStyle              = (style: EGridStyle)                                 : IGridStyle              => new GridStyle(style)
 
   public static gridSelectionRange = (gridEvents: IGridEventsFactory,

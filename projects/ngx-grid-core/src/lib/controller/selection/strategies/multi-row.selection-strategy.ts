@@ -86,7 +86,7 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
       if (rowKey !== null && rowKey !== undefined) rowKey = utils.incrementRow(rowKey, increment)
       else rowKey = 0
       this._gridEvents.RowPreselectedEvent.emit(rowKey)
-      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
+      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey))
     }
 
     this.controller.keyboardEvents.ctrlA = () => this.controller.SelectAll.run()
@@ -110,8 +110,8 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
       if (rowKey !== null) {
         
         const coords: [IGridCellCoordinates, IGridCellCoordinates] = [
-          new GridCellCoordinates(rowKey, utils.getFirstColumn()),
-          new GridCellCoordinates(rowKey, utils.getLastColumn())]
+          new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey),
+          new GridCellCoordinates(rowKey, utils.getLastColumn().columnKey)]
 
         let nextState = new GridSelectionStateFromCoordinates(...coords, this.controller.gridEvents, {
           initialSelection : this._getSelection(),

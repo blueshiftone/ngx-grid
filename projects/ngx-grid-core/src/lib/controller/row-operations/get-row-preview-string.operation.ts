@@ -14,9 +14,9 @@ export class GetRowPreviewString extends Operation {
       return '(preview not available)'
     }
     for (const col of this.dataSource.columns) {
-      if (output.includes(col)) {
+      if (output.includes(col.columnKey)) {
         const regex = new RegExp(`\\{\\{(?:\\s+)?${col}(?:\\s+)?\\}\\}`, 'g')
-        output = output.replace(regex, row?.getValue(col)?.value ?? col)
+        output = output.replace(regex, row?.getValue(col.columnKey)?.value ?? col)
       }
     }
     return output

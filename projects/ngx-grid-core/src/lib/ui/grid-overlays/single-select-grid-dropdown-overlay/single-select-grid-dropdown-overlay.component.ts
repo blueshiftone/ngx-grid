@@ -53,7 +53,7 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
       return
     }
     if (!this.dataSource || !change.rows.length) return
-    const pkIndex = this.dataSource.columns.indexOf(this.dataSource.primaryColumnKey)
+    const pkIndex = this.dataSource.columns.findIndex(c => c.columnKey === this.dataSource!.primaryColumnKey)
     if (change.rows[0][pkIndex] !== this.value[0]) this._updateValue(change.rows[0][pkIndex])
   }
 

@@ -7,7 +7,7 @@ export class GetColumnSeparators extends Operation {
   constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run(columnKey: string): IGridSeparator[] {
-    return this.columnOperations.GetColumnMeta.run(columnKey)?.separators || []
+    return this.dataSource.getColumn(columnKey)?.separators || []
   }
 
 }

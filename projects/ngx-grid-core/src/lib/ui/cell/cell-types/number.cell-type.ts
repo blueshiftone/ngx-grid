@@ -49,7 +49,7 @@ export class NumberCellType extends BaseCellType {
     const source       = this.gridController.dataSource
     const meta         = this.gridController.row.GetRowMeta.run(this.parentCell.rowKey)
     const isNewRow     = meta?.status === ERowStatus.New
-    const isPrimarykey = source.primaryColumnKey === this.parentCell.columnKey
+    const isPrimarykey = source.primaryColumnKey === this.parentCell.column.columnKey
     if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
     let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
     const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)

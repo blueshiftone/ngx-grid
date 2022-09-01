@@ -7,7 +7,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { ESortDirection } from '../../typings/enums/sort-direction.enum'
-import { IGridSeparator } from '../../typings/interfaces'
+import { IGridColumn, IGridSeparator } from '../../typings/interfaces'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 
@@ -24,7 +24,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   @ViewChildren('columnElement', { read: ElementRef }) public columnElements?: QueryList<ElementRef>
 
-  public columns = new BehaviorSubject<string[]>([])
+  public columns = new BehaviorSubject<IGridColumn[]>([])
   public dragDisabled                              = false
   public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
@@ -68,9 +68,9 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     }))
 
     this.addSubscription(this._gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
-      colWidths.columns.forEach(col => {
-        const el = this.columnElements?.get(this.columns.value.indexOf(col.columnKey))
-        if (el) el.nativeElement.style.width = `${col.width}px`;
+      colWidths.columns.forEach(item => {
+        const el = this.columnElements?.get(this.columns.value.findIndex(c => c.columnKey === item.columnKey))
+        if (el) el.nativeElement.style.width = `${item.width}px`;
       })
     }))
 
@@ -80,21 +80,21 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   public endResize   = () => setTimeout(() => this._isResizing = false)
   public sortColumn  = (i: number) => {
     if (this._isResizing) return
-    const columnKey = this.columns.value[i]
-    const sortOrder = this.currentSortOrder(columnKey)
+    const column = this.columns.value[i]
+    const sortOrder = this.currentSortOrder(column)
     // Run the column operation RequestColumnSort 
     // toggle sort direction
     // asc -> desc -> natural
-    this.gridController.column.RequestColumnSort.run(columnKey, sortOrder === ESortDirection.Asc ? ESortDirection.Desc : sortOrder === ESortDirection.Desc ? ESortDirection.Natural : ESortDirection.Asc)
+    this.gridController.column.RequestColumnSort.run(column.columnKey, sortOrder === ESortDirection.Asc ? ESortDirection.Desc : sortOrder === ESortDirection.Desc ? ESortDirection.Natural : ESortDirection.Asc)
   }
   public disableDrag = () => this.dragDisabled = true
   public enableDrag  = () => this.dragDisabled = false
 
-  public resizeColumn(distance: number, columnKey: string): void {
+  public resizeColumn(distance: number, column: IGridColumn): void {
     const colWidths = this._gridEvents.ColumnWidthChangedEvent.state
     if (!colWidths) return
-    colWidths.addDistance(columnKey, distance)
-    colWidths.changedOne = columnKey
+    colWidths.addDistance(column.columnKey, distance)
+    colWidths.changedOne = column.columnKey
     this._gridEvents.ColumnWidthChangedEvent.emit(colWidths)
   }
 
@@ -116,32 +116,28 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public setColumnKeys(): void {
     if (this.isDragging.value) return
-    this.columns.next(this.gridController.column.GetColumns.run())
+    this.columns.next(this.gridController.dataSource.columns)
     if (this.columns.value.length && !this.gridController.isInitialised) {
       window.requestAnimationFrame(_ => {
         this.columnElements?.forEach((el, idx) => {
-          this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns.value[idx], width: el.nativeElement.getBoundingClientRect().width })
+          this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columns.value[idx].columnKey, width: el.nativeElement.getBoundingClientRect().width })
         })
       })
     }
   }
 
-  private currentSortOrder(colKey: string) {
-    return this._gridEvents.ColumnSortByChangedEvent.state?.sortConfig.get(colKey)?.direction ?? ESortDirection.Natural
+  private currentSortOrder(column: IGridColumn) {
+    return this._gridEvents.ColumnSortByChangedEvent.state?.sortConfig.get(column.columnKey)?.direction ?? ESortDirection.Natural
   }
 
-  public columnHasSort(colKey: string) {
+  public columnHasSort(column: IGridColumn) {
     // return true if the column has a sort order
-    return this.currentSortOrder(colKey) !== ESortDirection.Natural
+    return this.currentSortOrder(column) !== ESortDirection.Natural
   }
 
-  public columnSortIconKey(colKey: string) {
+  public columnSortIconKey(column: IGridColumn) {
     // return the sort icon key for the column (north or south)
-    return this.currentSortOrder(colKey) === ESortDirection.Asc ? 'north' : 'south'
-  }
-
-  public label(columnKey: string): string {
-    return this.gridController.column.GetColumnLabel.run(columnKey)
+    return this.currentSortOrder(column) === ESortDirection.Asc ? 'north' : 'south'
   }
 
   public separators(columnName: string): IGridSeparator[] {

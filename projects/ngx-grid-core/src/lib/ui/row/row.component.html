@@ -2,4 +2,4 @@
   <data-grid-row-icon [icon]="icon"></data-grid-row-icon>
   <data-grid-separator *ngFor="let s of separators" [separator]="s" axis="x" ></data-grid-separator>
 </div>
-<data-grid-cell class="cell" #cells class="cell" *ngFor="let c of columns; trackBy:cellColumnKey" [columnKey]="c" [rowComponent]="rowComponent"></data-grid-cell>
+<data-grid-cell class="cell" #cells class="cell" *ngFor="let c of columns; trackBy:cellColumnKey" [column]="c" [rowComponent]="rowComponent"></data-grid-cell>

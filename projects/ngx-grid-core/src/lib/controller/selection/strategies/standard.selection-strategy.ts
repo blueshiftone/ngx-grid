@@ -62,7 +62,7 @@ export class StandardSelectionStrategy implements IGridSelectionStrategy {
 
     const event: Observable<IGridCellCoordinates> = state.isRowSelection ?
       this._gridEvents.RowMouseEnteredEvent.onWithInitialValue().pipe(removeNullish(), map(row => row.lastCellPosition)) :
-      this._gridEvents.CellMouseEnteredEvent.onWithInitialValue().pipe(removeNullish(), map(cell => new GridCellCoordinates( cell.rowComponent.rowKey, cell.columnKey )))
+      this._gridEvents.CellMouseEnteredEvent.onWithInitialValue().pipe(removeNullish(), map(cell => new GridCellCoordinates( cell.rowComponent.rowKey, cell.column.columnKey )))
 
     event
       .pipe(takeUntil(merge(this._windowFocusChanged, this._mouseReleased)))
@@ -97,7 +97,7 @@ export class StandardSelectionStrategy implements IGridSelectionStrategy {
       if (!this.controller.gridEvents.CellSelectionChangedEvent.state?.cellCount) {
         this.controller.SelectCell.run(new GridCellCoordinates(
           this.controller.gridController.row.GetAllRows.filteredRows()[0].rowKey,
-          this.controller.gridController.column.GetColumns.run()[0]
+          this.controller.gridController.dataSource.columns[0].columnKey
         ))
         return
       }
