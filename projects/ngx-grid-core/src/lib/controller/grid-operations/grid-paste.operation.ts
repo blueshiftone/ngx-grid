@@ -93,12 +93,13 @@ export class GridPaste extends Operation {
         finalValues.push(finalRow)
       }
 
+
       const visibleRows = this.rowOperations.GetAllRows.filteredRows()
 
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
       const newRows: IGridRow[] = []
-      const newCells: IGridCellCoordinates[] = []   
+      const newCells: IGridCellCoordinates[] = [] 
       
       for (const row of finalValues) {
         if (!isCreatingNewRows) {
@@ -115,20 +116,22 @@ export class GridPaste extends Operation {
         rowKey = rowKey as TPrimaryKey
         let   startColumn = startCell.columnKey
         let   colIndex    = columns.findIndex(c => c.columnKey === startColumn)
-        const column      = columns[colIndex]
+        
         if (isCreatingNewRows) {
           const newRow        = this.rowOperations.GenerateNewRow.run()
           const newPrimaryKey = newRow.rowKey
           for (const cellValue of row) {
+            const column = columns[colIndex]
             newRow.setValue(column.columnKey, cellValue)
             newCells.push(new GridCellCoordinates(newPrimaryKey, column.columnKey))
             colIndex++
           }
           newRows.push(newRow)
           endCell.rowKey    = newPrimaryKey
-          endCell.columnKey = column.columnKey
+          endCell.columnKey = columns[colIndex].columnKey
         } else {
           for (const cellValue of row) {
+            const column = columns[colIndex]
             const cellCoordinates = new GridCellCoordinates(rowKey, column.columnKey)
             const isEditable      = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
             if (isEditable) {
