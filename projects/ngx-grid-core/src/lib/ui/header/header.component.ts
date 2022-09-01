@@ -47,7 +47,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         this._gridEvents.GridDataChangedEvent.onWithInitialValue(),
         this._gridEvents.ColumnOrderChangedEvent.on()
       )
-      .subscribe(_ => this.setColumnKeys()))
+      .subscribe(_ => this.updateColumns()))
 
     this.addSubscription(this._gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
       this.cd.detectChanges()
@@ -111,12 +111,12 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   public dragStopped = () => {
     this._setCursor('');
     this.isDragging.next(false);
-    this.setColumnKeys()
+    this.updateColumns()
   }
 
-  public setColumnKeys(): void {
+  public updateColumns(): void {
     if (this.isDragging.value) return
-    this.columns.next(this.gridController.dataSource.columns)
+    this.columns.next([...this.gridController.dataSource.columns])
     if (this.columns.value.length && !this.gridController.isInitialised) {
       window.requestAnimationFrame(_ => {
         this.columnElements?.forEach((el, idx) => {
