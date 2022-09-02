@@ -6,7 +6,7 @@ export class GetRowPreviewString extends Operation {
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
-  public run(rowKey: TPrimaryKey): string {    
+  public run(rowKey: TPrimaryKey): string {
     const row    = this.rowOperations.GetRow.run(rowKey)
     let   output = this.dataSource.rowTemplateString
     if (typeof output === 'undefined') {
@@ -15,7 +15,7 @@ export class GetRowPreviewString extends Operation {
     }
     for (const col of this.dataSource.columns) {
       if (output.includes(col.columnKey)) {
-        const regex = new RegExp(`\\{\\{(?:\\s+)?${col}(?:\\s+)?\\}\\}`, 'g')
+        const regex = new RegExp(`\\{\\{(?:\\s+)?${col.columnKey}(?:\\s+)?\\}\\}`, 'g')
         output = output.replace(regex, row?.getValue(col.columnKey)?.value ?? col)
       }
     }
