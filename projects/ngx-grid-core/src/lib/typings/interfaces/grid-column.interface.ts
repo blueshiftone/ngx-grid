@@ -3,10 +3,11 @@ import { IGridDataType } from './grid-data-type.interface'
 import { IGridSeparator } from './grid-separator.interface'
 
 export interface IGridColumn {
-  readonly columnKey  : string,
-           name?      : string,
-           type?      : IGridDataType,
-           sortOrder? : number,
-           separators?: IGridSeparator[],
-           metadata   : IGridMetadataCollection
+  readonly columnKey  : string
+  name?      : string
+  type?      : IGridDataType
+  sortOrder? : number
+  separators?: IGridSeparator[]
+  metadata   : IGridMetadataCollection
+  clone(): IGridColumn
 }

@@ -14,4 +14,14 @@ export class GridColumn implements IGridColumn {
     this.metadata = GridImplementationFactory.gridMetadataCollection()
   }
 
+  public clone(): IGridColumn {
+    const clone = new GridColumn(this.columnKey)
+    clone.name = this.name
+    clone.type = this.type
+    clone.sortOrder = this.sortOrder
+    clone.separators = [...this.separators ?? []]
+    clone.metadata = GridImplementationFactory.gridMetadataCollection(this.metadata.items)
+    return clone
+  }
+
 }

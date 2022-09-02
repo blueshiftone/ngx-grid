@@ -4,7 +4,6 @@ import { debounceTime } from 'rxjs/operators'
 import { EMetadataType } from './typings/enums'
 import { IGridCellMeta, IGridCellValue, IGridColumn, IGridDataSource, IGridMetadataCollection, IGridRow, IGridRowMeta } from './typings/interfaces'
 import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from './typings/interfaces/implementations'
-import { GridColumn } from './typings/interfaces/implementations/grid-column.implementation'
 import { GridImplementationFactory } from './typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey } from './typings/types/column-key.type'
 import { TPrimaryKey } from './typings/types/primary-key.type'
@@ -12,13 +11,13 @@ import { Randomish } from './utils/randomish'
 
 export class GridDataSource implements IGridDataSource {
 
-  public readonly columns: IGridColumn[] = []
-  public readonly rows   : IGridRow[]    = []
-  public dataSetName                     = ''
-  public dataGridID                      = ''
-  public primaryColumnKey                = 'ID'
-  public disabled                        = false
-  public maskNewIds: boolean             = false
+  public columns: IGridColumn[] = []
+  public rows   : IGridRow[]    = []
+  public dataSetName            = ''
+  public dataGridID             = ''
+  public primaryColumnKey       = 'ID'
+  public disabled               = false
+  public maskNewIds: boolean    = false
   
   public onChanges = new Subject<IGridDataSource>()
   
@@ -83,7 +82,7 @@ export class GridDataSource implements IGridDataSource {
   public static cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
     const source = GridDataSource.cloneMeta(g, input)
     source.upsertRows(...g.rows.map(row => row.clone()))
-    source.upsertColumns(...g.columns)
+    source.setColumns(g.columns)
     return source
   }
 
@@ -114,7 +113,6 @@ export class GridDataSource implements IGridDataSource {
       if (existingRow) {
         for (const value of row.values.values()) {
           existingRow.setValue(value.columnKey, value.value)
-          this.upsertColumns(new GridColumn(value.columnKey))
         }
         output.push(existingRow)
       } else {
@@ -144,12 +142,11 @@ export class GridDataSource implements IGridDataSource {
     this._changesStream.next()
   }
 
-  public upsertColumns(...columns: IGridColumn[]): void {
-    for (const col of columns) {
-      if (!this._colMap.has(col.columnKey)) {
-        this._colMap.set(col.columnKey, col)
-      }
-    }
+  public setColumns(columns: IGridColumn[]): void {
+    this.columns = columns
+    this._colMap.clear()
+    for (const col of columns) this._colMap.set(col.columnKey, col)
+    this._changesStream.next()
   }
 
   public clearData(): void {

@@ -69,7 +69,7 @@ export class GridControllerService {
     }))
 
     // Column order changed
-    addSubscription(gridEvents.ColumnOrderChangedEvent.on().subscribe(_ => {
+    addSubscription(gridEvents.ColumnsChangedEvent.on().subscribe(_ => {
       this.cell.SelectedCellsChanged.run([undefined, this.selection.latestSelection()])
       this.row.RowComponents.getAll().forEach(row => row.detectChanges())
     }))

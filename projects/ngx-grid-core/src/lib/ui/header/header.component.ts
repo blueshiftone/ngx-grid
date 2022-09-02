@@ -28,6 +28,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   public dragDisabled                              = false
   public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
+  public columnWidths = new BehaviorSubject<{[key: string]: number}>({})
 
   private _isResizing = false
 
@@ -45,7 +46,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     this.addSubscription(
       merge(
         this._gridEvents.GridDataChangedEvent.onWithInitialValue(),
-        this._gridEvents.ColumnOrderChangedEvent.on()
+        this._gridEvents.ColumnsChangedEvent.on(),
       )
       .subscribe(_ => this.updateColumns()))
 
@@ -67,13 +68,13 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       this.cd.detectChanges()
     }))
 
-    this.addSubscription(this._gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
-      colWidths.columns.forEach(item => {
-        const el = this.columnElements?.get(this.columns.value.findIndex(c => c.columnKey === item.columnKey))
-        if (el) el.nativeElement.style.width = `${item.width}px`;
-      })
-    }))
-
+    this.addSubscription(
+      merge(this._gridEvents.ColumnWidthChangedEvent.on(), this._gridEvents.ColumnsChangedEvent.on())
+      .pipe(map(_ => this._gridEvents.ColumnWidthChangedEvent.state))
+      .subscribe(colWidths => {
+        colWidths?.columns.forEach(item => this.columnWidths.value[item.columnKey] = item.width)
+        this.columnWidths.next(this.columnWidths.value)
+      }))
   }
 
   public startResize = () => this._isResizing  = true

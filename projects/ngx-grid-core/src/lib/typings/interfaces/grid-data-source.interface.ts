@@ -9,8 +9,8 @@ export interface IGridDataSource extends IDestroyable {
   onChanges        : Subject<IGridDataSource>
   dataSetName      : string
   dataGridID       : string
-  readonly columns : IGridColumn[]
-  readonly rows    : IGridRow[]
+  columns          : IGridColumn[]
+  rows             : IGridRow[]
   primaryColumnKey : string
   rowMeta          : Map<TPrimaryKey, IGridRowMeta>
   cellMeta         : Map<string, IGridCellMeta>
@@ -29,7 +29,7 @@ export interface IGridDataSource extends IDestroyable {
   upsertRows          (...rows: IGridRow[])                     : IGridRow[]
   upsertRows          (index: number, ...rows: IGridRow[])      : IGridRow[]
   removeRows          (...rows: (TPrimaryKey | IGridRow)[])     : void
-  upsertColumns       (...column: IGridColumn[])                : void
+  setColumns          (columns: IGridColumn[])                  : void
   createRowFromObject (rowObj: {[key: TColumnKey]: any})        : IGridRow
   clearData           ()                                        : void
   changeRowPrimaryKey (oldKey: TPrimaryKey, newKey: TPrimaryKey): void

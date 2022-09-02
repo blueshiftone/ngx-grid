@@ -6,7 +6,7 @@ export class GetRowPreviewString extends Operation {
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
-  public run(rowKey: TPrimaryKey): string {
+  public run(rowKey: TPrimaryKey): string {    
     const row    = this.rowOperations.GetRow.run(rowKey)
     let   output = this.dataSource.rowTemplateString
     if (typeof output === 'undefined') {
