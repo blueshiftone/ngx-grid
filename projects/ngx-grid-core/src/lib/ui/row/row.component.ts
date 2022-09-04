@@ -16,9 +16,9 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { EGridIcon } from '../../services/icon.service'
-import { IGridCellCoordinates, IGridRow, IGridRowComponent, IGridSeparator } from '../../typings/interfaces'
+import { IGridCellCoordinates, IGridColumn, IGridRow, IGridRowComponent, IGridSeparator } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
-import { TColumnKey, TPrimaryKey } from '../../typings/types'
+import { TPrimaryKey } from '../../typings/types'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { CellComponent } from '../cell/cell.component'
 
@@ -38,10 +38,10 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   @Input() public gridRow!: IGridRow
   @Input() public index   : number = 0
 
-  public columns      :TColumnKey[] = []
-  public isFocused    : boolean     = false
-  public selectedCells: boolean[]   = []
-  public icon                       = new BehaviorSubject<EGridIcon | null>(null)
+  public columns      :IGridColumn[] = []
+  public isFocused    : boolean      = false
+  public selectedCells: boolean[]    = []
+  public icon                        = new BehaviorSubject<EGridIcon | null>(null)
 
   constructor(
     private readonly gridController: GridControllerService,
@@ -70,7 +70,7 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   @HostListener('mouseenter')
   public mouseEntered  = () => this.events.factory.RowMouseEnteredEvent.emit(this)
   
-  public indexOf       = (columnName: string) => { return this.gridController.column.GetActualIndexOfColumn.run(columnName) }
+  public indexOf       = (columnKey: string) => { return this.columns.findIndex(c => c.columnKey === columnKey) }
   public cellColumnKey = (i: number) => this.columns[i]
   public toggleClass   = (className: string, on: boolean) => this.elRef.nativeElement.classList.toggle(className, on)
   public detectChanges = () => {
@@ -80,14 +80,14 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   
   public get rowKey()           : TPrimaryKey          { return this.gridRow.rowKey }
   public get separators()       : IGridSeparator[]     { return this.gridController.row.GetRowSeparators.run(this.rowKey) }
-  public get firstCellPosition(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[0]) }
-  public get lastCellPosition() : IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[this.columns.length-1]) }
+  public get firstCellPosition(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[0].columnKey) }
+  public get lastCellPosition() : IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columns[this.columns.length-1].columnKey) }
   public get rowComponent()     : IGridRowComponent    { return this }
   public get element()          : HTMLElement          { return this.elRef.nativeElement }
 
   private _setColumns(): void {
     this.columns.length = 0
-    this.columns.push(...this.gridController.column.GetColumns.run())
+    this.columns.push(...this.gridController.dataSource.columns)
   }
 
 }

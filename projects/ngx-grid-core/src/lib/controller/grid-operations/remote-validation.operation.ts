@@ -29,8 +29,8 @@ export class RemoteValidation extends Operation {
       }
       this.cellOperations.ValidateCell.run(coords)
     })
-    const visibleColumns = this.columnOperations.GetColumns.run()
-    const visibleCoordinates = coordinates.filter(c => visibleColumns.includes(c.columnKey))
+    const columns = this.dataSource.columns
+    const visibleCoordinates = coordinates.filter(coord => columns.find(col => col.columnKey === coord.columnKey))
     if (visibleCoordinates.length) {
       this.selection.SelectCell.run(visibleCoordinates[0]);
       this.selection.ScrollIntoView.run(visibleCoordinates[0]);

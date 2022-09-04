@@ -2,7 +2,6 @@ import { EMetadataType } from '../../typings/enums'
 import { ERowStatus } from '../../typings/enums/row-status.enum'
 import { IGridCellCoordinates, IGridOperationFactory, IGridRow } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
-import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TPrimaryKey } from '../../typings/types'
 import { CELL_VALUE_PARSERS } from '../../ui/cell/cell-types/value-parsing'
 import { LooksLikeCSV } from '../../utils/looks-like-csv'
@@ -77,18 +76,16 @@ export class GridPaste extends Operation {
 
       // Parse values and ignore column overflow
       const finalValues: any[][] = []
-      const visibleColumns       = this.columnOperations.GetColumns.run()
-      let   colMetas             = visibleColumns.map(columnKey => this.columnOperations.GetColumnMeta.run(columnKey))
+      const columns = this.dataSource.columns
       for (const row of rowData) {
-        let startColumn     = startCell.columnKey
-        let colIndex        = visibleColumns.indexOf(startColumn)
+        let startColumn = startCell.columnKey
+        let colIndex = columns.findIndex(c => c.columnKey === startColumn)
         let finalRow: any[] = []
         for (const cellValue of row) {
-          if (typeof visibleColumns[colIndex] === 'undefined') continue
-          const columnKey  = visibleColumns[colIndex]
-          const meta       = colMetas[colIndex] ?? { columnKey, metadata: GridImplementationFactory.gridMetadataCollection() }
-          const type       = meta.type?.name ?? 'Text'
-          const validation = CELL_VALUE_PARSERS[type].validate(type === 'RichText' ? (cellValue.html ?? cellValue.plainText) : cellValue.plainText, this.cellOperations.gridController, { columnKey: columnKey })
+          if (typeof columns[colIndex] === 'undefined') continue
+          const column = columns[colIndex]
+          const type       = column.type?.name ?? 'Text'
+          const validation = CELL_VALUE_PARSERS[type].validate(type === 'RichText' ? (cellValue.html ?? cellValue.plainText) : cellValue.plainText, this.cellOperations.gridController, { columnKey: column.columnKey })
           if (validation.isInvalid) finalRow.push(null)
           else finalRow.push(validation.transformedValue)
           colIndex++
@@ -96,12 +93,13 @@ export class GridPaste extends Operation {
         finalValues.push(finalRow)
       }
 
+
       const visibleRows = this.rowOperations.GetAllRows.filteredRows()
 
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
       const newRows: IGridRow[] = []
-      const newCells: IGridCellCoordinates[] = []   
+      const newCells: IGridCellCoordinates[] = [] 
       
       for (const row of finalValues) {
         if (!isCreatingNewRows) {
@@ -117,22 +115,24 @@ export class GridPaste extends Operation {
         }
         rowKey = rowKey as TPrimaryKey
         let   startColumn = startCell.columnKey
-        let   colIndex    = visibleColumns.indexOf(startColumn)
+        let   colIndex    = columns.findIndex(c => c.columnKey === startColumn)
+        
         if (isCreatingNewRows) {
           const newRow        = this.rowOperations.GenerateNewRow.run()
           const newPrimaryKey = newRow.rowKey
           for (const cellValue of row) {
-            newRow.setValue(visibleColumns[colIndex], cellValue)
-            newCells.push(new GridCellCoordinates(newPrimaryKey, visibleColumns[colIndex]))
+            const column = columns[colIndex]
+            newRow.setValue(column.columnKey, cellValue)
+            newCells.push(new GridCellCoordinates(newPrimaryKey, column.columnKey))
             colIndex++
           }
           newRows.push(newRow)
-          endCell.rowKey = newPrimaryKey
-          endCell.columnKey     = visibleColumns[colIndex]
+          endCell.rowKey    = newPrimaryKey
+          endCell.columnKey = columns[colIndex].columnKey
         } else {
           for (const cellValue of row) {
-            const columnKey       = visibleColumns[colIndex]
-            const cellCoordinates = new GridCellCoordinates(rowKey, columnKey)
+            const column = columns[colIndex]
+            const cellCoordinates = new GridCellCoordinates(rowKey, column.columnKey)
             const isEditable      = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
             if (isEditable) {
               this.cellOperations.SetCellValue.run(cellCoordinates, cellValue)
@@ -142,7 +142,7 @@ export class GridPaste extends Operation {
             }
             colIndex++
             endCell.rowKey    = rowKey
-            endCell.columnKey = columnKey
+            endCell.columnKey = column.columnKey
           }
         }
       }

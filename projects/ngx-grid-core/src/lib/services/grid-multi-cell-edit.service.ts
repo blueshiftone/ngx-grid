@@ -86,7 +86,7 @@ export class GridMultiCellEditService {
     // Basic implementation of IGridCellComponent and IGridRowComponent
     this._cell = {
       destroyed    : new Subject<void>(),
-      columnKey    : coords.columnKey,
+      column       : this.gridController.dataSource.getColumn(coords.columnKey)!,
       coordinates  : coords,
       detectChanges: () => {},
       focus        : new BehaviorSubject<boolean>(true),
@@ -131,8 +131,8 @@ export class GridMultiCellEditService {
 
     const types = cells.map<IGridDataType>(coordinates => {
       const cellMeta = this.gridController.cell.GetCellMeta.run(coordinates)
-      const colMeta = this.gridController.column.GetColumnMeta.run(coordinates.columnKey)
-      return cellMeta?.type ?? colMeta?.type ?? { name: 'Text' }
+      const col = this.gridController.dataSource.getColumn(coordinates.columnKey)
+      return cellMeta?.type ?? col?.type ?? { name: 'Text' }
     })
 
     if(DistinctValues(types.map(t => t.name)).length === 1) {

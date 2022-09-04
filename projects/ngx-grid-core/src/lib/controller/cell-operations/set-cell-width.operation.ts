@@ -7,7 +7,7 @@ export class SetCellWidth extends Operation {
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
 
   public run(cell: IGridCellComponent): void {
-    const width = this._colWidths?.columns.find(col => col.columnKey === cell.columnKey)?.width || 0
+    const width = this._colWidths?.columns.find(col => col.columnKey === cell.column.columnKey)?.width || 0
     cell.style.width = `${width}px`
   }
 

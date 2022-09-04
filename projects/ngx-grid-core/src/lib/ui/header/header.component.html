@@ -7,14 +7,15 @@
     cdkDrag
     cdkDragLockAxis="x"
     [cdkDragDisabled]="dragDisabled"
-    [ngClass]="{ 'col-selected': columnsSelected[columnKey] }"
-    Type="Text"
-    *ngFor="let columnKey of (columns | async); let index = index"
+    [ngClass]="{ 'col-selected': columnsSelected[column.columnKey] }"
+    type="Text"
+    *ngFor="let column of (columns | async); let index = index"
+    [style.width] = "((columnWidths | async)?.[column.columnKey] ?? '') + 'px'"
     class="cell display">
-    <app-resizer (output)="resizeColumn($event.x, columnKey)" (resizeStart)="startResize()"
+    <app-resizer (output)="resizeColumn($event.x, column)" (resizeStart)="startResize()"
       (resizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
-    <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(columnKey)">{{ columnSortIconKey(columnKey) }}</span>
-    <data-grid-separator *ngFor="let s of separators(columnKey)" Axis="y" [separator]="s"></data-grid-separator>
-    <div class="text-readonly"><lib-localized-text>{{ label(columnKey) }}</lib-localized-text></div>
+    <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(column)">{{ columnSortIconKey(column) }}</span>
+    <data-grid-separator *ngFor="let s of separators(column.columnKey)" Axis="y" [separator]="s"></data-grid-separator>
+    <div class="text-readonly"><lib-localized-text>{{ column.name ?? column.columnKey }}</lib-localized-text></div>
     </div>
 </div>

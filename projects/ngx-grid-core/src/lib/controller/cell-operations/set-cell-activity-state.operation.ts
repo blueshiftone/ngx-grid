@@ -8,8 +8,6 @@ import { Operation } from '../operation.abstract'
 export class SetCellActivityState extends Operation {
   
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
-
-  private _columnKeys: string[] = []
   
   public run(rowKey: TPrimaryKey, activityState: ECellActivityState): void
   public run(rowKeys: TPrimaryKey[], activityState: ECellActivityState): void
@@ -37,10 +35,7 @@ export class SetCellActivityState extends Operation {
   }
 
   private _getRowCellCoordinates(rowKey: TPrimaryKey): IGridCellCoordinates[] {
-    if (!this._columnKeys.length) {
-      this._columnKeys = this.columnOperations.GetColumns.run()
-    }
-    return this._columnKeys.map(columnKey => new GridCellCoordinates(rowKey, columnKey))
+    return this.dataSource.columns.map(col => new GridCellCoordinates(rowKey, col.columnKey))
   }
 
 }

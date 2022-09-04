@@ -69,7 +69,7 @@ export class GridControllerService {
     }))
 
     // Column order changed
-    addSubscription(gridEvents.ColumnOrderChangedEvent.on().subscribe(_ => {
+    addSubscription(gridEvents.ColumnsChangedEvent.on().subscribe(_ => {
       this.cell.SelectedCellsChanged.run([undefined, this.selection.latestSelection()])
       this.row.RowComponents.getAll().forEach(row => row.detectChanges())
     }))
@@ -184,7 +184,7 @@ export class GridControllerService {
         const [ statusChangeEvent, revertedEvent ] = event
         const [prev, next] = statusChangeEvent
         if ([...(prev??[]).map(m => m.status), ...(next??[]).map(m => m.status)].includes(ERowStatus.Deleted) || revertedEvent.length) {
-          for (const col of this.dataSource.columnMeta) {
+          for (const col of this.dataSource.columns) {
             this.cell.ValidateCell.bufferColumnValidation.next([col.columnKey])
           }
         }
@@ -198,8 +198,8 @@ export class GridControllerService {
         const cell = this.cell.CellComponents.findWithCoords(coords)
         if (cell) affectedCellComponents.add(cell)
       } else if (change.rowKey !== undefined) {
-        for (const col of this.column.GetColumns.run()) {
-          const coords = new GridCellCoordinates(change.rowKey, col)
+        for (const col of this.dataSource.columns) {
+          const coords = new GridCellCoordinates(change.rowKey, col.columnKey)
           const cell = this.cell.CellComponents.findWithCoords(coords)
           if (cell) affectedCellComponents.add(cell)
         }

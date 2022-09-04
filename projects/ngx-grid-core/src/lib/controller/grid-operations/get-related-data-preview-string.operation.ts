@@ -14,9 +14,9 @@ export class GetRelatedDataPreviewString extends Operation {
     if (!grid || !row) return (rowKey ?? '').toString()
     let outputString = grid.source.rowTemplateString
     for (const col of grid.source.columns) {
-      if (outputString.includes(col)) {
-        const regex = new RegExp(`\\{\\{(?:\\s+)?${col}(?:\\s+)?\\}\\}`, 'g')
-        outputString = outputString.replace(regex, row.getValue(col)?.value)
+      if (outputString.includes(col.columnKey)) {
+        const regex = new RegExp(`\\{\\{(?:\\s+)?${col.columnKey}(?:\\s+)?\\}\\}`, 'g')
+        outputString = outputString.replace(regex, row.getValue(col.columnKey)?.value)
       }
     }
     return outputString

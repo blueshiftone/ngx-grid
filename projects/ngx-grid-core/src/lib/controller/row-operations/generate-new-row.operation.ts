@@ -13,12 +13,12 @@ export class GenerateNewRow extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(): IGridRow {
-    const cols          = this.dataSource.columns
-    const rowKey        = uuidv4();
-    const columnKey     = this.dataSource.primaryColumnKey
-    const values        = [cols.map<[TColumnKey, IGridCellValue]>(col => ([col, new GridCellValue(new GridCellCoordinates(rowKey, columnKey), null)]))]
-    const row: IGridRow = GridImplementationFactory.gridRow(columnKey, new Map<TColumnKey, IGridCellValue>(...values))
-    row.setValue(columnKey, rowKey)
+    const cols             = this.dataSource.columns
+    const rowKey           = uuidv4();
+    const primaryKeyColumn = this.dataSource.primaryColumnKey
+    const values           = [cols.map<[TColumnKey, IGridCellValue]>(col => ([col.columnKey, new GridCellValue(new GridCellCoordinates(rowKey, col.columnKey), null)]))]
+    const row: IGridRow    = GridImplementationFactory.gridRow(primaryKeyColumn, new Map<TColumnKey, IGridCellValue>(...values))
+    row.setValue(primaryKeyColumn, rowKey)
     return row
   }
 }

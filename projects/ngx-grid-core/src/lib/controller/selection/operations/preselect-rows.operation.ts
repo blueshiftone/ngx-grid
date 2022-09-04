@@ -10,13 +10,12 @@ export class PreselectRows {
   public run(rowKeys: Array<TPrimaryKey>) {
 
     const columns = this._getColumns()
-    if (!columns || !columns.visibleColumns.length) return null
-    const visibleColumns = columns.visibleColumns
-    const firstCol       = visibleColumns[0]
-    const lastCol        = visibleColumns[visibleColumns.length - 1]
+    if (!columns || !columns.length) return null
+    const firstCol       = columns[0]
+    const lastCol        = columns[columns.length - 1]
 
-    const startPos = new GridCellCoordinates(rowKeys[0], firstCol)
-    const endPos   = new GridCellCoordinates(rowKeys[0], lastCol)
+    const startPos = new GridCellCoordinates(rowKeys[0], firstCol.columnKey)
+    const endPos   = new GridCellCoordinates(rowKeys[0], lastCol.columnKey)
 
     const state = new GridSelectionStateFromCoordinates(startPos, endPos, this.controller.gridEvents)
 
@@ -24,8 +23,8 @@ export class PreselectRows {
 
     rowKeys.forEach(rowKey => {
       state.currentSelection.addRange(
-        new GridCellCoordinates(rowKey, firstCol),
-        new GridCellCoordinates(rowKey, lastCol))
+        new GridCellCoordinates(rowKey, firstCol.columnKey),
+        new GridCellCoordinates(rowKey, lastCol.columnKey))
     })
 
     const focusChanged = this.controller.EmitFocusedCell.run()
@@ -38,7 +37,7 @@ export class PreselectRows {
   }
 
   private _getColumns() {
-    return this.controller.gridEvents.ColumnsUpdatedEvent.state
+    return this.controller.gridController.dataSource.columns
   }
 
 }

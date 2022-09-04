@@ -30,9 +30,9 @@ export class AddRow extends Operation {
 
       buffers.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New))
       
-      for (const columnKey of this.columnOperations.GetColumns.run()) {
-        const isEditable = this.cellOperations.GetCellIsEditable.run(new GridCellCoordinates(rowKey, columnKey))
-        if (isEditable && firstEditableCell === null) firstEditableCell = columnKey
+      for (const column of this.dataSource.columns) {
+        const isEditable = this.cellOperations.GetCellIsEditable.run(new GridCellCoordinates(rowKey, column.columnKey))
+        if (isEditable && firstEditableCell === null) firstEditableCell = column.columnKey
       }
     }
 

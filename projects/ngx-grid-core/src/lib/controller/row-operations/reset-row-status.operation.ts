@@ -20,10 +20,10 @@ export class ResetRowStatus extends Operation {
 
       let [rowKey, status] = arg
 
-      const columns = this.columnOperations.GetColumns.run()
+      const columns = this.dataSource.columns
 
       const cellMeta = columns
-        .map<IGridCellMeta | undefined>(columnKey => this.cellOperations.GetCellMeta.run(new GridCellCoordinates(rowKey, columnKey)))
+        .map<IGridCellMeta | undefined>(column => this.cellOperations.GetCellMeta.run(new GridCellCoordinates(rowKey, column.columnKey)))
         .filter(item => typeof item !== 'undefined') as IGridCellMeta[]
 
       const hasDraftValue = typeof cellMeta.find(item => this.cellOperations.HasDraftValue.run(item.coords)) !== 'undefined'

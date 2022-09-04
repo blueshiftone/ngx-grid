@@ -2,13 +2,13 @@ import { BehaviorSubject } from 'rxjs'
 
 import { IGridRow } from '.'
 import { EGridIcon } from '../../services/icon.service'
-import { TColumnKey } from '../types/column-key.type'
+import { IGridColumn } from '../interfaces'
 import { TPrimaryKey } from '../types/primary-key.type'
 import { IGridCellCoordinates } from './grid-cell-coordinates.interface'
 
 export interface IGridRowComponent {
   gridRow          : IGridRow
-  columns          : TColumnKey[]
+  columns          : IGridColumn[]
   index            : number
   icon             : BehaviorSubject<EGridIcon | null>
   firstCellPosition: IGridCellCoordinates

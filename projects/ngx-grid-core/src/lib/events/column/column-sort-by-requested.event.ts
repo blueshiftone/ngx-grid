@@ -1,4 +1,4 @@
-import { IFieldSortConfig } from '../../typings/interfaces'
+import { IFieldSortConfig } from '../../typings/interfaces/field-sort-config.interface'
 import { BaseGridEventAbstract } from '../base-grid-event.abstract'
 import { GridEventsService } from '../grid-events.service'
 

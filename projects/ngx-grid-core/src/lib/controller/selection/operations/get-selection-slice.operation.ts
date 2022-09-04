@@ -8,7 +8,7 @@ export class GetSelectionSlice {
   public run(): IGridSelectionSlice | null {
     const selection = this.controller.latestSelection()
     const columns   = this._getColumns()
-    if (!selection || !columns || !columns.visibleColumns.length) return null
+    if (!selection || !columns || !columns.length) return null
     const utils = selection.globalUtils
     const rows  = this.controller.gridController.row.GetAllRows.filteredRows()
     const output: IGridSelectionSlice = {
@@ -44,11 +44,11 @@ export class GetSelectionSlice {
           output.rowsFormatted.push(rowFormatted)
           output.cells.push(cells ?? [])
           output.cellsFormatted.push(cellsFormatted ?? [])
-          const visibleColumns = this._getColumns()?.visibleColumns ?? []
+          const columns = this._getColumns()
           row.forEach((val, index) => {
             if (typeof val === 'undefined') return
-            const colKey = visibleColumns[index]
-            if (colKey && !output.columnKeys.includes(colKey)) output.columnKeys.push(colKey)
+            const column = columns[index]
+            if (column && !output.columnKeys.includes(column.columnKey)) output.columnKeys.push(column.columnKey)
           })
         } else {
           console.warn(`Unable to extract selection slice for record with primaryKey '${rowKey}'`)
@@ -63,13 +63,11 @@ export class GetSelectionSlice {
       const selectedCols                   = selection.colsAt(utils.getRowKeyFromIndex(rowIndex) || '')
       const cellDataStartsAt               = Math.min(...selection.columnIndexes)
       const cellDataEndsAt                 = Math.max(...selection.columnIndexes)
-      const visibleColumns                 = columns.visibleColumns
-      visibleColumns.forEach((columnKey, index) => {
-        let   val: IGridCellValue | undefined = rowData.getValue(columnKey) ?? new GridCellValue(new GridCellCoordinates(rowKey, columnKey), null)
+      columns.forEach((column, index) => {
+        let   val: IGridCellValue | undefined = rowData.getValue(column.columnKey) ?? new GridCellValue(new GridCellCoordinates(rowKey, column.columnKey), null)
         let   valFormatted = val?.value
-        const cellMeta     = this.controller.gridController.cell.GetCellMeta.run(new GridCellCoordinates(rowKey, columnKey))
-        const colMeta      = this.controller.gridController.column.GetColumnMeta.run(columnKey)
-        const listGridID   = cellMeta?.type?.list?.relatedGridID ?? colMeta?.type?.list?.relatedGridID
+        const cellMeta     = this.controller.gridController.cell.GetCellMeta.run(new GridCellCoordinates(rowKey, column.columnKey))
+        const listGridID   = cellMeta?.type?.list?.relatedGridID ?? column?.type?.list?.relatedGridID
         if (typeof listGridID !== 'undefined') {
           const valArray = Array.isArray(valFormatted) ? valFormatted : [valFormatted]
           let output: string[] = []
@@ -81,14 +79,14 @@ export class GetSelectionSlice {
 
         outputRowData.push(val.value)
         outputRowDataFormatted.push(valFormatted)
-        if (!selectedCols.has(columnKey)) {
+        if (!selectedCols.has(column.columnKey)) {
           val = undefined
           valFormatted = undefined
         }
         if (index >= cellDataStartsAt && index <= cellDataEndsAt) {
           outputCellData.push(val?.value)
           outputCellDataFormatted.push(valFormatted)
-          if (!output.columnKeys.includes(columnKey)) output.columnKeys.push(columnKey)
+          if (!output.columnKeys.includes(column.columnKey)) output.columnKeys.push(column.columnKey)
         }
       })
       output.columnKeys.sort((a, b) => this._getVisibleIndexOf(a) - this._getVisibleIndexOf(b))
@@ -105,11 +103,11 @@ export class GetSelectionSlice {
   }
 
   private _getColumns() {
-    return this._gridEvents.ColumnsUpdatedEvent.state
+    return this.controller.gridController.dataSource.columns
   }
 
-  private _getVisibleIndexOf(columnName: string) {
-    return this._getColumns()?.visibleColumns.indexOf(columnName) ?? -1
+  private _getVisibleIndexOf(columnKey: string) {
+    return this._getColumns().findIndex(c => c.columnKey === columnKey) ?? -1
   }
 
   private _getLastSlice() {
@@ -123,7 +121,7 @@ export class GetSelectionSlice {
   private get _indexOfPrimaryKey(): number {
     const source = this._source
     if (!source) return -1
-    return source.columns.indexOf(source.primaryColumnKey)
+    return source.columns.findIndex(c => c.columnKey === source.primaryColumnKey)
   }
 
   private get _gridEvents() {

@@ -4,9 +4,9 @@ import { BehaviorSubject, Subject } from 'rxjs'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { GridOverlayService } from '../../services/grid-overlay-service.service'
-import { IGridCellComponent, IGridCellCoordinates, IGridCellType, IGridDataType, IGridRowComponent } from '../../typings/interfaces'
+import { IGridCellComponent, IGridCellCoordinates, IGridCellType, IGridColumn, IGridDataType, IGridRowComponent } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
-import { TColumnKey, TPrimaryKey } from '../../typings/types'
+import { TPrimaryKey } from '../../typings/types'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { TO_KEBAB } from '../../utils/string-converter'
 import CELL_TYPES from './cell-types'
@@ -30,7 +30,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
 
   @Input() public rowComponent!: IGridRowComponent
 
-  @Input() public columnKey! : TColumnKey
+  @Input() public column! : IGridColumn
 
   constructor(
     public  readonly overlays      : GridOverlayService,
@@ -50,7 +50,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
   ngAfterViewChecked(): void {
     if (!this.gridController.isInitialised) {
       window.requestAnimationFrame(_ => {
-        this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.columnKey, width: this.element.getBoundingClientRect().width })
+        this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.column.columnKey, width: this.element.getBoundingClientRect().width })
       })
     }
   }
@@ -67,7 +67,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
       this.typeComponent?.onDestroy()
       this.typeComponent = new CELL_TYPES[cellType.name](this.gridController, this.overlays, this).initializeValue(this._getValue()).attachTo(this.element)
     }
-    if (typeof this.rowComponent.gridRow.getValue(this.columnKey)?.validationState === 'undefined') {
+    if (typeof this.rowComponent.gridRow.getValue(this.column.columnKey)?.validationState === 'undefined') {
       this.gridController.cell.ValidateCell.run(this.coordinates)
     }
     this._setCellTypeClass(TO_KEBAB(cellType.name))
@@ -83,7 +83,7 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
 
   public get rowKey     (): TPrimaryKey          { return this.rowComponent.rowKey }
   public get element    (): HTMLElement          { return this.elRef.nativeElement }
-  public get coordinates(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.columnKey)}
+  public get coordinates(): IGridCellCoordinates { return new GridCellCoordinates(this.rowKey, this.column.columnKey)}
   public get style      (): CSSStyleDeclaration  { return this.element.style }
   public get type       (): IGridDataType        { return this.gridController.cell.GetCellType.run(this.coordinates) }
 

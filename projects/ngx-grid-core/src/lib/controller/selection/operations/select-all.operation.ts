@@ -12,8 +12,8 @@ export class SelectAll extends BaseSelectionOperation {
 
     const utils = this.selectionState.currentSelection.globalUtils
 
-    const startPos = new GridCellCoordinates(utils.getFirstRow(), utils.getFirstColumn())
-    const endPos   = new GridCellCoordinates(utils.getLastRow(), utils.getLastColumn())
+    const startPos = new GridCellCoordinates(utils.getFirstRow(), utils.getFirstColumn().columnKey)
+    const endPos   = new GridCellCoordinates(utils.getLastRow(), utils.getLastColumn().columnKey)
 
     this.controller.ReplaceSelection.run([startPos, endPos])
 

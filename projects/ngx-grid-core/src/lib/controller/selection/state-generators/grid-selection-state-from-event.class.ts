@@ -37,7 +37,7 @@ export class GridSelectionStateFromEvent implements IGridSelectionState {
     this.initialSelection = input.initialSelection
     this.currentSelection = this.initialSelection.clone()
     
-    const startCellPos = new GridCellCoordinates(cellStartedAt.rowKey, cellStartedAt.columnKey)
+    const startCellPos = new GridCellCoordinates(cellStartedAt.rowKey, cellStartedAt.column.columnKey)
     
     this.startCellPos = startCellPos
     this.endCellPos   = startCellPos

@@ -47,7 +47,7 @@ export abstract class BaseCellValidator implements ICellValidator {
   }
 
   public get colName() {
-    const colMeta = this.gridController.column.GetColumnMeta.run(this.cellCoords.columnKey)
+    const colMeta = this.gridController.dataSource.getColumn(this.cellCoords.columnKey)
     return colMeta?.name ?? this.cellCoords.columnKey
   }
 

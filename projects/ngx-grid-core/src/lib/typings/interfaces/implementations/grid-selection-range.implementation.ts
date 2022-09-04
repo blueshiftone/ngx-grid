@@ -1,5 +1,5 @@
 import { GridCellCoordinates } from '.'
-import { IGridCellCoordinates, IGridCellEdges, IGridRow, IGridSelectionBoundingPosition, IGridSelectionRange } from '..'
+import { IGridCellCoordinates, IGridCellEdges, IGridColumn, IGridRow, IGridSelectionBoundingPosition, IGridSelectionRange } from '..'
 import { IGridEventsFactory } from '../../../events/grid-events.service'
 import { SetDifference } from '../../../utils/difference-between-sets'
 import { TColumnKey, TPrimaryKey } from '../../types'
@@ -20,12 +20,12 @@ export class GridSelectionRange implements IGridSelectionRange {
     rowMap?: Map<TPrimaryKey, Set<TColumnKey>>,
     colMap?: Map<TColumnKey, Set<TPrimaryKey>>
   ) {
-    this.secondarySelection = typeof input?.secondarySelection !== 'undefined' ? input.secondarySelection : null
-    this.multiSelect        = typeof input?.multiSelect        !== 'undefined' ? input.multiSelect : false
-    this.isSubtracting      = typeof input?.isSubtracting      !== 'undefined' ? input.isSubtracting : false
+    this.secondarySelection = input?.secondarySelection !== undefined ? input.secondarySelection : null
+    this.multiSelect        = input?.multiSelect        !== undefined ? input.multiSelect : false
+    this.isSubtracting      = input?.isSubtracting      !== undefined ? input.isSubtracting : false
 
-    this._rowMap             = typeof rowMap !== 'undefined' ? rowMap : new Map()
-    this._colMap             = typeof colMap !== 'undefined' ? colMap : new Map()
+    this._rowMap             = rowMap !== undefined ? rowMap : new Map()
+    this._colMap             = colMap !== undefined ? colMap : new Map()
   }
 
   public remove(cell: IGridCellCoordinates): GridSelectionRange {
@@ -91,19 +91,19 @@ export class GridSelectionRange implements IGridSelectionRange {
     return {
       topLeft: () => {
         const rowKey = minRowKey()
-        return new GridCellCoordinates(rowKey, minColumnKey(rowKey))
+        return new GridCellCoordinates(rowKey, minColumnKey(rowKey).columnKey)
       },
       topRight: () => {
         const rowKey = minRowKey()
-        return new GridCellCoordinates(rowKey, maxColumnKey(rowKey))
+        return new GridCellCoordinates(rowKey, maxColumnKey(rowKey).columnKey)
       },
       bottomRight: () => {
         const rowKey = maxRowKey()
-        return new GridCellCoordinates(rowKey, maxColumnKey(rowKey))
+        return new GridCellCoordinates(rowKey, maxColumnKey(rowKey).columnKey)
       },
       bottomLeft: () => {
         const rowKey = maxRowKey()
-        return new GridCellCoordinates(rowKey, minColumnKey(rowKey))
+        return new GridCellCoordinates(rowKey, minColumnKey(rowKey).columnKey)
       },
     }
   }
@@ -153,7 +153,7 @@ export class GridSelectionRange implements IGridSelectionRange {
     const b = { rowKey: y[1].rowIndex, x: x[1].columnIndex }
     for (let rowIndex = a.rowKey; rowIndex <= b.rowKey; rowIndex++) {
       for (let colIndex = a.x; colIndex <= b.x; colIndex++) {
-        output.push(new GridCellCoordinates(this.globalUtils.getRowKeyFromIndex(rowIndex) ?? '', this.globalUtils.getColumnKeyFromIndex(colIndex)))
+        output.push(new GridCellCoordinates(this.globalUtils.getRowKeyFromIndex(rowIndex) ?? '', this.globalUtils.getColumnKeyFromIndex(colIndex).columnKey))
       }
     }
     return output
@@ -219,8 +219,8 @@ export class GridSelectionRange implements IGridSelectionRange {
     getRowKeyFromIndex: (rowIndex: number): TPrimaryKey | undefined => {
       return this._visibleRows[rowIndex]?.rowKey
     },
-    getColumnKeyFromIndex: (columIndex: number): TColumnKey => {
-      return this._visibleColumns[columIndex]
+    getColumnKeyFromIndex: (columIndex: number): IGridColumn => {
+      return this._columns[columIndex]
     },
     getRowIndex: (rowKey: TPrimaryKey): number => {
       if (rowKey === undefined || rowKey === null) {
@@ -234,14 +234,14 @@ export class GridSelectionRange implements IGridSelectionRange {
     getRowFromRowKey: (rowKey: TPrimaryKey): IGridRow | undefined => {
       return this.gridEvents.GridDataChangedEvent.state?.getRow(rowKey)
     },
-    getColumnIndex: (columnKey: TColumnKey): number => {
-      return this._visibleColumns.indexOf(columnKey)
+    getColumnIndex: (column: TColumnKey): number => {
+      return this._columns.findIndex(c => c.columnKey === column)
     },
-    getFirstColumn: (): TColumnKey => {
+    getFirstColumn: (): IGridColumn => {
       return this.globalUtils.getColumnKeyFromIndex(0)
     },
-    getLastColumn: (): TColumnKey => {
-      return this.globalUtils.getColumnKeyFromIndex(this._visibleColumns.length - 1)
+    getLastColumn: (): IGridColumn => {
+      return this.globalUtils.getColumnKeyFromIndex(this._columns.length - 1)
     },
     getFirstRow: (): TPrimaryKey => {
       return this.globalUtils.getRowKeyFromIndex(0) || ''
@@ -252,10 +252,10 @@ export class GridSelectionRange implements IGridSelectionRange {
     incrementRow: (rowKey: TPrimaryKey, increment = 1): TPrimaryKey => {
       const rowIndex = Math.max(0, Math.min(this._visibleRows.length - 1, this.globalUtils.getRowIndex(rowKey) + increment))
       return this.globalUtils.getRowKeyFromIndex(rowIndex) ?? rowKey
-    },  
+    },
     incrementColumn: (columnKey: TColumnKey, increment = 1) => {
-      const cols = this._visibleColumns
-      return cols[Math.max(0, Math.min(cols.length - 1, cols.indexOf(columnKey) + increment))] ?? columnKey
+      const cols = this._columns
+      return cols[Math.max(0, Math.min(cols.length - 1, cols.findIndex(c => c.columnKey === columnKey) + increment))].columnKey ?? columnKey
     }
   }
 
@@ -272,8 +272,8 @@ export class GridSelectionRange implements IGridSelectionRange {
     return output
   }
 
-  private get _visibleColumns(): TColumnKey[] {
-    return this.gridEvents.ColumnsUpdatedEvent.state?.visibleColumns || []
+  private get _columns(): IGridColumn[] {
+    return this.gridEvents.GridDataChangedEvent.state?.columns || []
   }
 
   private get _visibleRows(): IGridRow[] {

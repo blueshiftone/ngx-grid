@@ -2,13 +2,14 @@ import { BehaviorSubject, Subject } from 'rxjs'
 
 import { IGridCellType as IGridCellTypeComponent } from '.'
 import { GridOverlayService } from '../../services/grid-overlay-service.service'
+import { IGridColumn } from '../interfaces'
 import { TPrimaryKey } from '../types'
 import { IGridCellCoordinates } from './grid-cell-coordinates.interface'
 import { IGridDataType } from './grid-data-type.interface'
 import { IGridRowComponent } from './grid-row-component.interface'
 
 export interface IGridCellComponent {
-  columnKey     : string
+  column        : IGridColumn
   rowComponent  : IGridRowComponent
   coordinates   : IGridCellCoordinates
   focus         : BehaviorSubject<boolean>

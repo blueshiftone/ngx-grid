@@ -60,7 +60,7 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
       if (rowKey !== null && rowKey !== undefined) rowKey = utils.incrementRow(rowKey, increment)
       else rowKey = 0
       this.controller.gridEvents.RowPreselectedEvent.emit(rowKey)
-      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn()))
+      this.controller.ScrollIntoView.run(new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey))
     }
 
     this.controller.keyboardEvents.arrowDown  =
@@ -82,8 +82,8 @@ export class SingleRowSelectionStrategy implements IGridSelectionStrategy {
       const rowKey = this._lastPreSelection
       if (rowKey !== null) {
         const coords: [IGridCellCoordinates, IGridCellCoordinates] = [
-          new GridCellCoordinates(rowKey, utils.getFirstColumn()),
-          new GridCellCoordinates(rowKey, utils.getLastColumn())]
+          new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey),
+          new GridCellCoordinates(rowKey, utils.getLastColumn().columnKey)]
         if (this._lastSelection?.includesRow(rowKey)) {
           const nextSelection = this.controller.state.currentSelection.clone()
           nextSelection.removeRange(...coords)

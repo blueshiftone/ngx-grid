@@ -32,13 +32,13 @@ export class ValidateCell extends Operation {
   }
 
   private async _columnValidation(args: string[][]) {
-    for (const col of DistinctValues(args.map(a => a[0]))) {
-      const meta = this.columnOperations.GetColumnMeta.run(col)
-      for (const metaDataType of meta?.metadata.getAllMetaTypes() ?? []) {
+    for (const columnKey of DistinctValues(args.map(a => a[0]))) {
+      const column = this.dataSource.getColumn(columnKey)
+      for (const metaDataType of column?.metadata.getAllMetaTypes() ?? []) {
         const columnValidators = ColumnValidatorMap[EMetadataType[metaDataType] as keyof typeof EMetadataType]
         if (columnValidators) {
           for (const validator of columnValidators) {
-            new validator(this.gridOperations.gridController, col).run()
+            new validator(this.gridOperations.gridController, columnKey).run()
           }
         }
       }
