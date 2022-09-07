@@ -21,12 +21,12 @@ export class DeleteRow extends Operation {
     for (const arg of args) {
       const [rowKey, options] = arg
 
-      const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
-      const canDeleteRow = this.rowOperations.GetRowCanDelete.run(rowMeta ?? rowKey)
+      const row = this.dataSource.getRow(rowKey)
+      const canDeleteRow = this.rowOperations.GetRowCanDelete.run(row ?? rowKey)
 
-      if (!canDeleteRow && rowMeta?.isNew !== true) continue
+      if (!canDeleteRow && row?.isNew !== true) continue
       
-      if (rowMeta?.isNew === true || options.forceRowRemoval === true) {
+      if (row?.isNew === true || options.forceRowRemoval === true) {
 
         const filteredRows          = this._filteredRows
         const sortedRows            = this._sortedRows

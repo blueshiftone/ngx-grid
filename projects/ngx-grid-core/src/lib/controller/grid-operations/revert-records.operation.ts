@@ -1,4 +1,4 @@
-import { IGridCellComponent, IGridRowComponent, IGridRowMeta } from '../../typings/interfaces'
+import { IGridCellComponent, IGridRow, IGridRowComponent } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { Operation } from '../operation.abstract'
@@ -7,14 +7,14 @@ export class RevertRecords extends Operation {
 
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
-  public async run(rowMetas: IGridRowMeta[]) {
+  public async run(rows: IGridRow[]) {
     
     const columns   = this.dataSource.columns
     const buffering = new Set<Promise<void>>()
     const rowComponents: IGridRowComponent[]   = []
     const cellComponents: IGridCellComponent[] = []
 
-    for (const row of rowMetas) {
+    for (const row of rows) {
       if (row.isDeleted) {
         buffering.add(this.rowOperations.ResetRowStatus.buffer(row.rowKey))
         const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(row.rowKey)
@@ -35,7 +35,7 @@ export class RevertRecords extends Operation {
       }
     }
 
-    this.gridEvents.RowsRevertedEvent.emit(rowMetas.map(r => r.rowKey))
+    this.gridEvents.RowsRevertedEvent.emit(rows.map(r => r.rowKey))
 
     await Promise.all(buffering)
 

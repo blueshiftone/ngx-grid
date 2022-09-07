@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs'
 
-import { IGridCellMeta, IGridColumn, IGridMetadataCollection, IGridRowMeta } from '.'
+import { IGridCellMeta, IGridColumn, IGridMetadataCollection } from '.'
 import { TColumnKey, TPrimaryKey } from '../types'
 import { IDestroyable } from './destroyable.interface'
 import { IGridRow } from './grid-row.interface'
@@ -12,7 +12,6 @@ export interface IGridDataSource extends IDestroyable {
   columns          : IGridColumn[]
   rows             : IGridRow[]
   primaryColumnKey : string
-  rowMeta          : Map<TPrimaryKey, IGridRowMeta>
   cellMeta         : Map<string, IGridCellMeta>
   disabled         : boolean
   canUpdate        : boolean

@@ -2,7 +2,7 @@ import { Subject, SubscriptionLike } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 
 import { EMetadataType } from './typings/enums'
-import { IGridCellMeta, IGridCellValue, IGridColumn, IGridDataSource, IGridMetadataCollection, IGridRow, IGridRowMeta } from './typings/interfaces'
+import { IGridCellMeta, IGridCellValue, IGridColumn, IGridDataSource, IGridMetadataCollection, IGridRow } from './typings/interfaces'
 import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from './typings/interfaces/implementations'
 import { GridImplementationFactory } from './typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey } from './typings/types/column-key.type'
@@ -21,17 +21,14 @@ export class GridDataSource implements IGridDataSource {
   
   public onChanges = new Subject<IGridDataSource>()
   
-  public relatedData: Map<string,      IGridDataSource> = new Map()
-  public cellMeta   : Map<string,      IGridCellMeta>   = new Map()
-  public rowMeta    : Map<TPrimaryKey, IGridRowMeta>    = new Map()
-  public columnMeta : Map<TColumnKey,  IGridColumn> = new Map()
+  public relatedData: Map<string, IGridDataSource> = new Map()
+  public cellMeta   : Map<string, IGridCellMeta>   = new Map()
 
   public metadata: IGridMetadataCollection = new GridMetadataCollection()
 
   private _subs = new Set<SubscriptionLike>()
-
-  private _rowMap        = new Map<TPrimaryKey, IGridRow>()
-  private _colMap        = new Map<TColumnKey, IGridColumn>()
+  private _rowMap = new Map<TPrimaryKey, IGridRow>()
+  private _colMap = new Map<TColumnKey, IGridColumn>()
   private _changesStream = new Subject<void>()
 
   constructor(input?: Partial<IGridDataSource>) {
@@ -71,7 +68,7 @@ export class GridDataSource implements IGridDataSource {
       disabled        : g.disabled,
       metadata        : g.metadata,
       cellMeta        : g.cellMeta,
-      rowMeta         : g.rowMeta,
+      rows            : g.rows,
     }
     if (typeof input?.dataGridID === 'undefined'){
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`

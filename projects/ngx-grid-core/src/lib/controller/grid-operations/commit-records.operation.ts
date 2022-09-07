@@ -1,4 +1,4 @@
-import { IGridCellComponent, IGridRowComponent, IGridRowMeta } from '../../typings/interfaces'
+import { IGridCellComponent, IGridRow, IGridRowComponent } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { ErrorDialogComponent } from '../../ui/dialogs/error-dialog/error-dialog.component'
 import { WithDefaultFalse, WithDefaultTrue } from '../../utils/with-default'
@@ -8,13 +8,13 @@ export class CommitRecords extends Operation {
 
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
-  public async run(rowMetas: IGridRowMeta[], options: ICommitRecordsOptions = {}) {
+  public async run(rows: IGridRow[], options: ICommitRecordsOptions = {}) {
     
     const buffers        = new Set<Promise<void>>()
     const rowComponents  = new Set<IGridRowComponent>()
     const cellComponents = new Set<IGridCellComponent>()
 
-    const cells = this.cellOperations.GetAllCellMetaForDirtyRows.run(rowMetas.map(r => r.rowKey))
+    const cells = this.cellOperations.GetAllCellMetaForDirtyRows.run(rows.map(r => r.rowKey))
     const invalidBlockingCell = cells.find(cell => {
       const validationState = this.cellOperations.GetCellValue.run(cell.coords)?.validationState
       return validationState?.nextIsValid === false && validationState.validationResults.find(v => v.nonBlocking !== true) !== undefined
@@ -32,7 +32,7 @@ export class CommitRecords extends Operation {
 
     if (!WithDefaultFalse(options.dryRun)) {
         
-      for (const row of rowMetas) {
+      for (const row of rows) {
         if (row.isDeleted) this.rowOperations.DeleteRow.buffer(row.rowKey, { forceRowRemoval: true, emitEvent: true })
         if (row.isNew) {
           buffers.add(this.rowOperations.ResetRowStatus.buffer(row.rowKey))
@@ -60,7 +60,7 @@ export class CommitRecords extends Operation {
     }
 
     if (WithDefaultTrue(options.emitEvent) === true) {
-      this.gridEvents.RowsCommittedEvent.emit(rowMetas.map(r => r.rowKey))
+      this.gridEvents.RowsCommittedEvent.emit(rows.map(r => r.rowKey))
     }
 
   }

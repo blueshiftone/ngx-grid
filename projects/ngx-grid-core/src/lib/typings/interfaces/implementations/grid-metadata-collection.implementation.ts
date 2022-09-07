@@ -39,6 +39,10 @@ export class GridMetadataCollection implements IGridMetadataCollection
     this._metadata.set(type, value)
   }
 
+  public extend (meta: IGridMetadataCollection): void {
+    meta.getAllMetaTypes().forEach(type => this.set(type, meta.get(type)))
+  }
+
   public get items() { return [...this._metadata.entries()].map(e => ({ key: e[0], value: e[1] })) }
 
   public clear(type?: EMetadataType): void {

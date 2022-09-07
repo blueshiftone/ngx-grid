@@ -47,8 +47,8 @@ export class NumberCellType extends BaseCellType {
   private get _displayValue(): string {
     if (this.value === null) return ''
     const source       = this.gridController.dataSource
-    const meta         = this.gridController.row.GetRowMeta.run(this.parentCell.rowKey)
-    const isNewRow     = meta?.status === ERowStatus.New
+    const row          = this.gridController.dataSource.getRow(this.parentCell.rowKey)
+    const isNewRow     = row?.status === ERowStatus.New
     const isPrimarykey = source.primaryColumnKey === this.parentCell.column.columnKey
     if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
     let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)

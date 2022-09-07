@@ -8,7 +8,7 @@ export class GetRowSeparators extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(primaryKey: TPrimaryKey): IGridSeparator[] {
-    return this.rowOperations.GetRowMeta.run(primaryKey)?.separators || []
+    return this.dataSource.getRow(primaryKey)?.separators || []
   }
 
 }

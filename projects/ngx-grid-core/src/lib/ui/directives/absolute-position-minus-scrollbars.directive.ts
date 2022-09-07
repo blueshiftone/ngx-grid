@@ -1,6 +1,9 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core'
-import { Observable, SubscriptionLike } from 'rxjs'
+import { fromEvent, merge, Observable, SubscriptionLike } from 'rxjs'
+
+import { GridControllerService } from '../../controller/grid-controller.service'
+import { GridEventsService } from '../../events/grid-events.service'
 
 @Directive({
   selector: '[libAbsolutePositionMinusScrollbars]'
@@ -14,12 +17,20 @@ export class BottomPlusScrollbarDirective implements OnInit, OnDestroy {
 
   constructor(
     private readonly _el: ElementRef,
+    private events: GridEventsService,
+    private readonly controller: GridControllerService,
   ) {}
 
   ngOnInit(): void {
     this.update()
     if (this.changes) {
-      this._subs.add(this.changes.subscribe(_ => {
+      this._subs.add(merge(
+        this.changes,
+        this.events.factory.GridDataChangedEvent.on(),
+        this.events.factory.ColumnWidthChangedEvent.on(),
+        this.controller.dataSource.onChanges,
+        fromEvent(window, 'resize')
+      ).subscribe(_ => {
         window.requestAnimationFrame(() => this.update())
       }))
     }
