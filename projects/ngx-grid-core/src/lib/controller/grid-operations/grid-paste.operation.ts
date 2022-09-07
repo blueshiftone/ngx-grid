@@ -93,8 +93,7 @@ export class GridPaste extends Operation {
         finalValues.push(finalRow)
       }
 
-
-      const visibleRows = this.rowOperations.GetAllRows.filteredRows()
+      const visibleRows = this.dataSource.rows
 
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
@@ -149,18 +148,10 @@ export class GridPaste extends Operation {
 
       // Insert new rows
       if (newRows.length) {
-        const filteredRows = this._filteredRows
-        const sortedRows   = this._sortedRows
-
-        let ar: null | IGridRow[] = null
-
-        if   (filteredRows ?? null !== null)  ar = filteredRows
-        else if (sortedRows ?? null !== null) ar = sortedRows ?? null
 
         let index = visibleRows.length
         for (const row of newRows) {
           const { rowKey } = row
-          if (ar) ar.splice(index, 0, row)
           dataSource.upsertRows(row)
           this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New)
           index++
@@ -169,15 +160,6 @@ export class GridPaste extends Operation {
         for (const cell of newCells) {
           this.cellOperations.SetCellDraftValue.buffer(cell)
           this.cellOperations.SetCellMeta.run(cell, [{ key: EMetadataType.CanUpdate, value: true }])
-        }
-        
-        if (ar) {
-          if (typeof filteredRows !== 'undefined') gridEvents.RowsFilteredEvent.emit([...ar])
-          else {
-            const sorted = gridEvents.ColumnSortByChangedEvent.state!
-            sorted.rows = [...ar]
-            gridEvents.ColumnSortByChangedEvent.emit(sorted)
-          }
         }
 
       } 
@@ -192,14 +174,6 @@ export class GridPaste extends Operation {
 
   private _getStartCell() {
     return this.selection.latestSelection()?.getBounds().topLeft
-  }
-
-  private get _sortedRows() {
-    return this.gridEvents.ColumnSortByChangedEvent.state?.rows ?? null
-  }
-
-  private get _filteredRows() {
-    return this.gridEvents.RowsFilteredEvent.state ?? null
   }
 
 }

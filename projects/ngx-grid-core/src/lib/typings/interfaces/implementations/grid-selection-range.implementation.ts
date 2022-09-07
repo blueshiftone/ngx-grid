@@ -277,19 +277,11 @@ export class GridSelectionRange implements IGridSelectionRange {
   }
 
   private get _visibleRows(): IGridRow[] {
-    return this._filteredRows ?? this._sortedRows ?? this._source?.rows ?? []
+    return this._source?.rows ?? []
   }
 
   private get _source() {
     return this.gridEvents.GridDataChangedEvent.state
-  }
-
-  private get _sortedRows() {
-    return this.gridEvents.ColumnSortByChangedEvent.state?.rows
-  }
-
-  private get _filteredRows() {
-    return this.gridEvents.RowsFilteredEvent.state
   }
 
 }

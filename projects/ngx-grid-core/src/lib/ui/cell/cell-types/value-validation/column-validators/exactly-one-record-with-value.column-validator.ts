@@ -21,7 +21,7 @@ export class ExactlyOneRecordWithValue extends BaseColumnValidator implements IC
 
     const existingInvalidStates: IGridCellValidationState[] = []
 
-    for (const row of this.gridController.row.GetAllRows.allRows()) {
+    for (const row of this.gridController.dataSource.getUnderlyingRows()) {
 
       const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
       const cellValue = this.gridController.cell.GetCellValue.run(coords)
@@ -48,7 +48,7 @@ export class ExactlyOneRecordWithValue extends BaseColumnValidator implements IC
         
         const rowKey = focusedCell.rowKey
 
-        for (const row of this.gridController.row.GetAllRows.allRows()) {
+        for (const row of this.gridController.dataSource.getUnderlyingRows()) {
 
           if (row.rowKey !== rowKey && row.getValue(this.columnKey).value === value) {
             const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
@@ -66,7 +66,7 @@ export class ExactlyOneRecordWithValue extends BaseColumnValidator implements IC
 
       }
     } else if (cellsWithValue.length === 0) {
-      for (const row of this.gridController.row.GetAllRows.allRows()) {
+      for (const row of this.gridController.dataSource.getUnderlyingRows()) {
         const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
         this.patchValidationResult(coords, this.error(`locOneCellInThisColumnMustHaveTheValueOf\${ '${value}'}`, coords))
       }

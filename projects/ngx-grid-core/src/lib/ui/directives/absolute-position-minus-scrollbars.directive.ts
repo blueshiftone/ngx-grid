@@ -28,7 +28,6 @@ export class BottomPlusScrollbarDirective implements OnInit, OnDestroy {
         this.changes,
         this.events.factory.GridDataChangedEvent.on(),
         this.events.factory.ColumnWidthChangedEvent.on(),
-        this.controller.dataSource.onChanges,
         fromEvent(window, 'resize')
       ).subscribe(_ => {
         window.requestAnimationFrame(() => this.update())

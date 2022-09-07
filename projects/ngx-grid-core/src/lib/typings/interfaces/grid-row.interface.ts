@@ -1,21 +1,31 @@
+import { BehaviorSubject } from 'rxjs'
+
 import { IGridCellValue, IGridMetadataCollection, IGridSeparator } from '.'
 import { ERowStatus } from '../enums'
 import { TColumnKey, TPrimaryKey, TRowValues } from '../types'
 
 export interface IGridRow {
-  rowKey     : TPrimaryKey
-  values     : TRowValues
-  valuesArray: { columnKey: TColumnKey, value: IGridCellValue }[]
-  separators?: IGridSeparator[]
-  isNew      : boolean
-  isDeleted  : boolean
-  isDirty    : boolean
-  status     : ERowStatus
-  canDelete  : boolean | null
-  canUpdate  : boolean | null
-  metadata   : IGridMetadataCollection
+  rowKey       : TPrimaryKey
+  values       : TRowValues
+  valuesArray  : { columnKey: TColumnKey, value: IGridCellValue }[]
+  separators?  : IGridSeparator[]
+  isNew        : boolean
+  isDeleted    : boolean
+  isDirty      : boolean
+  status       : ERowStatus
+  canDelete    : boolean | null
+  canUpdate    : boolean | null
+  metadata     : IGridMetadataCollection
+  nestLevel    : number
+  floatingTitle: IGridRowFloatingTitle | null
 
   getValue(columnKey: TColumnKey): IGridCellValue
   setValue(columnKey: TColumnKey, value: any): void
   clone(): IGridRow
+}
+
+export interface IGridRowFloatingTitle {
+  title: BehaviorSubject<string>
+  icon : BehaviorSubject<string>
+  action: (row: IGridRow) => void
 }

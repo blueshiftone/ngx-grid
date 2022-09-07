@@ -65,7 +65,7 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
       this.events.factory.ColumnSortByChangedEvent.on(),
       this._sourceChanged
     ).subscribe(_ => {
-      this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
+      this.rows = [...this.gridController.dataSource.rows]
       this.cd.detectChanges()
       this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))

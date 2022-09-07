@@ -76,7 +76,9 @@ export class GridControllerService {
 
     // Column sort changed
     addSubscription(gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
-      this.row.FilterRows.run()
+      if (gridEvents.GridFilterStringChangedEvent.state) {
+        this.row.FilterRows.run()
+      }
     }))
 
     // Column width changed

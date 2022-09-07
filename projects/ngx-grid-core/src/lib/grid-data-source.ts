@@ -11,15 +11,26 @@ import { Randomish } from './utils/randomish'
 
 export class GridDataSource implements IGridDataSource {
 
-  public columns: IGridColumn[] = []
-  public rows   : IGridRow[]    = []
-  public dataSetName            = ''
-  public dataGridID             = ''
-  public primaryColumnKey       = 'ID'
-  public disabled               = false
-  public maskNewIds: boolean    = false
-  
-  public onChanges = new Subject<IGridDataSource>()
+  private _columns: IGridColumn[] = []
+  private _rows   : IGridRow[]    = []
+
+  public get columns(): IGridColumn[] {
+    return this._columnsSubset ?? this._columns
+  }
+
+  public get rows(): IGridRow[] {
+    return this._rowsSubset ?? this._rows
+  }
+
+  private _columnsSubset?: IGridColumn[]
+  private _rowsSubset   ?: IGridRow[] // a subset is used when applying specific operations like grouping, filtering, etc
+
+  public dataSetName      = ''
+  public dataGridID       = ''
+  public primaryColumnKey = 'ID'
+  public disabled         = false
+  public maskNewIds       = false
+  public leafLevel        = 0
   
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
@@ -30,16 +41,23 @@ export class GridDataSource implements IGridDataSource {
   private _rowMap = new Map<TPrimaryKey, IGridRow>()
   private _colMap = new Map<TColumnKey, IGridColumn>()
   private _changesStream = new Subject<void>()
+  
+  public onChanges = this._changesStream.pipe(debounceTime(1))
 
   constructor(input?: Partial<IGridDataSource>) {
+    // We can't use Object.assign for rows and columns because these properties are getters
+    if (input?.rows) {
+      this.setRows(input.rows)
+      delete input.rows
+    }
+    if (input?.columns) {
+      this.setColumns(input.columns)
+      delete input.columns
+    }
     if (input) Object.assign(this, input)
     
     for (const row of this.rows) this._rowMap.set(row.rowKey, row)
     for (const col of this.columns) this._colMap.set(col.columnKey, col)
-
-    this._subs.add(this._changesStream.pipe(debounceTime(1)).subscribe(_ => {
-      this.onChanges.next(this)
-    }))
 
   }
 
@@ -67,8 +85,7 @@ export class GridDataSource implements IGridDataSource {
       columns         : g.columns,
       disabled        : g.disabled,
       metadata        : g.metadata,
-      cellMeta        : g.cellMeta,
-      rows            : g.rows,
+      cellMeta        : g.cellMeta
     }
     if (typeof input?.dataGridID === 'undefined'){
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`
@@ -78,7 +95,7 @@ export class GridDataSource implements IGridDataSource {
 
   public static cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
     const source = GridDataSource.cloneMeta(g, input)
-    source.upsertRows(...g.rows.map(row => row.clone()))
+    source.setRows(g.rows.map(row => row.clone()))
     source.setColumns(g.columns)
     return source
   }
@@ -113,8 +130,23 @@ export class GridDataSource implements IGridDataSource {
         }
         output.push(existingRow)
       } else {
-        if (index > -1) this.rows.splice(index, 0, row)
-        else this.rows.push(row)
+        if (this._rowsSubset) {
+          if (index > -1) {
+            this._rowsSubset.splice(index, 0, row)
+            // find the index of the closest row in the underlying rows
+            let underlyingIndex = this._rows.findIndex(r => r.rowKey === this._rowsSubset![index - 1]?.rowKey)
+            if (underlyingIndex === -1) underlyingIndex = this._rows.findIndex(r => r.rowKey === this._rowsSubset![index + 1]?.rowKey)
+            if (underlyingIndex === -1) underlyingIndex = 0
+            this._rows.splice(underlyingIndex, 0, row)
+          }
+          else {
+            this._rowsSubset.push(row)
+            this._rows.push(row)
+          }
+        } else {
+          if (index > -1) this._rows.splice(index, 0, row)
+          else this._rows.push(row)
+        }
         this._rowMap.set(row.rowKey, row)
         output.push(row)
       }
@@ -130,19 +162,54 @@ export class GridDataSource implements IGridDataSource {
         if (!existingRow) return
         row = existingRow
       }
-      const index = this.rows.indexOf(row)
-      if (index > -1) {
-        this.rows.splice(index, 1)
+      const index = this._rows.indexOf(row)
+      if (index > -1) this._rows.splice(index, 1)
+      if (this._rowsSubset) {
+        const subsetIndex = this._rowsSubset.indexOf(row)
+        if (subsetIndex > -1) this._rowsSubset.splice(subsetIndex, 1)
       }
       this._rowMap.delete(row.rowKey)
     }
     this._changesStream.next()
   }
 
-  public setColumns(columns: IGridColumn[]): void {
-    this.columns = columns
+  public setColumns(columns: IGridColumn[], subset = false): void {
+    if (subset) this._columnsSubset = columns
+    else {
+      if (this._columnsSubset) {
+        console.warn('The subset of columns should be cleared')
+      }
+      this._columns = columns
+    }
     this._colMap.clear()
     for (const col of columns) this._colMap.set(col.columnKey, col)
+    this._changesStream.next()
+  }
+
+  public setRows(rows: IGridRow[], subset = false): void {
+    if (subset) this._rowsSubset = rows
+    else {
+      this._rows = rows
+      this._rowMap.clear()
+    }
+    for (const row of rows) this._rowMap.set(row.rowKey, row)
+    this._changesStream.next()
+  }
+
+  public getUnderlyingColumns(): IGridColumn[] {
+    return this._columns
+  }
+
+  public getUnderlyingRows(): IGridRow[] {
+    return this._rows
+  }
+
+  public clearRowSubset(): void {
+    this._rowsSubset = undefined
+    this._changesStream.next()
+  }
+  public clearColumnSubset(): void {
+    this._columnsSubset = undefined
     this._changesStream.next()
   }
 

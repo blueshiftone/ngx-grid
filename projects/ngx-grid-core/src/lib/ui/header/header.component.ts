@@ -128,7 +128,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   }
 
   private currentSortOrder(column: IGridColumn) {
-    return this._gridEvents.ColumnSortByChangedEvent.state?.sortConfig.get(column.columnKey)?.direction ?? ESortDirection.Natural
+    return this._gridEvents.ColumnSortByChangedEvent.state?.get(column.columnKey)?.direction ?? ESortDirection.Natural
   }
 
   public columnHasSort(column: IGridColumn) {

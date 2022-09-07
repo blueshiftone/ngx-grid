@@ -8,25 +8,21 @@ export class FilterRows extends Operation {
 
   public run(filter?: string | null): IGridRow[] {
     if (typeof filter === 'undefined') filter = this._getFilterString()
-    const rows = this.rowOperations.GetAllRows.allRows()
+    const rows = this.dataSource.getUnderlyingRows()
     let filtered: IGridRow[] = []
     if (filter) { 
       filter = filter.toLowerCase()
+      // Todo: filter foreign key values
       filtered = rows.filter(row => row.valuesArray.map(v => v.value.value).join('').toLowerCase().includes(filter!))
-      this.gridEvents.RowsFilteredEvent.emit(filtered)
-    } else if (this._getRowsFilteredEvent() !== null && typeof this._getRowsFilteredEvent() !== 'undefined') {
-      this.gridEvents.RowsFilteredEvent.emit(null)
+      this.dataSource.setRows(filtered, true)
+    } else {
+      this.dataSource.clearRowSubset()
     }
-    this.gridEvents.GridDataChangedEvent.emit(this.gridEvents.GridDataChangedEvent.state!)
     return filtered
   }
 
   private _getFilterString(): string {
     return this.gridEvents.GridFilterStringChangedEvent.state ?? ''
-  }
-
-  private _getRowsFilteredEvent() {
-    return this.gridEvents.RowsFilteredEvent.state
   }
 
 }

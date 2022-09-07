@@ -1,6 +1,6 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
-import { concat, interval, merge } from 'rxjs'
+import { concat, interval } from 'rxjs'
 import { take } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -51,11 +51,8 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
 
   ngOnInit(): void {
 
-    this.addSubscription(merge(
-      this.events.factory.GridDataChangedEvent.onWithInitialValue(),
-      this.events.factory.ColumnSortByChangedEvent.on(),
-    ).subscribe(_ => {
-      this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
+    this.addSubscription(this.events.factory.GridDataChangedEvent.onWithInitialValue().subscribe(_ => {
+      this.rows = [...this.gridController.dataSource.rows]
       this.cd.detectChanges()
       this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))

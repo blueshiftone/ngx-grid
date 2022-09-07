@@ -1,5 +1,5 @@
 import { SubscriptionLike } from 'rxjs'
-import { startWith } from 'rxjs/operators'
+import { map, pairwise, startWith } from 'rxjs/operators'
 
 import { GridDataSource } from '../../grid-data-source'
 import { EMetadataType } from '../../typings/enums'
@@ -16,11 +16,21 @@ export class SetDataSource extends Operation {
   private _subs = new Set<SubscriptionLike>()
   
   public run(source: IGridDataSource): void {
+
     this.onDestroy()
+
     this.gridOperations.gridController.dataSource.onDestroy()
+
     this.gridOperations.gridController.dataSource = source
-    this._subs.add(source.onChanges.pipe(startWith(null)).subscribe(_ => {
-      this.gridEvents.GridInitialisedEvent.emit(false)
+
+    this._subs.add(source.onChanges.pipe(
+      map(_ => source.rows),
+      startWith(null),
+      pairwise()).subscribe(e => {
+        const [ prevRows, nextRows ] = e
+        if (!prevRows?.length && nextRows?.length) {
+          this.gridEvents.GridInitialisedEvent.emit(false)
+        }
       this.gridEvents.GridDataChangedEvent.emit(source)
     }))
     

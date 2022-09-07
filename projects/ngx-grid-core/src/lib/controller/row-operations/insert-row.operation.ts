@@ -18,10 +18,6 @@ export class InsertRow extends Operation {
 
   private async _run(args: [IGridRow, IInsertRowOperationOptions][]): Promise<void> {
 
-    const rows         = this.rowOperations.GetAllRows.filteredRows()
-    const filteredRows = this._filteredRows
-    const sortedRows   = this._sortedRows
-
     for (const arg of args) {
       
       let [insertRow, options] = arg
@@ -30,23 +26,7 @@ export class InsertRow extends Operation {
 
       options.increment = Math.max(0, Math.min(options.increment ?? 0, 1))
       
-      const index       = options.referenceRow ? rows.indexOf(options.referenceRow) + options.increment : 0
       const globalIndex = options.referenceRow ? this.rowOperations.GetIndexOfRow.run(options.referenceRow) + options.increment : 0
-
-      let ar: null | IGridRow[] = null
-
-      if   (filteredRows ?? null !== null)  ar = filteredRows
-      else if (sortedRows ?? null !== null) ar = sortedRows
-
-      if (ar) {
-        ar.splice(index, 0, insertRow)
-        if (typeof filteredRows !== 'undefined') this.gridEvents.RowsFilteredEvent.emit([...ar])
-        else {
-          const sorted = this.gridEvents.ColumnSortByChangedEvent.state!
-          sorted.rows = [...ar]
-          this.gridEvents.ColumnSortByChangedEvent.emit(sorted)
-        }
-      }
 
       this.rowOperations.AddRow.buffer(insertRow, globalIndex).then(() => {
         for (const col of this.dataSource.columns) {
@@ -60,14 +40,6 @@ export class InsertRow extends Operation {
       }
 
     }
-  }
-
-  private get _sortedRows() {
-    return this.gridEvents.ColumnSortByChangedEvent.state?.rows || null
-  }
-
-  private get _filteredRows() {
-    return this.gridEvents.RowsFilteredEvent.state || null
   }
 
 }

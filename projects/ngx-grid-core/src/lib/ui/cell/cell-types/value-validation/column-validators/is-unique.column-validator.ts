@@ -21,7 +21,7 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
 
     const existingInvalidStates: IGridCellValidationState[] = []
 
-    for (const row of this.gridController.row.GetAllRows.allRows()) {
+    for (const row of this.gridController.dataSource.getUnderlyingRows()) {
       const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
       const cellValue = this.gridController.cell.GetCellValue.run(coords)
       if (cellValue?.validationState?.validationResults.find(v => v.validatorId === this.validatorId)?.failed === true) {
@@ -37,7 +37,6 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
         }
       }
     }
-    
 
     const duplicates = [...grouped.values()].filter(cells => cells.length > 1).reduce<IGridCellValue[]>((output, el) => {
       output.push(...el)

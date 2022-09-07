@@ -2,22 +2,25 @@ import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from '.'
 import { IGridCellValue, IGridMetadataCollection, IGridSeparator } from '..'
 import { EMetadataType, ERowStatus } from '../../enums'
 import { TColumnKey, TPrimaryKey, TRowValues } from '../../types'
-import { IGridRow } from '../grid-row.interface'
+import { IGridRow, IGridRowFloatingTitle } from '../grid-row.interface'
 
 export class GridRow implements IGridRow {
 
   public values: TRowValues
 
-  public separators?: IGridSeparator[] | undefined
-  public status     : ERowStatus  = ERowStatus.Committed
-  public metadata   : IGridMetadataCollection = new GridMetadataCollection();
+  public separators?  : IGridSeparator[] | undefined
+  public status       : ERowStatus                   = ERowStatus.Committed
+  public metadata     : IGridMetadataCollection      = new GridMetadataCollection();
+  public floatingTitle: IGridRowFloatingTitle | null = null
+  public nestLevel                                   = 0
 
   private _primaryKeyColumn: TColumnKey
 
-  constructor(primaryKeyColumn: TColumnKey, values: TRowValues, status = ERowStatus.Committed) {
+  constructor(primaryKeyColumn: TColumnKey, values: TRowValues, status = ERowStatus.Committed, metadata?: IGridMetadataCollection) {
     this._primaryKeyColumn = primaryKeyColumn
     this.values            = values
     this.status            = status
+    this.metadata          = metadata ?? this.metadata
   }
 
   public get rowKey(): TPrimaryKey {
@@ -57,7 +60,9 @@ export class GridRow implements IGridRow {
   public clone(): IGridRow {
     return new GridRow(
       this._primaryKeyColumn,
-      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => ([itm.columnKey, itm.value.clone()])))
+      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => ([itm.columnKey, itm.value.clone()]))),
+      this.status,
+      new GridMetadataCollection(this.metadata.items)
     )
   }
 
