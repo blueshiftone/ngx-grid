@@ -50,7 +50,8 @@ export class NumberCellType extends BaseCellType {
     const row          = this.gridController.dataSource.getRow(this.parentCell.rowKey)
     const isNewRow     = row?.status === ERowStatus.New
     const isPrimarykey = source.primaryColumnKey === this.parentCell.column.columnKey
-    if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
+    const hideValue    = this.gridController.cell.GetCellMeta.run(this.parentCell.coordinates).metadata.get<boolean>(EMetadataType.HideValue)
+    if (hideValue || (source.maskNewIds && isNewRow && isPrimarykey)) return ''    
     let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
     const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)
     if (formatString !== null) {

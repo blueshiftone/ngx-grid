@@ -52,7 +52,8 @@ import { LocalizedTextComponent } from './ui/localized-text/localized-text.compo
 import { RecordSelectorCellComponent, RecordSelectorComponent, RecordSelectorRowComponent } from './ui/record-selector'
 import { RowIconComponent } from './ui/row/row-icon/row-icon.component'
 import { RowComponent } from './ui/row/row.component'
-import { SeparatorComponent } from './ui/separator/separator.component'
+import { SeparatorComponent } from './ui/separator/separator.component';
+import { RowFloatingTitleComponent } from './ui/row/row-floating-title/row-floating-title.component'
 
 GRID_OVERLAYS.set(EGridOverlayType.MarkdownEditor, MarkdownEditorComponent)
 GRID_OVERLAYS.set(EGridOverlayType.DateEditorOverlay, DateEditorOverlayComponent)
@@ -112,6 +113,7 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
     FileGridCellSelectedListComponent,
     LoadingDotsComponent,
     BottomPlusScrollbarDirective,
+    RowFloatingTitleComponent,
   ],
   imports: [
     CommonModule,

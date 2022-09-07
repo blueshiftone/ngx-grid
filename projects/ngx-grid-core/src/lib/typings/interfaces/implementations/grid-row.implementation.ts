@@ -12,7 +12,6 @@ export class GridRow implements IGridRow {
   public status       : ERowStatus                   = ERowStatus.Committed
   public metadata     : IGridMetadataCollection      = new GridMetadataCollection();
   public floatingTitle: IGridRowFloatingTitle | null = null
-  public nestLevel                                   = 0
 
   private _primaryKeyColumn: TColumnKey
 

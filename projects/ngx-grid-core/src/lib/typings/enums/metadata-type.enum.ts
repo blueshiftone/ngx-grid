@@ -11,4 +11,6 @@ export enum EMetadataType {
   ForeignEntityName,
   NumberFormatString,
   ToolTip,
+  HideValue,
+  NestingLevel,
 }

@@ -16,7 +16,6 @@ export interface IGridRow {
   canDelete    : boolean | null
   canUpdate    : boolean | null
   metadata     : IGridMetadataCollection
-  nestLevel    : number
   floatingTitle: IGridRowFloatingTitle | null
 
   getValue(columnKey: TColumnKey): IGridCellValue

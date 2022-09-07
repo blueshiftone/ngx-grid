@@ -177,7 +177,7 @@
     }
   }
 
-  &.is-invalid.validation-id-IsRequired {
+  &.is-invalid.validation-id-IsRequired.is-editable {
     ::ng-deep {
       .is-required-asterix {
         display: block;
