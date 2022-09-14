@@ -97,7 +97,7 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
       const rows             = grid.rows
       const columns          = grid.columns
 
-      for(const row of rows) {
+      for(const row of rows.latestValue) {
         let outputString = grid.rowTemplateString
         for (const col of columns) {
           if (outputString.includes(col.columnKey)) {

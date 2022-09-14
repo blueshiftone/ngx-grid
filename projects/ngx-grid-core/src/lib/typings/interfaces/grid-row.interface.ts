@@ -26,5 +26,5 @@ export interface IGridRow {
 export interface IGridRowFloatingTitle {
   title: BehaviorSubject<string>
   icon : BehaviorSubject<string>
-  action: (row: IGridRow) => void
+  action: () => void
 }

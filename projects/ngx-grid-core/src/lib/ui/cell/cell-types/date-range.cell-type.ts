@@ -2,19 +2,19 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
-import { ECellMode, EPositionPreference } from '../../../typings/enums'
-import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
+import { ECellMode } from '../../../typings/enums'
 import { IGridCellComponent, IGridCellType } from '../../../typings/interfaces'
+import { ParseDate } from '../../../utils/parse-date-string'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
-export class DateCellType extends BaseCellType {
+// This is a read-only cell type
+export class DateRangeCellType extends BaseCellType {
 
   public mode = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
 
   private readonly readonlyCssClassName = 'date-readonly'
 
   private _displayNode?: HTMLElement
-  private _editableNode?: HTMLElement
 
   constructor(
     gridController: GridControllerService,
@@ -22,8 +22,8 @@ export class DateCellType extends BaseCellType {
     parentCell    : IGridCellComponent
   ) { super(overlayService, parentCell, gridController) }
 
-  public get displayNode()  { return this._displayNode  ?? this._generateDisplayNode() }
-  public get editableNode() { return this._editableNode ?? this._generateEditableNode() }
+  public get displayNode()  { return this._displayNode ?? this._generateDisplayNode() }
+  public get editableNode() { return this.displayNode }
 
   public override receiveValue(value: any = this.value): void {
     super.receiveValue(value)
@@ -32,14 +32,6 @@ export class DateCellType extends BaseCellType {
   }
 
   public override open(): IGridCellType {
-    if (!this.isEditable) return this
-    this.openOverlay(EGridOverlayType.DateEditorOverlay, {
-      flexibleDimensions: true,
-      positionPreference: EPositionPreference.VerticalBottom
-    }).afterClosed.then(_ => {
-      this.gridController.gridEvents.EditingCellChangedEvent.emit(null)
-      this.close()
-    })
     return this
   }
 
@@ -49,12 +41,14 @@ export class DateCellType extends BaseCellType {
     return this._displayNode
   }
 
-  private _generateEditableNode(): HTMLElement {
-    return this.displayNode
+  private get _displayValue(): string {
+    const dates = [ParseDate(this.value?.[0]), ParseDate(this.value?.[0])]
+    return dates.map(date => (date && this.gridController.datePipe.transform(date, this._dateFormat)) ?? date).join(' — ')
   }
 
-  private get _displayValue(): string {
-    return this.gridController.cell.GetFormattedValue.run(this.coordinates, this.value)
+  private get _dateFormat(): string {
+    const format = this.gridController.localize.getLocalizedString('dateFormat')
+    return format === 'dateFormat' ? this.gridController.defaultDateFormat : format
   }
 
 }

@@ -91,12 +91,12 @@ export class StandardSelectionStrategy implements IGridSelectionStrategy {
     }
 
     const move = (e: IGridKeyboardEvent) => {
-      if (this.controller.gridController.dataSource.rows.length === 0) return
+      if (this.controller.gridController.dataSource.rows.latestValue.length === 0) return
 
       // Select first cell in the grid if a slection doesn't exist
       if (!this.controller.gridEvents.CellSelectionChangedEvent.state?.cellCount) {
         this.controller.SelectCell.run(new GridCellCoordinates(
-          this.controller.gridController.dataSource.rows[0].rowKey,
+          this.controller.gridController.dataSource.rows.latestValue[0].rowKey,
           this.controller.gridController.dataSource.columns[0].columnKey
         ))
         return

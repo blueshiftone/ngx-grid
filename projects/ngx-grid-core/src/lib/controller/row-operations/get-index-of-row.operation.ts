@@ -13,7 +13,7 @@ export class GetIndexOfRow extends Operation {
     if   (typeof input === 'object') row = input as IGridRow
     else row = this.rowOperations.GetRow.run(input as TPrimaryKey)
 
-    return typeof row !== 'undefined' ? this.dataSource.rows.indexOf(row) ?? -1 : -1
+    return typeof row !== 'undefined' ? this.dataSource.rows.latestValue.indexOf(row) ?? -1 : -1
   }
 
 }

@@ -21,7 +21,7 @@ export class IsUnique extends BaseColumnValidator implements IColumnValidator {
 
     const existingInvalidStates: IGridCellValidationState[] = []
 
-    for (const row of this.gridController.dataSource.getUnderlyingRows()) {
+    for (const row of this.gridController.dataSource.rows.firstValue) {
       const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
       const cellValue = this.gridController.cell.GetCellValue.run(coords)
       if (cellValue?.validationState?.validationResults.find(v => v.validatorId === this.validatorId)?.failed === true) {

@@ -9,6 +9,8 @@ export const CELL_MULTI_EDITORS: {[key in TCellTypeName]: Array<new (cellValue: 
   RichText            : [ editors.TextAppend, editors.TextPrepend, editors.ClearValues ],
   Number              : [ editors.NumberAdd, editors.NumberSubtract, editors.NumberDivide, editors.NumberMultiply, editors.ClearValues],
   Date                : [ editors.DateAddDays, editors.DateSubtractDays, editors.ClearValues ],
+  NumberRange         : [ editors.ClearValues ],
+  DateRange           : [ editors.ClearValues ],
   DropdownSingleSelect: [ editors.ClearValues ],
   DropdownMultiSelect : [ editors.ClearValues ],
   File                : [ editors.ClearValues ],

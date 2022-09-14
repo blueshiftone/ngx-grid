@@ -6,7 +6,7 @@ export class InsertRowAtTop extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(row = this.rowOperations.GenerateNewRow.run()): void {
-    const referenceRow = this.dataSource.rows[0]
+    const referenceRow = this.dataSource.rows.latestValue[0]
     this.rowOperations.InsertRowBefore.run(row, referenceRow)
   }
 }

@@ -9,6 +9,6 @@ export class GetRelatedGridRowIndex extends Operation {
   public run(row: IGridRow, gridID?: string): number {
     if (typeof gridID === 'undefined') return -1
     const grid = this.gridOperations.relatedDataMap.get(gridID)
-    return grid?.source.rows.indexOf(row) ?? -1
+    return grid?.source.rows.latestValue.indexOf(row) ?? -1
   }
 }

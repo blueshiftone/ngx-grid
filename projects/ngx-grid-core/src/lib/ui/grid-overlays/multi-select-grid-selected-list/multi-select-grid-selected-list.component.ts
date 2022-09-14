@@ -84,7 +84,7 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
     this.values = primaryKeyValues
 
     this.dataSource.clearData()
-    this.dataSource.upsertRows(...this.gridController.grid.FilterRelatedDataRows.run(gridID, val))
+    this.dataSource.insertNewRows(...this.gridController.grid.FilterRelatedDataRows.run(gridID, val))
 
     this.cd.detectChanges()
 

@@ -93,7 +93,7 @@ export class GridPaste extends Operation {
         finalValues.push(finalRow)
       }
 
-      const visibleRows = this.dataSource.rows
+      const visibleRows = this.dataSource.rows.latestValue
 
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
@@ -152,7 +152,7 @@ export class GridPaste extends Operation {
         let index = visibleRows.length
         for (const row of newRows) {
           const { rowKey } = row
-          dataSource.upsertRows(row)
+          dataSource.insertNewRows(row)
           this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New)
           index++
         }

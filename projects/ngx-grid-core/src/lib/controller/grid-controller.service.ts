@@ -35,6 +35,8 @@ export class GridControllerService {
   public dataSource: IGridDataSource = new GridDataSource()
 
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
+
+  public defaultDateFormat = 'yyyy/MM/dd'
   
   private _subs : Set<Subscription> = new Set()
 

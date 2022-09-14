@@ -35,6 +35,12 @@ export class NumberFormatParser {
     }
   }
 
+  public getPlainText(val: number): string {
+    const html = this.getHtml(val)
+    const doc = new DOMParser().parseFromString(html, 'text/html')
+    return doc.body.innerText
+  }
+
   private _parse(): [NumberFormater, NumberFormater, NumberFormater] {
     
     const [positiveStr, negativeStr, zeroStr] = this._numberFormatstring.split(';')

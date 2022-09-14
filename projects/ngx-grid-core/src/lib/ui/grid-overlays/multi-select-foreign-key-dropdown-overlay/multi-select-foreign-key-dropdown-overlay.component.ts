@@ -65,7 +65,7 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
         if (gridID && removed.length) {
           const grid = this.gridController.grid.GetRelatedData.run(gridID)
           if (grid) {
-            const rows = grid.rows.filter(r => !this.values.includes(r.getValue(grid.primaryColumnKey)?.value))
+            const rows = grid.rows.latestValue.filter(r => !this.values.includes(r.getValue(grid.primaryColumnKey)?.value))
             for (const row of removed) {
               if (!row) continue
               const index = rows.findIndex(r => r.getValue(grid.primaryColumnKey) === row.getValue(grid.primaryColumnKey))

@@ -2,20 +2,20 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
-import { EMetadataType, ERowStatus } from '../../../typings/enums'
+import { EMetadataType } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { NumberFormatParser } from '../../../utils/number-format-parser/number-format-parser'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
-export class NumberCellType extends BaseCellType {
+// This is a read-only cell type
+export class NumberRangeCellType extends BaseCellType {
 
   public mode = new BehaviorSubject<ECellMode>(ECellMode.Readonly)
 
-  private readonly editableCssClassName = 'number-editable'
   private readonly readonlyCssClassName = 'number-readonly'
 
   private _displayNode?: HTMLElement
-  private _editableNode?: HTMLElement
 
   constructor(
     gridController: GridControllerService,
@@ -24,7 +24,7 @@ export class NumberCellType extends BaseCellType {
   ) { super(overlayService, parentCell, gridController) }
 
   public get displayNode()  { return this._displayNode  || this._generateDisplayNode() }
-  public get editableNode() { return this._editableNode || this._generateEditableNode() }
+  public get editableNode() { return this.displayNode }
 
   public override receiveValue(value: any = this.value): void {
     super.receiveValue(value)
@@ -38,24 +38,18 @@ export class NumberCellType extends BaseCellType {
     return this._displayNode
   }
 
-  private _generateEditableNode(): HTMLElement {
-    const [node] = this.createBasicInput('number', this.editableCssClassName)
-    return this._editableNode = node
-  }
-
   private get _displayValue(): string {
     if (this.value === null) return ''
-    const source       = this.gridController.dataSource
-    const row          = this.gridController.dataSource.getRow(this.parentCell.rowKey)
-    const isNewRow     = row?.status === ERowStatus.New
-    const isPrimarykey = source.primaryColumnKey === this.parentCell.column.columnKey
-    if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
-    let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
+    if (!Array.isArray(this.value)) return this.value.toString()
+    let val = this.value.map(v => typeof v === 'number' ? v : parseFloat(v)) as number[]
     const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)
     if (formatString !== null) {
-      return this.gridController.cell.GetFormattedValue.run(this.coordinates, val)
+      // remove greedy spacer by replacing '* ' with '' in the format string'
+      // also remove the dash spacer by replacing '_-' with ''
+      const format = formatString.replace(/\* /g, '').replace(/_-/g, '') 
+      return val.map(v => NumberFormatParser.getParser(format).getHtml(v)).join('<span class="txt-str"> — </span>')
     } else {
-      return val.toString()
+      return val.join(' - ')
     }
   }
 

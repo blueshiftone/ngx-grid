@@ -5,7 +5,7 @@ export class GetLastRowIndex {
   constructor(private readonly controller: ISelectionController) { }
 
   public run(): number {
-    return ((this._source?.rows.length) || 1) - 1
+    return ((this._source?.rows.latestValue.length) || 1) - 1
   }
 
   private get _source() {

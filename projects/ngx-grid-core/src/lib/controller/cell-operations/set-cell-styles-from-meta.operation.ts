@@ -19,6 +19,7 @@ export class SetCellStylesFromMeta extends Operation {
     const cellValidationState = this.cellOperations.GetCellValue.run(cell.coordinates)?.validationState
     const isValid = WithDefaultTrue(cellValidationState?.nextIsValid)
     cell.toggleClass('is-invalid', !isValid)
+    cell.toggleClass('hide-value', this.cellOperations.GetCellMetaValue.run<boolean>(cell.coordinates, EMetadataType.HideValue) === true)
     const validationClasses = [...cell.element.classList.values()].filter(c => c.includes('validation-id-'))
     validationClasses.forEach(className => cell.toggleClass(className, false))
     if (cellValidationState !== undefined) {

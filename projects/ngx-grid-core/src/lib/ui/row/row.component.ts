@@ -16,11 +16,14 @@ import { BehaviorSubject } from 'rxjs'
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { EGridIcon } from '../../services/icon.service'
-import { IGridCellCoordinates, IGridColumn, IGridRow, IGridRowComponent, IGridSeparator } from '../../typings/interfaces'
+import { LocalizationService } from '../../services/localization.service'
+import { EMetadataType } from '../../typings/enums'
+import { IGridCellCoordinates, IGridColumn, IGridRow, IGridRowComponent, IGridRowFloatingTitle, IGridSeparator } from '../../typings/interfaces'
 import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { TPrimaryKey } from '../../typings/types'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { CellComponent } from '../cell/cell.component'
+import { RowFloatingTitleTSComponent } from './row-floating-title/row-floating-title.ts-component'
 
 @Component({
   selector: 'data-grid-row',
@@ -43,13 +46,23 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   public selectedCells: boolean[]    = []
   public icon                        = new BehaviorSubject<EGridIcon | null>(null)
 
+  private _floatingTitle: IGridRowFloatingTitle | null = null
+  private _floatingTitleComponent?: RowFloatingTitleTSComponent
+
+  private _lastSeenNestedLevel?: number
+
   constructor(
     private readonly gridController: GridControllerService,
     private readonly events        : GridEventsService,
     private readonly cd            : ChangeDetectorRef,
-    private readonly elRef         : ElementRef<HTMLElement>
+    private readonly elRef         : ElementRef<HTMLElement>,
+    private readonly loc           : LocalizationService
   ) {
     super()
+  }
+
+  public localize(key: string) {
+    return this.loc.getLocalizedString(key)
   }
 
   ngOnInit(): void {
@@ -61,10 +74,51 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    
     const oldKey = changes['gridRow']?.previousValue?.rowKey
+    
     if (oldKey) this.gridController.row.RowComponents.changed(this, oldKey, this.cells?.toArray() ?? [])
     else        this.gridController.row.RowComponents.added(this)
+    
     this.cells?.forEach(c => c.detectChanges())
+    
+    const nestedLevel = this.gridRow.metadata.get<number>(EMetadataType.NestingLevel) ?? this.gridController.dataSource.leafLevel
+    
+    if (this._lastSeenNestedLevel !== nestedLevel) {
+      this._lastSeenNestedLevel = nestedLevel
+      // remove classes starting with 'level-'
+      const classes = this.element.classList
+      for (let i = 0; i < classes.length; i++) {
+        if (classes[i].startsWith('level-')) {
+          classes.remove(classes[i])
+          i--
+        }
+      }
+      this.element.classList.add(`level-${nestedLevel}`)
+    }
+    
+    // Manage the floating title component
+    if (this.gridRow.floatingTitle !== this._floatingTitle) {
+      this._floatingTitle = this.gridRow.floatingTitle
+      if (this._floatingTitle === null) {
+        // destroy the component
+        if (this._floatingTitleComponent) {
+          this._floatingTitleComponent.destroy()
+          this._floatingTitleComponent = undefined
+        }
+      } else {
+        // create the component if it doesn't exist
+        if (!this._floatingTitleComponent) {
+          this._floatingTitleComponent = new RowFloatingTitleTSComponent(this._floatingTitle)
+          this._floatingTitleComponent.attachTo(this.element)
+        } else {
+          // update the component
+          this._floatingTitleComponent.next(this._floatingTitle)
+        }
+      }
+    }
+
+    this.element.classList.toggle('title-row', this.gridRow.floatingTitle !== null)
   }
 
   @HostListener('mouseenter')
@@ -74,8 +128,8 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   public cellColumnKey = (i: number) => this.columns[i]
   public toggleClass   = (className: string, on: boolean) => this.elRef.nativeElement.classList.toggle(className, on)
   public detectChanges = () => {
+    this.cells?.forEach(c => c.detectChanges())
     this._setColumns()
-    this.cd.detectChanges()
   }
   
   public get rowKey()           : TPrimaryKey          { return this.gridRow.rowKey }
@@ -88,6 +142,7 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
   private _setColumns(): void {
     this.columns.length = 0
     this.columns.push(...this.gridController.dataSource.columns)
+    this.cd.detectChanges()
   }
 
 }

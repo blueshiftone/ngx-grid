@@ -9,6 +9,6 @@
     [viewport]="viewport">
     <div class="txt grid-name"><lib-localized-text>{{ name }}</lib-localized-text></div>
     <div class="greedy"></div>
-    <div class="txt records-count" *ngIf="rows.length > 0">{{ rows.length | number }} <lib-localized-text>locRecords</lib-localized-text></div>
+    <div class="txt records-count" *ngIf="underlyingRowCount > 0">{{ underlyingRowCount | number }} <lib-localized-text>locRecords</lib-localized-text></div>
   </div>
 </div>

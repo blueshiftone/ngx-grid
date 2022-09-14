@@ -39,6 +39,58 @@
       border-bottom: 2px solid var(--primary-color-vivid);
     }
   }
+
+  &.level-1 {
+    ::ng-deep {
+
+      .row-thumb+.cell,
+      lib-row-floating-title {
+        padding-left: 15px;
+      }
+    }
+  }
+
+  &.level-2 {
+    ::ng-deep {
+
+      .row-thumb+.cell,
+      lib-row-floating-title {
+        padding-left: 30px;
+      }
+    }
+  }
+
+  &.title-row {
+    font-weight: 500;
+
+    &:before {
+      content: " ";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: var(--purple-comp);
+      pointer-events: none;
+    }
+
+    &.level-2:before {
+      opacity: 0.4;
+    }
+
+    ::ng-deep {
+      .row-thumb+.cell {
+        >* {
+          opacity: 0;
+        }
+      }
+
+      .cell {
+        border-right-color: transparent;
+      }
+    }
+  }
+
 }
 
 .cell {
@@ -163,6 +215,15 @@
     }
   }
 
+  &.hide-value {
+    ::ng-deep {
+      > * {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
   &.is-invalid:not(.validation-id-IsRequired) {
     &:after {
       opacity: 0.4;
@@ -177,7 +238,7 @@
     }
   }
 
-  &.is-invalid.validation-id-IsRequired.is-editable {
+  &.is-invalid.validation-id-IsRequired.is-editable:not(.hide-value) {
     ::ng-deep {
       .is-required-asterix {
         display: block;

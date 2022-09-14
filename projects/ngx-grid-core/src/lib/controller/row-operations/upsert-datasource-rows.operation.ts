@@ -11,7 +11,7 @@ export class UpsertDatasourceRows extends Operation {
     for (const row of rows) {
       const existing = this.rowOperations.GetRow.run(row.rowKey) !== undefined
       if (!existing) {
-        this.dataSource.upsertRows(row)
+        this.dataSource.insertNewRows(row)
       } else {
         for (const item of row.valuesArray) {
           const coords = new GridCellCoordinates(row.rowKey, item.columnKey)

@@ -277,7 +277,7 @@ export class GridSelectionRange implements IGridSelectionRange {
   }
 
   private get _visibleRows(): IGridRow[] {
-    return this._source?.rows ?? []
+    return this._source?.rows.latestValue ?? []
   }
 
   private get _source() {

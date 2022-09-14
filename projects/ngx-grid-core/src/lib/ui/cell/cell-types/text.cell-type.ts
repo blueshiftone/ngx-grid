@@ -2,7 +2,6 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
-import { EMetadataType } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
@@ -28,8 +27,6 @@ export class TextCellType extends BaseCellType {
   public get editableNode() { return this._editableNode || this._generateEditableNode() }
 
   public override receiveValue(value: any = this.value): void {
-    const hideValue = this.gridController.cell.GetCellMeta.run(this.parentCell.coordinates).metadata.get<boolean>(EMetadataType.HideValue)
-    if (hideValue) value = null
     super.receiveValue(value)
     if (!this._displayNode) return;
     this._displayNode.innerText = value

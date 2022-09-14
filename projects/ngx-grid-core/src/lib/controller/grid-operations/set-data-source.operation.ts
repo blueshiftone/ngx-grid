@@ -28,7 +28,7 @@ export class SetDataSource extends Operation {
       startWith(null),
       pairwise()).subscribe(e => {
         const [ prevRows, nextRows ] = e
-        if (!prevRows?.length && nextRows?.length) {
+        if (!prevRows?.latestValue?.length && nextRows?.latestValue?.length) {
           this.gridEvents.GridInitialisedEvent.emit(false)
         }
       this.gridEvents.GridDataChangedEvent.emit(source)
@@ -59,6 +59,7 @@ export class SetDataSource extends Operation {
   }
 
   public override onDestroy = () => {
+    this.dataSource.onDestroy()
     this._subs.forEach(s => s.unsubscribe())
     this._subs.clear()
   }
