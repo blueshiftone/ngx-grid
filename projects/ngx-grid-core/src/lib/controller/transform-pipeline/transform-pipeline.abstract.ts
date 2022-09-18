@@ -35,7 +35,7 @@ export abstract class TransformPipeline<T> {
     this._reProcess
       .pipe(takeUntil(this.destroyed))
       .subscribe(async transformation => {
-        
+
         // if there is a current transformation running, reject it
         if (this._rejectCurrentTransform) {
           this._rejectCurrentTransform('Superceded by new transformation')

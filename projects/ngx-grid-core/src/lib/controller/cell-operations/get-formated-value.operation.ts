@@ -14,6 +14,7 @@ export class GetFormattedValue extends Operation {
     if (value === null || value === undefined) return ''
     const cellType = this.cellOperations.GetCellType.run(coords)
     switch (cellType.name) {
+      case 'NumberRange':
       case 'Number':
         let formatString = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
         if (formatString) {
@@ -24,11 +25,17 @@ export class GetFormattedValue extends Operation {
             // interpreting spacer chars as part of the format string when outputting plaintext
             formatString = formatString.replace(/_[^_]/g, '')
           }
+          let numbers: number[] = []
+          if (Array.isArray(value)) {
+            numbers = value
+          } else {
+            numbers.push(value)
+          }
           const formatter = NumberFormatParser.getParser(formatString)
           if (returnHtml) {
-            return formatter.getHtml(value)
+            return numbers.map(n => formatter.getHtml(n)).join(' — ')
           } else {
-            return formatter.getPlainText(value)
+            return numbers.map(n => formatter.getPlainText(n)).join(' — ')
           }
         }
         break

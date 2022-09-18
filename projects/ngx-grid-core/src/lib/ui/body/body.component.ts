@@ -1,7 +1,7 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
 import { concat, interval } from 'rxjs'
-import { distinctUntilChanged, switchMap, take } from 'rxjs/operators'
+import { distinctUntilChanged, map, switchMap, take } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
@@ -72,6 +72,10 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
 
     this.gridController.grid.attachViewport(this.viewPort, this.autoScrollConfigs)
     this.gridController.selection.attachGridBody(this.viewPort)
+
+    this.addSubscription(this.gridController.dataSource.rows.output.pipe(
+      map(rows => rows[0]?.floatingTitle?.isGroup === true),
+      distinctUntilChanged()).subscribe(hasGroups => this.viewPort.elementRef.nativeElement.classList.toggle('has-groups', hasGroups)))
 
   }
 

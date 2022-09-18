@@ -26,5 +26,7 @@ export interface IGridRow {
 export interface IGridRowFloatingTitle {
   title: BehaviorSubject<string>
   icon : BehaviorSubject<string>
+  isGroup?: boolean
+  numGroupedRows?: number
   action: () => void
 }

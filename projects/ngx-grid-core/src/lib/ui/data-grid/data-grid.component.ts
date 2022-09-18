@@ -10,6 +10,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core'
 import { fromEvent, merge, Subject } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators'
@@ -58,9 +59,13 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
 
   public keyboard = this.gridController.keyboardTriggers
 
+  public cornerActions = this.events.factory.GridTopLeftCornerActionsChangedEvent.on()
+
   private _nextFilterString = new Subject<string>()
   private _preselectedRowsChanged = new Subject<void>()
   private _preselectedRowsUpdated = new Subject<void>()
+
+  @ViewChild('rowThumb', { static: true }) private rowThumb!: ElementRef<HTMLDivElement>
 
   constructor(
     @Inject(WINDOW) private _window: Window,
@@ -123,6 +128,10 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     }))
 
     this.addSubscription(fromEvent<MouseEvent>(this._el, 'click').subscribe(_ => this.gridController.grid.SetGridFocus.run()))
+
+    this.addSubscription(this.gridController.dataSource.rows.output.pipe(
+      map(rows => rows[0]?.floatingTitle?.isGroup === true),
+      distinctUntilChanged()).subscribe(hasGroups => this.rowThumb.nativeElement.classList.toggle('has-groups', hasGroups)))
 
   }
 

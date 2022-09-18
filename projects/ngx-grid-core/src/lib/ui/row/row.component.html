@@ -1,6 +1,12 @@
 <div class="cell row-thumb display">
-  <data-grid-row-icon [icon]="icon"></data-grid-row-icon>
-  <data-grid-separator *ngFor="let s of separators" [separator]="s" axis="x"></data-grid-separator>
+  <div class="level-line" [ngClass]="{ last: isLastInGroup, first: isFirstInGroup }" *ngIf="isLeafRow"></div>
+  <div class="level-cap" *ngIf="isLastInGroup"></div>
+  <div class="wrapper">
+    <div class="main">
+      <data-grid-row-icon [icon]="icon"></data-grid-row-icon>
+      <data-grid-separator *ngFor="let s of separators" [separator]="s" axis="x"></data-grid-separator>
+    </div>
+  </div>
 </div>
 <data-grid-cell class="cell" #cells class="cell" *ngFor="let c of columns; trackBy:cellColumnKey" [column]="c"
   [rowComponent]="rowComponent"></data-grid-cell>

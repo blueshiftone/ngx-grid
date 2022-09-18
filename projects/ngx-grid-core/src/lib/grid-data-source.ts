@@ -56,8 +56,6 @@ export class GridDataSource implements IGridDataSource {
   public onChanges = this._changesStream.pipe(debounceTime(1))
 
   constructor(input?: Partial<IGridDataSource>) {
-    this.initialTransform.value = this._underlyingRows
-    this.rows.addTransformation(this.initialTransform)
 
     // We can't use Object.assign for rows and columns because these properties are getters
     if (input?.rows) {
@@ -71,6 +69,9 @@ export class GridDataSource implements IGridDataSource {
     if (input) Object.assign(this, input)
     
     for (const col of this.columns) this._colMap.set(col.columnKey, col)
+
+    this.initialTransform.value = this._underlyingRows
+    this.rows.addTransformation(this.initialTransform)
 
   }
 
@@ -258,11 +259,9 @@ export class GridDataSource implements IGridDataSource {
     this._changesStream.next()
   }
 
-  public clearData(): void {
+  public clearRows(): void {
     this._rowMap.clear()
-    this._colMap.clear()
     this.rows.reset()
-    this.columns.length = 0
     this._changesStream.next()
   }
 

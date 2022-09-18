@@ -11,6 +11,7 @@ import {
   SimpleChanges,
   ViewChildren,
 } from '@angular/core'
+import { MatIconRegistry } from '@angular/material/icon'
 import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -51,12 +52,30 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
 
   private _lastSeenNestedLevel?: number
 
+  public get gridHasGroups() {
+    // we're making an assumption here that if the first row is a group header, then the grid has groups
+    return this.gridController.dataSource.rows.latestValue[0]?.floatingTitle?.isGroup === true
+  }
+
+  public get isLeafRow() { 
+    return this.gridHasGroups && this.gridRow.floatingTitle === null
+  }
+
+  public get isLastInGroup() {
+    return this.isLeafRow && this.gridController.dataSource.rows.latestValue[this.index+1]?.floatingTitle !== null
+  }
+
+  public get isFirstInGroup() {
+    return this.isLeafRow && this.gridController.dataSource.rows.latestValue[this.index-1]?.floatingTitle !== null
+  }
+
   constructor(
     private readonly gridController: GridControllerService,
     private readonly events        : GridEventsService,
     private readonly cd            : ChangeDetectorRef,
     private readonly elRef         : ElementRef<HTMLElement>,
-    private readonly loc           : LocalizationService
+    private readonly loc           : LocalizationService,
+    private readonly iconRegistry  : MatIconRegistry,
   ) {
     super()
   }
@@ -109,7 +128,7 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
       } else {
         // create the component if it doesn't exist
         if (!this._floatingTitleComponent) {
-          this._floatingTitleComponent = new RowFloatingTitleTSComponent(this._floatingTitle)
+          this._floatingTitleComponent = new RowFloatingTitleTSComponent(this._floatingTitle, this.iconRegistry)
           this._floatingTitleComponent.attachTo(this.element)
         } else {
           // update the component

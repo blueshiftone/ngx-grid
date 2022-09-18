@@ -75,6 +75,10 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         colWidths?.columns.forEach(item => this.columnWidths.value[item.columnKey] = item.width)
         this.columnWidths.next(this.columnWidths.value)
       }))
+
+    this.addSubscription(this.gridController.dataSource.rows.output.pipe(
+      map(rows => rows[0]?.floatingTitle?.isGroup === true),
+      distinctUntilChanged()).subscribe(hasGroups => this.elRef.nativeElement.classList.toggle('has-groups', hasGroups)))
   }
 
   public startResize = () => this._isResizing  = true

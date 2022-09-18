@@ -10,7 +10,7 @@ export class GetRelatedDataPreviewString extends Operation {
 
   public run(gridID: string, rowKey: TPrimaryKey): string {
     const grid = this.gridOperations.relatedDataMap.get(gridID)
-    const row = grid?.rowMap.get(rowKey)
+    const row = grid?.source.getRow(rowKey)
     if (!grid || !row) return (rowKey ?? '').toString()
     let outputString = grid.source.rowTemplateString
     for (const col of grid.source.columns) {

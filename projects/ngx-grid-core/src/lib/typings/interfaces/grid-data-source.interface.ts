@@ -37,6 +37,6 @@ export interface IGridDataSource extends IDestroyable {
   insertNewRows        (index: number, ...rows: IGridRow[])      : void
   removeRows           (...rows: (TPrimaryKey | IGridRow)[])     : void
   createRowFromObject  (rowObj: {[key: TColumnKey]: any})        : IGridRow
-  clearData            ()                                        : void
+  clearRows            ()                                        : void
   changeRowPrimaryKey  (oldKey: TPrimaryKey, newKey: TPrimaryKey): void
 }
