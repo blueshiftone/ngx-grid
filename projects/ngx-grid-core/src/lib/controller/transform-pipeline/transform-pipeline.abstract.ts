@@ -102,11 +102,11 @@ export abstract class TransformPipeline<T> {
     next?.setPrev(prev)
     transformation.destroyed.next()
     if (this._head === transformation) {
-      this._head = prev
-      if (prev) this.output.next(prev.value)
-      else this.output.next([])
+      this._head = next
+    } else if (this._tail === transformation) {
+      this._tail = prev
     }
-    else if (next) this._reProcess.next(next)
+    if (next) this._reProcess.next(next)
   }
 
   public reset (data: T[] = []) {
