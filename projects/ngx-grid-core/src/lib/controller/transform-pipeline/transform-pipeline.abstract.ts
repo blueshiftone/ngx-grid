@@ -103,7 +103,9 @@ export abstract class TransformPipeline<T> {
     transformation.destroyed.next()
     if (this._head === transformation) {
       this._head = next
-    } else if (this._tail === transformation) {
+    }
+    
+    if (this._tail === transformation) {
       this._tail = prev
     }
     if (next) this._reProcess.next(next)
