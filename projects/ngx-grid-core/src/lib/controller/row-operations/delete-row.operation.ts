@@ -1,5 +1,5 @@
 import { ERowStatus } from '../../typings/enums/row-status.enum'
-import { IGridRow, IGridRowComponent, IRowOperationFactory } from '../../typings/interfaces'
+import { IGridRowComponent, IRowOperationFactory } from '../../typings/interfaces'
 import { TPrimaryKey } from '../../typings/types'
 import { WithDefaultTrue } from '../../utils/with-default'
 import { BufferOperation } from '../buffer-operation'
@@ -21,32 +21,12 @@ export class DeleteRow extends Operation {
     for (const arg of args) {
       const [rowKey, options] = arg
 
-      const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
-      const canDeleteRow = this.rowOperations.GetRowCanDelete.run(rowMeta ?? rowKey)
+      const row = this.dataSource.getRow(rowKey)
+      const canDeleteRow = this.rowOperations.GetRowCanDelete.run(row ?? rowKey)
 
-      if (!canDeleteRow && rowMeta?.isNew !== true) continue
+      if (!canDeleteRow && row?.isNew !== true) continue
       
-      if (rowMeta?.isNew === true || options.forceRowRemoval === true) {
-
-        const filteredRows          = this._filteredRows
-        const sortedRows            = this._sortedRows
-        let   ar: null | IGridRow[] = null
-
-        if   (filteredRows ?? null !== null)  ar = filteredRows
-        else if (sortedRows ?? null !== null) ar = sortedRows
-
-        const row = this.rowOperations.GetRow.run(rowKey)
-
-        if (ar && row) {
-          const index = ar?.indexOf(row)
-          ar.splice(index, 1)
-          if (typeof filteredRows !== 'undefined') this.gridEvents.RowsFilteredEvent.emit([...ar])
-          else {
-            const sorted = this.gridEvents.ColumnSortByChangedEvent.state!
-            sorted.rows = [...ar]
-            this.gridEvents.ColumnSortByChangedEvent.emit(sorted)
-          }
-        }
+      if (row?.isNew === true || options.forceRowRemoval === true) {
 
         promises.add(this.rowOperations.RemoveRow.buffer(rowKey))
 
@@ -69,15 +49,6 @@ export class DeleteRow extends Operation {
     this.gridEvents.GridWasModifiedEvent.emit(true)
 
   }
-
-  private get _sortedRows() {
-    return this.gridEvents.ColumnSortByChangedEvent.state?.rows || null
-  }
-
-  private get _filteredRows() {
-    return this.gridEvents.RowsFilteredEvent.state || null
-  }
-
 }
 
 export interface IDeleteRowOperationOptions {

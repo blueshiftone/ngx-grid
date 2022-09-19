@@ -47,7 +47,7 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
 
   @Output() public selected = new EventEmitter<IGridRecordSelectedEvent>()
 
-  public rows: IGridRow[] = []
+  public get rows() { return this.gridController.dataSource.rows.output }
 
   private _nextFilterString = new Subject<string>()
   private _sourceChanged = new  Subject<void>()
@@ -65,7 +65,6 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
       this.events.factory.ColumnSortByChangedEvent.on(),
       this._sourceChanged
     ).subscribe(_ => {
-      this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
       this.cd.detectChanges()
       this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))

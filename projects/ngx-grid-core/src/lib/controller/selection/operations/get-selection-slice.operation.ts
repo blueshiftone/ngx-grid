@@ -10,7 +10,7 @@ export class GetSelectionSlice {
     const columns   = this._getColumns()
     if (!selection || !columns || !columns.length) return null
     const utils = selection.globalUtils
-    const rows  = this.controller.gridController.row.GetAllRows.filteredRows()
+    const rows  = this.controller.gridController.dataSource.rows.latestValue
     const output: IGridSelectionSlice = {
       selection     : selection,
       cells         : [],

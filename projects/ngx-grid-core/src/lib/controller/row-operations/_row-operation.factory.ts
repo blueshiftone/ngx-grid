@@ -1,5 +1,5 @@
 import * as RowOperations from '.'
-import { IGridRowMeta } from '../../typings/interfaces'
+import { IGridRow } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { TInstanceTypeProps, TPrimaryKey } from '../../typings/types'
 import { GridControllerService } from '../grid-controller.service'
@@ -8,7 +8,7 @@ export type TRowOperations = TInstanceTypeProps<typeof RowOperations>
 
 export class RowOperationFactory {
 
-  public readonly dirtyRowsMap = new Map<TPrimaryKey, IGridRowMeta>()
+  public readonly dirtyRowsMap = new Map<TPrimaryKey, IGridRow>()
   
   public readonly operations: TRowOperations
   public readonly factory   : IRowOperationFactory

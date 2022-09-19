@@ -35,12 +35,12 @@ export class CheckRowIcon extends Operation {
       return isSelected
     },
     deletedRow: (row: IGridRowComponent) => {
-      const isDeletedRow = this.rowOperations.GetRowMeta.run(row.rowKey)?.isDeleted === true
+      const isDeletedRow = this.dataSource.getRow(row.rowKey)?.isDeleted === true
       if (isDeletedRow) row.icon.next(EGridIcon.Cross)
       return isDeletedRow
     },
     newRow: (row: IGridRowComponent) => {
-      const isNewRow = this.rowOperations.GetRowMeta.run(row.rowKey)?.isNew === true
+      const isNewRow = this.dataSource.getRow(row.rowKey)?.isNew === true
       if (isNewRow) row.icon.next(EGridIcon.Asterisk)
       return isNewRow
     },

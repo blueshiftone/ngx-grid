@@ -23,13 +23,9 @@ export class ChangePrimaryKey extends Operation {
       rowOps.dirtyRowsMap.set(newRowKey, dirtyRow)
     }
 
-    // Update row meta map
-    const rowMeta = rowOps.GetRowMeta.run(oldRowKey)
-    if (rowMeta) { 
-      rowMeta.rowKey = newRowKey
-      rowOps.RemoveRowMeta.run(oldRowKey)
-      rowOps.SetRowMeta.run(newRowKey, rowMeta)
-    }
+    // Update rowKey
+    const row = this.dataSource.getRow(oldRowKey)
+    if (row) row.rowKey = newRowKey
 
     // Update cell meta maps and cells
     for (const col of this.dataSource.columns) {

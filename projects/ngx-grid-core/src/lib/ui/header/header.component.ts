@@ -75,6 +75,10 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         colWidths?.columns.forEach(item => this.columnWidths.value[item.columnKey] = item.width)
         this.columnWidths.next(this.columnWidths.value)
       }))
+
+    this.addSubscription(this.gridController.dataSource.rows.output.pipe(
+      map(rows => rows[0]?.floatingTitle?.isGroup === true),
+      distinctUntilChanged()).subscribe(hasGroups => this.elRef.nativeElement.classList.toggle('has-groups', hasGroups)))
   }
 
   public startResize = () => this._isResizing  = true
@@ -128,7 +132,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   }
 
   private currentSortOrder(column: IGridColumn) {
-    return this._gridEvents.ColumnSortByChangedEvent.state?.sortConfig.get(column.columnKey)?.direction ?? ESortDirection.Natural
+    return this._gridEvents.ColumnSortByChangedEvent.state?.get(column.columnKey)?.direction ?? ESortDirection.Natural
   }
 
   public columnHasSort(column: IGridColumn) {

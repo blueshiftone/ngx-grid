@@ -9,13 +9,17 @@ export class SetCellValidationDialog extends Operation {
   
   constructor(factory: ICellOperationFactory) { super(factory.gridController) }
   
-  public run(event: IGridCellValidationState,) {
+  public run(event: IGridCellValidationState) {
 
     const { cellCoordinates, validationResults, nextIsValid } = event
 
     const cellComponent     = this.cellOperations.CellComponents.findWithCoords(cellCoordinates)
     const focusedCell       = this.cellOperations.GetFocusedCell.run()
     const hasCellComponent  = typeof cellComponent?.typeComponent !== 'undefined'
+
+    const canEdit = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
+
+    if (!canEdit) return
 
     if (!nextIsValid && hasCellComponent) {
 

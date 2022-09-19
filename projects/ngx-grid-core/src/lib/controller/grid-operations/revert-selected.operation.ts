@@ -1,4 +1,4 @@
-import { IGridRowMeta } from '../../typings/interfaces'
+import { IGridRow } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { Operation } from '../operation.abstract'
 
@@ -9,7 +9,7 @@ export class RevertSelected extends Operation {
   public run() {
     const slice = this._selectionSlice
     if (slice) {
-      const rows = slice.rowKeys.map(key => this.rowOperations.GetRowMeta.run(key)).filter(meta => typeof meta !== 'undefined') as IGridRowMeta[]
+      const rows = slice.rowKeys.map(key => this.dataSource.getRow(key)).filter(meta => typeof meta !== 'undefined') as IGridRow[]
       this.gridOperations.RevertRecords.run(rows)
     }
   }

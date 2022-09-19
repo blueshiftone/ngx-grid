@@ -11,7 +11,7 @@ export class FilterRelatedDataRows extends Operation {
     const grid = this.gridOperations.relatedDataMap.get(gridID)
     const rows: IGridRow[] = []
     for (const primaryKey of rowKeys) {
-      const row = grid?.rowMap.get(primaryKey)
+      const row = grid?.source.getRow(primaryKey)
       if (typeof row !== 'undefined') rows.push(row)
     }
     return rows

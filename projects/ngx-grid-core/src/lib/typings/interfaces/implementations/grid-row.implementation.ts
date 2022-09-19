@@ -1,17 +1,25 @@
-import { GridCellCoordinates, GridCellValue } from '.'
-import { IGridCellValue } from '..'
+import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from '.'
+import { IGridCellValue, IGridMetadataCollection, IGridSeparator } from '..'
+import { EMetadataType, ERowStatus } from '../../enums'
 import { TColumnKey, TPrimaryKey, TRowValues } from '../../types'
-import { IGridRow } from '../grid-row.interface'
+import { IGridRow, IGridRowFloatingTitle } from '../grid-row.interface'
 
 export class GridRow implements IGridRow {
 
   public values: TRowValues
 
+  public separators?  : IGridSeparator[] | undefined
+  public status       : ERowStatus                   = ERowStatus.Committed
+  public metadata     : IGridMetadataCollection      = new GridMetadataCollection();
+  public floatingTitle: IGridRowFloatingTitle | null = null
+
   private _primaryKeyColumn: TColumnKey
 
-  constructor(primaryKeyColumn: TColumnKey, values: TRowValues) {
+  constructor(primaryKeyColumn: TColumnKey, values: TRowValues, status = ERowStatus.Committed, metadata?: IGridMetadataCollection) {
     this._primaryKeyColumn = primaryKeyColumn
     this.values            = values
+    this.status            = status
+    this.metadata          = metadata ?? this.metadata
   }
 
   public get rowKey(): TPrimaryKey {
@@ -36,10 +44,24 @@ export class GridRow implements IGridRow {
     this.values.get(columnKey)!.value = value
   }
 
+  public get isDirty()  : boolean { return this.status !== ERowStatus.Committed }
+  public get isNew()    : boolean { return this.status === ERowStatus.New }
+  public get isDeleted(): boolean { return this.status === ERowStatus.Deleted }
+  
+  public get canDelete(): boolean | null {
+    return this.metadata.get<boolean>(EMetadataType.CanDelete)
+  }
+
+  public get canUpdate(): boolean | null {
+    return this.metadata.get<boolean>(EMetadataType.CanUpdate)
+  }
+
   public clone(): IGridRow {
     return new GridRow(
       this._primaryKeyColumn,
-      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => ([itm.columnKey, itm.value.clone()])))
+      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => ([itm.columnKey, itm.value.clone()]))),
+      this.status,
+      new GridMetadataCollection(this.metadata.items)
     )
   }
 

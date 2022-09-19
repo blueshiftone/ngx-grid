@@ -19,7 +19,7 @@ export class UpdateRelatedDataMap extends Operation {
       const [gridID, source] = entry
       const rowMap: Map<TPrimaryKey, IGridRow> = new Map()
       
-      source.rows.forEach(row => rowMap.set(row.rowKey, row))
+      source.rows.firstValue.forEach(row => rowMap.set(row.rowKey, row))
       this.gridOperations.relatedDataMap.set(gridID, { source, rowMap })
 
     }

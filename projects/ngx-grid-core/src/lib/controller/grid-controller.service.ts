@@ -35,6 +35,8 @@ export class GridControllerService {
   public dataSource: IGridDataSource = new GridDataSource()
 
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
+
+  public defaultDateFormat = 'yyyy/MM/dd'
   
   private _subs : Set<Subscription> = new Set()
 
@@ -76,7 +78,9 @@ export class GridControllerService {
 
     // Column sort changed
     addSubscription(gridEvents.ColumnSortByChangedEvent.on().subscribe(_ => {
-      this.row.FilterRows.run()
+      if (gridEvents.GridFilterStringChangedEvent.state) {
+        this.row.FilterRows.run()
+      }
     }))
 
     // Column width changed

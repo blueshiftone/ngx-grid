@@ -25,8 +25,8 @@ export class SetCellValue extends Operation {
     const parseResults = CELL_VALUE_PARSERS[type].validate(value, this.cellOperations.gridController, coordinates)
 
     if (maskNewIds) {
-      const rowMeta = this.rowOperations.GetRowMeta.run(rowKey)
-      if (primaryColumnKey === columnKey && rowMeta?.isNew) {
+      const row = this.dataSource.getRow(rowKey)
+      if (primaryColumnKey === columnKey && row?.isNew) {
         parseResults.isValid = true
         parseResults.isInvalid = false
         parseResults.transformedValue = value

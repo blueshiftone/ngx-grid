@@ -111,7 +111,7 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
     CellActionButtonComponent,
     FileGridCellSelectedListComponent,
     LoadingDotsComponent,
-    BottomPlusScrollbarDirective,
+    BottomPlusScrollbarDirective
   ],
   imports: [
     CommonModule,

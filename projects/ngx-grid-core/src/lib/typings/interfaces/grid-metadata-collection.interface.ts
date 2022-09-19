@@ -5,6 +5,7 @@ export interface IGridMetadataCollection {
   get<T>(type: EMetadataType): T | null
   set<T>(type: EMetadataType, value: T): void
   clear(type?: EMetadataType): void
+  extend(meta: IGridMetadataCollection): void
   getAllMetaTypes(): EMetadataType[]
   items: IGridMetadataInfo[]
 }

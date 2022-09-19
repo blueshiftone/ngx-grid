@@ -1,7 +1,7 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
-import { concat, interval, merge } from 'rxjs'
-import { take } from 'rxjs/operators'
+import { concat, interval } from 'rxjs'
+import { distinctUntilChanged, map, switchMap, take } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
@@ -41,7 +41,7 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
       interval(10) .pipe(),
     )
   }
-  
+
   constructor(
     private readonly gridController: GridControllerService,
     private readonly events        : GridEventsService,
@@ -51,22 +51,40 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
 
   ngOnInit(): void {
 
-    this.addSubscription(merge(
-      this.events.factory.GridDataChangedEvent.onWithInitialValue(),
-      this.events.factory.ColumnSortByChangedEvent.on(),
-    ).subscribe(_ => {
-      this.rows = [...this.gridController.row.GetAllRows.filteredRows()]
-      this.cd.detectChanges()
-      this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
-    }))
+    const dataSourceChanges = this.events.factory.GridDataChangedEvent.on().pipe(distinctUntilChanged())
+
+    let isFirstRows = true
+
+    this.addSubscription(dataSourceChanges
+      .pipe(switchMap(source => source.rows.output))
+      .subscribe(rows => {
+          if (!rows.length && !isFirstRows) {
+            return
+          }
+          if (isFirstRows) {
+            // if this is the first time we've seen rows
+            // then reset grid initialisation state so column widths are calculated
+            this.events.factory.GridInitialisedEvent.emit(false)
+          }
+          isFirstRows = false
+          this.rows = rows
+          this.cd.detectChanges()}))
 
     this.gridController.grid.attachViewport(this.viewPort, this.autoScrollConfigs)
     this.gridController.selection.attachGridBody(this.viewPort)
+
+    this.addSubscription(this.gridController.dataSource.rows.output.pipe(
+      map(rows => rows[0]?.floatingTitle?.isGroup === true),
+      distinctUntilChanged()).subscribe(hasGroups => this.viewPort.elementRef.nativeElement.classList.toggle('has-groups', hasGroups)))
 
   }
 
   public rowTrackBy = (_: number, row: IGridRow) => row.rowKey
 
   public getContextMenuItems = () => this.contextMenu.getSelectionContextMenuItems()
+
+  public get underlyingRowCount() {
+    return this.gridController.dataSource.rows.firstValue.length
+  }
 
 }

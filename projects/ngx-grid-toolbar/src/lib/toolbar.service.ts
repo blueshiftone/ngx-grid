@@ -5,7 +5,7 @@ import {
   GridControllerService,
   GridMultiCellEditService,
   IGridCellMeta,
-  IGridRowMeta,
+  IGridRow,
   IGridSelectionSlice,
   TColumnKey,
   TPrimaryKey,
@@ -35,7 +35,7 @@ export class ToolbarService {
     dropdown?: ElementRef<HTMLElement>,
   } = {}
 
-  public currentMeta: ISelectionMeta = this._getAllMetas()
+  public currentMeta: ISelection = this._getAllMetas()
 
   public cellCount   = 0
   public cellStr     = ''
@@ -118,9 +118,9 @@ export class ToolbarService {
     }
   }
 
-  private _getAllMetas(): ISelectionMeta {
+  private _getAllMetas(): ISelection {
 
-    const output: ISelectionMeta = {
+    const output: ISelection = {
       rows: [],
       cells: []
     }
@@ -133,7 +133,7 @@ export class ToolbarService {
     const columnKeys = this._getColumns()
 
     for (const rowKey of rowKeys) {
-      const rowMeta = controller.row.GetRowMeta.run(rowKey)
+      const rowMeta = controller.dataSource.getRow(rowKey)
       if (rowMeta) output.rows.push(rowMeta)
       for (const columnKey of columnKeys) {
         const cellMeta = controller.cell.GetCellMeta.run(new GridCellCoordinates(rowKey, columnKey))
@@ -149,12 +149,12 @@ export class ToolbarService {
   }
 
   private _getColumns(): TColumnKey[] {
-    return this.gridController?.column.GetColumns.run() ?? []
+    return this.gridController?.dataSource.columns.map(c => c.columnKey) ?? []
   }
 
 }
 
-export interface ISelectionMeta {
-  rows : IGridRowMeta[],
+export interface ISelection {
+  rows : IGridRow[],
   cells: IGridCellMeta[]
 }

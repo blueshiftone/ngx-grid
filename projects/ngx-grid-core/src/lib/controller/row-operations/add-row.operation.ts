@@ -26,7 +26,7 @@ export class AddRow extends Operation {
       const [row, atIndex] = arg
       rowKey = row.rowKey
 
-      this.dataSource.upsertRows(atIndex ?? -1, row)
+      this.dataSource.insertNewRows(atIndex ?? -1, row)
 
       buffers.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New))
       

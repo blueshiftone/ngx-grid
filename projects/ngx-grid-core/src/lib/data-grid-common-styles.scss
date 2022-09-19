@@ -1,3 +1,14 @@
+.has-groups, :host.has-groups {
+
+  .row {
+    ::ng-deep {
+      .row-thumb {
+        width: 54px;
+      }
+    }
+  }
+}
+
 .row {
   position: relative;
   display: block;
@@ -27,7 +38,7 @@
         left: -0.5px;
         bottom: -0.5px;
         pointer-events: none;
-        background-color: var(--highlight-color);
+        background-color: var(--highlight-color-10);
         border-right: 2px solid var(--primary-color-vivid);
       }
     }
@@ -35,9 +46,53 @@
 
   ::ng-deep {
     .col-selected {
-      background-color: var(--highlight-color);
+      background-color: var(--highlight-color-10);
       border-bottom: 2px solid var(--primary-color-vivid);
     }
+  }
+
+  &.title-row {
+    font-weight: 500;
+
+    &:before {
+      content: " ";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background-color: var(--app-bg-contrasted);
+      pointer-events: none;
+      opacity: 0.06;
+    }
+
+    ::ng-deep {
+      .row-thumb+.cell {
+        >* {
+          opacity: 0;
+        }
+      }
+
+      .cell:not(.row-thumb) {
+        border-right-color: transparent;
+      }
+    }
+  }
+
+}
+
+.row-thumb,
+.row.header .cell {
+  &:before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--app-bg-contrasted);
+    z-index: -1;
+    opacity: 0.102;
   }
 }
 
@@ -163,6 +218,15 @@
     }
   }
 
+  &.hide-value {
+    ::ng-deep {
+      >* {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
   &.is-invalid:not(.validation-id-IsRequired) {
     &:after {
       opacity: 0.4;
@@ -177,7 +241,7 @@
     }
   }
 
-  &.is-invalid.validation-id-IsRequired {
+  &.is-invalid.validation-id-IsRequired.is-editable:not(.hide-value) {
     ::ng-deep {
       .is-required-asterix {
         display: block;

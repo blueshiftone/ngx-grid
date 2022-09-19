@@ -65,7 +65,7 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
   private _updateData(val = this.cell.value): void {
 
     if (val === null) {
-      this._clearDataSource()
+      this._clearRows()
       this.cd.detectChanges()
       return
     }
@@ -74,17 +74,13 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
 
     const gridID = this._relatedGridID
     if (typeof gridID === 'undefined') return 
-    
-    const gridSource = this.gridController.grid.GetRelatedData.run(gridID)
-    if (typeof gridSource === 'undefined') return 
 
     val = val ?? []
 
     const primaryKeyValues = DistinctValues<any>(val)
     this.values = primaryKeyValues
 
-    this.dataSource.clearData()
-    this.dataSource.upsertRows(...this.gridController.grid.FilterRelatedDataRows.run(gridID, val))
+    this.dataSource.setRows(this.gridController.grid.FilterRelatedDataRows.run(gridID, val))
 
     this.cd.detectChanges()
 
@@ -97,7 +93,7 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
 
     if (!this.values.length) {
       this.updateValue(null)
-      this._clearDataSource()
+      this._clearRows()
       this.cd.detectChanges()
       return
     }
@@ -116,9 +112,9 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
     return Math.min(((this.values.length * 100) + 25), 429)
   }
 
-  private _clearDataSource(): void {
+  private _clearRows(): void {
     this.values = []
-    this.dataSource?.clearData()
+    this.dataSource?.clearRows()
   }
 
   private get _relatedGridID() {

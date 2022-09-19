@@ -8,7 +8,7 @@ export class GetRowStatus extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rowKey: TPrimaryKey): ERowStatus | undefined {
-    return this.rowOperations.GetRowMeta.run(rowKey)?.status
+    return this.dataSource.getRow(rowKey)?.status
   }
 
 }

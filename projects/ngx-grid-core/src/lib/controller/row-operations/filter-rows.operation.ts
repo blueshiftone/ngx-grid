@@ -1,32 +1,49 @@
+import { distinctUntilChanged } from 'rxjs'
+
 import { IGridRow } from '../../typings/interfaces'
 import { IRowOperationFactory } from '../../typings/interfaces/grid-row-operation-factory.interface'
 import { Operation } from '../operation.abstract'
+import { GenericTransformer } from '../transform-pipeline/generic-transformer'
+import { Transformer } from '../transform-pipeline/transformer.abstract'
 
 export class FilterRows extends Operation {
 
-  constructor(factory: IRowOperationFactory) { super(factory.gridController) }
+  private _keywords = ''
 
-  public run(filter?: string | null): IGridRow[] {
-    if (typeof filter === 'undefined') filter = this._getFilterString()
-    const rows = this.rowOperations.GetAllRows.allRows()
-    let filtered: IGridRow[] = []
-    if (filter) { 
-      filter = filter.toLowerCase()
-      filtered = rows.filter(row => row.valuesArray.map(v => v.value.value).join('').toLowerCase().includes(filter!))
-      this.gridEvents.RowsFilteredEvent.emit(filtered)
-    } else if (this._getRowsFilteredEvent() !== null && typeof this._getRowsFilteredEvent() !== 'undefined') {
-      this.gridEvents.RowsFilteredEvent.emit(null)
+  private _filterTransform?: Transformer<IGridRow> = this._createTransformation()
+
+  constructor(factory: IRowOperationFactory) {
+    super(factory.gridController)
+    this.gridEvents.GridDataChangedEvent.on()
+      .pipe(distinctUntilChanged())
+      .subscribe(source => {
+        this._filterTransform = this._createTransformation()
+        source.rows.addTransformation(this._filterTransform)
+      })
+  }
+
+  public run(filter: string | undefined = this.gridEvents.GridFilterStringChangedEvent.state) {
+    if (filter === undefined) {
+      filter = this.gridEvents.GridFilterStringChangedEvent.state ?? ''
     }
-    this.gridEvents.GridDataChangedEvent.emit(this.gridEvents.GridDataChangedEvent.state!)
-    return filtered
+    this._keywords = filter
+    this._filterTransform?.run()
   }
 
-  private _getFilterString(): string {
-    return this.gridEvents.GridFilterStringChangedEvent.state ?? ''
-  }
-
-  private _getRowsFilteredEvent() {
-    return this.gridEvents.RowsFilteredEvent.state
+  private _createTransformation() {
+    return new GenericTransformer('BasicGridRowFilter', async () => {
+      const rows = this._filterTransform?.prev()?.value ?? []
+      let filtered: IGridRow[] = []
+      if (this._keywords) {
+        this._keywords = this._keywords.toLowerCase()
+        // Todo: filter foreign key values
+        filtered = rows.filter(row => row.valuesArray.map(v => v.value.value).join('').toLowerCase().includes(this._keywords))
+        this.dataSource.setRows(filtered, true)
+        return filtered
+      } else {
+        return undefined
+      }
+    })
   }
 
 }

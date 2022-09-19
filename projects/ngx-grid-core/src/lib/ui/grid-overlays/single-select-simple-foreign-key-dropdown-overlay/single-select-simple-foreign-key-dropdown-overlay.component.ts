@@ -120,7 +120,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
   private _setOptions(): void {
     if (!this.dataSource) return
 
-    this._options = this.dataSource.rows.map(r => ({
+    this._options = this.dataSource.rows.latestValue.map(r => ({
       value: r.rowKey,
       label: this.gridController.grid.GetRelatedDataPreviewString.run(this.dataSource?.dataGridID ?? '', r.rowKey)
     }))

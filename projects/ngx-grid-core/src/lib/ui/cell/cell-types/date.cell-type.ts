@@ -5,7 +5,6 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { ECellMode, EPositionPreference } from '../../../typings/enums'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType } from '../../../typings/interfaces'
-import { ParseDate } from '../../../utils/parse-date-string'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class DateCellType extends BaseCellType {
@@ -55,13 +54,7 @@ export class DateCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
-    const date = ParseDate(this.value)
-    return (date && this.gridController.datePipe.transform(date, this._dateFormat)) || this.value
-  }
-
-  private get _dateFormat(): string {
-    const format = this.gridController.localize.getLocalizedString('dateFormat')
-    return format === 'dateFormat' ? 'yyyy/MM/dd' : format
+    return this.gridController.cell.GetFormattedValue.run(this.coordinates, this.value)
   }
 
 }
