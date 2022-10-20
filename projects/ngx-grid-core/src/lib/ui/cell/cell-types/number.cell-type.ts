@@ -53,7 +53,7 @@ export class NumberCellType extends BaseCellType {
     let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
     const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)
     if (formatString !== null) {
-      return this.gridController.cell.GetFormattedValue.run(this.coordinates, val)
+      return this.gridController.cell.GetFormattedValue.getHTML(this.coordinates, val)
     } else {
       return val.toString()
     }

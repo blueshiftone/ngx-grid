@@ -1,7 +1,7 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
 import { concat, interval } from 'rxjs'
-import { distinctUntilChanged, map, switchMap, take } from 'rxjs/operators'
+import { distinctUntilChanged, map, startWith, switchMap, take } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
@@ -56,17 +56,14 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
     let isFirstRows = true
 
     this.addSubscription(dataSourceChanges
-      .pipe(switchMap(source => source.rows.output))
+      .pipe(startWith(this.gridController.dataSource), switchMap(source => source.rows.output))
       .subscribe(rows => {
-          if (!rows.length && !isFirstRows) {
-            return
-          }
-          if (isFirstRows) {
+          if (isFirstRows && rows.length) {
             // if this is the first time we've seen rows
             // then reset grid initialisation state so column widths are calculated
             this.events.factory.GridInitialisedEvent.emit(false)
+            isFirstRows = false
           }
-          isFirstRows = false
           this.rows = rows
           this.cd.detectChanges()}))
 

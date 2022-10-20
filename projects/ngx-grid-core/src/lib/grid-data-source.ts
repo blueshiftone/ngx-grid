@@ -132,6 +132,19 @@ export class GridDataSource implements IGridDataSource {
     this._rowMap.set(row.rowKey, row)
   }
 
+  public upsertRows(rows: IGridRow[]) {
+    for (const row of rows) {
+      const existingRow = this.getRow(row.rowKey)
+      if (existingRow) {
+        for (const [key, val] of row.values) {
+          existingRow.setValue(key, val.value)
+        }
+      } else {
+        this.insertNewRows(row)
+      }
+    }
+  }
+
   public insertNewRows(rows: IGridRow[]): void
   public insertNewRows(...rows: IGridRow[]): void
   public insertNewRows(index: number, ...rows: IGridRow[]): void

@@ -1,4 +1,7 @@
-import { IGridColumn, IGridDataType, IGridMetadataCollection, IGridSeparator } from '..'
+import { ComponentType } from '@angular/cdk/portal'
+import { BehaviorSubject } from 'rxjs'
+
+import { EColumnIconVisibility, IGridColumn, IGridDataType, IGridMetadataCollection, IGridSeparator } from '..'
 import { TColumnKey } from '../../types'
 import { GridImplementationFactory } from './grid-implementation.factory'
 
@@ -9,6 +12,12 @@ export class GridColumn implements IGridColumn {
   public sortOrder? : number
   public separators?: IGridSeparator[]
   public metadata   : IGridMetadataCollection
+
+  public dropdownMenu?: {
+    icon: BehaviorSubject<string>
+    component: ComponentType<any>,
+    iconVisibility: BehaviorSubject<EColumnIconVisibility>
+  }
 
   constructor(public readonly columnKey: TColumnKey) {
     this.metadata = GridImplementationFactory.gridMetadataCollection()

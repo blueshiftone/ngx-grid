@@ -241,4 +241,9 @@ export class GridControllerService {
     })
   }
 
+  public getDateFormat() {
+    const format = this.localize.getLocalizedString('dateFormat')
+    return format === 'dateFormat' ? this.defaultDateFormat : format
+  }
+
 }

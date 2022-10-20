@@ -10,7 +10,7 @@ import {
   IGridRow,
   IGridSelectionRange,
 } from '..'
-import { IGridEventsFactory } from '../../../events/grid-events.service'
+import { GridControllerService } from '../../../controller/grid-controller.service'
 import { EGridStyle } from '../../../styles/grid-style.enum'
 import { GridStyle } from '../../../styles/grid-style.implementation'
 import { TColumnKey, TPrimaryKey, TRowValues } from '../../types'
@@ -25,10 +25,10 @@ export class GridImplementationFactory {
   public static gridColumn             = (columnKey: TColumnKey)                             : IGridColumn             => new GridColumn(columnKey)
   public static gridStyle              = (style: EGridStyle)                                 : IGridStyle              => new GridStyle(style)
 
-  public static gridSelectionRange = (gridEvents: IGridEventsFactory,
+  public static gridSelectionRange = (controller: GridControllerService,
     input?: Partial<IGridSelectionRange>,
     rowMap?: Map<TPrimaryKey, Set<TColumnKey>>,
     colMap?: Map<TColumnKey, Set<TPrimaryKey>>
-  ): IGridSelectionRange => new GridSelectionRange(gridEvents, input, rowMap, colMap)
+  ): IGridSelectionRange => new GridSelectionRange(controller, input, rowMap, colMap)
 
 }

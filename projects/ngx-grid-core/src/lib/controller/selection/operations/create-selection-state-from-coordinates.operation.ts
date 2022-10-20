@@ -11,7 +11,7 @@ export class CreateSelectionStateFromCoordinates {
     ctrlKey?: boolean,
     shiftKey?: boolean,
   ): IGridSelectionState {
-    const state = new GridSelectionStateFromCoordinates(...coordinates, this.controller.gridEvents, input, ctrlKey, shiftKey)
+    const state = new GridSelectionStateFromCoordinates(...coordinates, this.controller.gridController, input, ctrlKey, shiftKey)
     return state
   }
 

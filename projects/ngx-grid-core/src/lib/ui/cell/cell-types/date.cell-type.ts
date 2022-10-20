@@ -54,7 +54,7 @@ export class DateCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
-    return this.gridController.cell.GetFormattedValue.run(this.coordinates, this.value)
+    return this.gridController.cell.GetFormattedValue.getHTML(this.coordinates, this.value)
   }
 
 }

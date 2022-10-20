@@ -23,6 +23,6 @@ export class GetFinalSelection extends BaseSelectionOperation {
   }
 
   private get _selection()  : IGridSelectionRange { return this.controller.gridEvents.CellSelectionChangedEvent.state ?? this._newSelection() }
-  private _newSelection()   : IGridSelectionRange { return GridImplementationFactory.gridSelectionRange(this.controller.gridEvents) }
+  private _newSelection()   : IGridSelectionRange { return GridImplementationFactory.gridSelectionRange(this.controller.gridController) }
 
 }

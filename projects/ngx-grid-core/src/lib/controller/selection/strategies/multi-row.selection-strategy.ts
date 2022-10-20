@@ -113,7 +113,7 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
           new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey),
           new GridCellCoordinates(rowKey, utils.getLastColumn().columnKey)]
 
-        let nextState = new GridSelectionStateFromCoordinates(...coords, this.controller.gridEvents, {
+        let nextState = new GridSelectionStateFromCoordinates(...coords, this.controller.gridController, {
           initialSelection : this._getSelection(),
           focusedCell      : this._getFocusedCell(),
           previousSelection: this.controller.state.previousSelection
@@ -148,7 +148,7 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
   )
 
   private _getSelection(): IGridSelectionRange        {
-    return this._getPreviousSelection() ?? GridImplementationFactory.gridSelectionRange(this.controller.gridEvents)
+    return this._getPreviousSelection() ?? GridImplementationFactory.gridSelectionRange(this.controller.gridController)
   }
   
   private _getFocusedCell() { 

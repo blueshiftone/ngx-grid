@@ -29,6 +29,8 @@ export abstract class TransformPipeline<T> {
   private _newTransformers = new Set<Transformer<T>>()
   private _transformerAdded = new Subject<void>()
 
+  private _transformNames = new Set<string>()
+
   constructor() {
 
     // subscribe to the reprocess subject and reprocess the pipeline from the transformation that was touched onwards
@@ -91,6 +93,7 @@ export abstract class TransformPipeline<T> {
       .pipe(takeUntil(transformation.destroyed))
       .subscribe(() => this._reProcess.next(transformation))
 
+    this._transformNames.add(transformation.name)
     this._newTransformers.add(transformation)
     this._transformerAdded.next()
   }
@@ -108,7 +111,12 @@ export abstract class TransformPipeline<T> {
     if (this._tail === transformation) {
       this._tail = prev
     }
+    this._transformNames.delete(transformation.name)
     if (next) this._reProcess.next(next)
+  }
+
+  public hasTransform(name: string) {
+    return this._transformNames.has(name)
   }
 
   public reset (data: T[] = []) {
