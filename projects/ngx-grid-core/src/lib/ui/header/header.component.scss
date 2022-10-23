@@ -35,7 +35,7 @@ button.col-dropdown-btn {
   height: 24px;
   line-height: 24px;
 
-  &:not(.menuOpen):not(.keepIconVisible) {
+  &:not(.keepIconVisible) {
     opacity: 0;
   }
 

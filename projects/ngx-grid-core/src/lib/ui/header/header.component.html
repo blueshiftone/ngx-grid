@@ -23,7 +23,7 @@
         [matMenuTriggerFor]="columnMenu"
         #columnMenuTrigger="matMenuTrigger"
         (menuClosed)="columnMenuContainerRef?.clear()"
-        [ngClass]="{ menuOpen: columnMenuTrigger.menuOpen, keepIconVisible: (column.dropdownMenu.iconVisibility | async) === iconVisibility.Always }">
+        [ngClass]="{ keepIconVisible: (column.dropdownMenu.iconVisibility | async) === iconVisibility.Always }">
           <mat-icon [ngClass]="{thinLine: isThinlineIcon(column.dropdownMenu.icon | async)}" [svgIcon]="(column.dropdownMenu.icon | async) ?? ''"></mat-icon>
       </button>
   </div>

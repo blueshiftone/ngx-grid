@@ -11,57 +11,61 @@ export class GetFormattedValue extends Operation {
 
   public getPlainText(coords: IGridCellCoordinates, value?: any): string
   public getPlainText(column: IGridColumn, value?: any): string
-  public getPlainText(arg1: IGridCellCoordinates | IGridColumn, value?: any): string
+  public getPlainText(coordsOrColumn: IGridCellCoordinates | IGridColumn, value?: any): string
   {
-    return this._handleOverload(arg1, value, false)
+    return this._handleOverload(coordsOrColumn, value, false)
   }
 
   public getHTML(coords: IGridCellCoordinates, value?: any): string
   public getHTML(column: IGridColumn, value?: any): string
-  public getHTML(arg1: IGridCellCoordinates | IGridColumn, value?: any): string
+  public getHTML(coordsOrColumn: IGridCellCoordinates | IGridColumn, value?: any): string
   {
-    return this._handleOverload(arg1, value, true)
+    return this._handleOverload(coordsOrColumn, value, true)
   }
 
-  private _isCoordinates(arg: IGridCellCoordinates | IGridColumn): arg is IGridCellCoordinates {
-    return arg.hasOwnProperty('rowKey')
+  private _isCoordinates(coordsOrColumn: IGridCellCoordinates | IGridColumn): coordsOrColumn is IGridCellCoordinates {
+    return coordsOrColumn.hasOwnProperty('rowKey')
   }
 
-  private _isColumn(arg: IGridCellCoordinates | IGridColumn): arg is IGridColumn {
-    return arg.hasOwnProperty('columnKey') && arg.hasOwnProperty('dropdownMenu')
+  private _isColumn(coordsOrColumn: IGridCellCoordinates | IGridColumn): coordsOrColumn is IGridColumn {
+    return coordsOrColumn.hasOwnProperty('columnKey') && coordsOrColumn.hasOwnProperty('dropdownMenu')
   }
 
-  private _handleOverload(input: IGridCellCoordinates | IGridColumn, value: any, html: boolean): string {
-    if (this._isColumn(input)) {
-      return this._run(input, value, html)
-    } else if (this._isCoordinates(input)) {
-      return this._run(input, value, html)
+  private _handleOverload(coordsOrColumn: IGridCellCoordinates | IGridColumn, value: any, html: boolean): string {
+    if (this._isColumn(coordsOrColumn)) {
+      return this._run(coordsOrColumn, value, html)
+    } else if (this._isCoordinates(coordsOrColumn)) {
+      return this._run(coordsOrColumn, value, html)
     }
     throw new Error('Invalid argument')
   }
 
   private _run(coords: IGridCellCoordinates, value: any, returnHtml: boolean): string
   private _run(column: IGridColumn, value: any, returnHtml: boolean): string
-  private _run(arg1: IGridCellCoordinates | IGridColumn, value: any, returnHtml: boolean): string
+  private _run(coordsOrColumn: IGridCellCoordinates | IGridColumn, value: any, returnHtml: boolean): string
   {
     
     let dataType: IGridDataType = { name: 'Text' }
 
     let formatString: string | null = null
 
-    if (this._isColumn(arg1)) { // is IGridColumn
+    if (this._isColumn(coordsOrColumn)) { // is IGridColumn
+
+      const column = coordsOrColumn
       
-      dataType = arg1.type ?? dataType
+      dataType = column.type ?? dataType
 
-      formatString = arg1.metadata.get(EMetadataType.NumberFormatString)
+      formatString = column.metadata.get(EMetadataType.NumberFormatString)
 
-    } else if (this._isCoordinates(arg1)) { // is IGridCellCoordinates
+    } else if (this._isCoordinates(coordsOrColumn)) { // is IGridCellCoordinates
 
-      value = value ?? this.cellOperations.GetCellValue.run(arg1)?.value
+      const coords = coordsOrColumn
 
-      dataType = this.cellOperations.GetCellType.run(arg1)
+      value = value ?? this.cellOperations.GetCellValue.run(coords)?.value
 
-      formatString = this.cellOperations.GetCellMetaValue.run<string>(arg1, EMetadataType.NumberFormatString)
+      dataType = this.cellOperations.GetCellType.run(coords)
+
+      formatString = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
 
     }
     
