@@ -4,13 +4,16 @@
   margin-right: -9999999px;
   position: relative;
   z-index: 1;
+
   .cell {
     user-select: none;
     cursor: pointer;
+
     &:hover:not(.row-thumb) {
       background-color: var(--highlight-color);
     }
   }
+
   .Dragging {
     .cell {
       cursor: move;
@@ -25,4 +28,44 @@
   font-size: 15px;
   margin-left: 1px;
   margin-right: -7px;
+}
+
+button.col-dropdown-btn {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+
+  &:not(.keepIconVisible) {
+    opacity: 0;
+  }
+
+  svg,
+  .mat-icon {
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+    opacity: 0.8;
+
+    &.thinLine {
+      stroke: currentColor;
+      stroke-width: 2px;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.cell:hover {
+  button.col-dropdown-btn {
+    opacity: 1;
+  }
+}
+
+::ng-deep {
+  .mat-menu-panel.column-menu {
+    background-color: var(--app-bg);
+    margin-top: 1px;
+  }
 }

@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms'
 import { fromEvent } from 'rxjs'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
+import { GridDataSource } from '../../../grid-data-source'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectionSlice } from '../../../typings/interfaces'
@@ -85,7 +86,12 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
   private _getDataSource(): IGridDataSource | undefined {
     const gridID = this.data.currentCell?.type.list?.relatedGridID
     if (!gridID) return undefined
-    return this.gridController.grid.GetRelatedData.run(gridID)
+    let source = this.gridController.grid.GetRelatedData.run(gridID)
+    if (source) {
+      // clone the source to avoid changing the original
+      source = GridDataSource.cloneSource(source)
+    }  
+    return source
   }
 
 }

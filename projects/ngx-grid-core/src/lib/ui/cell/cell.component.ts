@@ -78,7 +78,9 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
 
   public detectChanges = () => {
     this.renderCellType()
-    this.typeComponent?.receiveValue(this._getValue())
+    if (this._getValue() !== this.typeComponent?.value) {  
+      this.typeComponent?.receiveValue(this._getValue())
+    }
 
     const tooltip = this.gridController.cell.GetCellMeta.run(this.coordinates).metadata.get<string>(EMetadataType.ToolTip)
 

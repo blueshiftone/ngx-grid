@@ -17,7 +17,7 @@ export class PreselectRows {
     const startPos = new GridCellCoordinates(rowKeys[0], firstCol.columnKey)
     const endPos   = new GridCellCoordinates(rowKeys[0], lastCol.columnKey)
 
-    const state = new GridSelectionStateFromCoordinates(startPos, endPos, this.controller.gridEvents)
+    const state = new GridSelectionStateFromCoordinates(startPos, endPos, this.controller.gridController)
 
     this.controller.state = state
 

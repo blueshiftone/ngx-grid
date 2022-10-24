@@ -9,7 +9,7 @@ export class SelectRow {
 
   public run(rowKey: TPrimaryKey) {
 
-    const utils = GridImplementationFactory.gridSelectionRange(this.controller.gridEvents).globalUtils
+    const utils = GridImplementationFactory.gridSelectionRange(this.controller.gridController).globalUtils
     
     const startPos = new GridCellCoordinates(rowKey, utils.getFirstColumn().columnKey)
     const endPos   = new GridCellCoordinates(rowKey, utils.getLastColumn().columnKey)

@@ -40,7 +40,7 @@ export class MoveSelectionFromFocus extends BaseSelectionOperation {
 
     if (!this._hasModifiers) {
 
-      state = new GridSelectionStateFromCoordinates( ...coordinates, this.controller.gridEvents, {
+      state = new GridSelectionStateFromCoordinates( ...coordinates, this.controller.gridController, {
         focusedCell: this._focusedCell,
         previousSelection: this.selectionState?.previousSelection?.clone()
       }, this._hasModifiers, this._hasModifiers)
@@ -60,7 +60,7 @@ export class MoveSelectionFromFocus extends BaseSelectionOperation {
       const prevSelection = state.previousSelection
       if (!prevSelection) return
 
-      prevSelection.secondarySelection = GridImplementationFactory.gridSelectionRange(this.controller.gridEvents).addRange(...coordinates)
+      prevSelection.secondarySelection = GridImplementationFactory.gridSelectionRange(this.controller.gridController).addRange(...coordinates)
 
       const finalSelection = state.currentSelection.clone()
 

@@ -32,7 +32,7 @@ export class CreateSelectionStateFromMouseEvent {
   private _getSelection()  : IGridSelectionRange            { return this._gridEvents.CellSelectionChangedEvent.state || this._newSelection() }
   private _getEditingCell(): IGridCellComponent | undefined { return this._gridEvents.EditingCellChangedEvent.state ?? undefined }
   private _getFocusedCell(): IGridCellFocused | undefined   { return this._gridEvents.CellFocusChangedEvent.state }
-  private _newSelection()  : IGridSelectionRange            { return GridImplementationFactory.gridSelectionRange(this._gridEvents) }
+  private _newSelection()  : IGridSelectionRange            { return GridImplementationFactory.gridSelectionRange(this.controller.gridController) }
 
   private get _gridEvents() { return this.controller.gridEvents } 
 

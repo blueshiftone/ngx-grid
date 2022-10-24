@@ -14,7 +14,7 @@ export class AddSecondarySelection extends BaseSelectionOperation {
     const state = this.selectionState
     if (!state) return
     selection = selection ?? state.currentSelection
-    selection.secondarySelection = GridImplementationFactory.gridSelectionRange(this.controller.gridEvents).addRange(from ?? state.startCellPos, to ?? state.endCellPos)
+    selection.secondarySelection = GridImplementationFactory.gridSelectionRange(this.controller.gridController).addRange(from ?? state.startCellPos, to ?? state.endCellPos)
     selection.secondarySelection.isSubtracting = state.isSubtracting
   }
 

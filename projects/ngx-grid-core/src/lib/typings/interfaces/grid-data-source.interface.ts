@@ -25,13 +25,14 @@ export interface IGridDataSource extends IDestroyable {
   leafLevel        : number
 
   getRow               (key: TPrimaryKey)                        : IGridRow | undefined
-  setRows              (rows: IGridRow[], subset?: boolean)      : void
+  setRows              (rows: IGridRow[])                        : void
   addRow               (row: IGridRow)                           : void
   getColumn            (key: TColumnKey)                         : IGridColumn | undefined
   hasColumnSubset      ()                                        : boolean
-  getUnderlyingColumns ()                                         : IGridColumn[]
+  getUnderlyingColumns ()                                        : IGridColumn[]
   setColumns           (columns: IGridColumn[], subset?: boolean): void
   clearColumnSubset    ()                                        : void
+  upsertRows           (rows: IGridRow[])                        : void
   insertNewRows        (rows: IGridRow[])                        : void
   insertNewRows        (...rows: IGridRow[])                     : void
   insertNewRows        (index: number, ...rows: IGridRow[])      : void

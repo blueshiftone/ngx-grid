@@ -1,6 +1,6 @@
 import { GridCellCoordinates } from '.'
 import { IGridCellCoordinates, IGridCellEdges, IGridColumn, IGridRow, IGridSelectionBoundingPosition, IGridSelectionRange } from '..'
-import { IGridEventsFactory } from '../../../events/grid-events.service'
+import { GridControllerService } from '../../../controller/grid-controller.service'
 import { SetDifference } from '../../../utils/difference-between-sets'
 import { TColumnKey, TPrimaryKey } from '../../types'
 
@@ -15,7 +15,7 @@ export class GridSelectionRange implements IGridSelectionRange {
   public isSubtracting = false
 
   constructor(
-    private readonly gridEvents: IGridEventsFactory,
+    private readonly controller: GridControllerService,
     input?: Partial<IGridSelectionRange>,
     rowMap?: Map<TPrimaryKey, Set<TColumnKey>>,
     colMap?: Map<TColumnKey, Set<TPrimaryKey>>
@@ -153,7 +153,11 @@ export class GridSelectionRange implements IGridSelectionRange {
     const b = { rowKey: y[1].rowIndex, x: x[1].columnIndex }
     for (let rowIndex = a.rowKey; rowIndex <= b.rowKey; rowIndex++) {
       for (let colIndex = a.x; colIndex <= b.x; colIndex++) {
-        output.push(new GridCellCoordinates(this.globalUtils.getRowKeyFromIndex(rowIndex) ?? '', this.globalUtils.getColumnKeyFromIndex(colIndex).columnKey))
+        const rowKey = this.globalUtils.getRowKeyFromIndex(rowIndex) ?? ''
+        if (rowKey === '') {
+          throw new Error(`Row index ${rowIndex} is out of bounds`)
+        }
+        output.push(new GridCellCoordinates(rowKey, this.globalUtils.getColumnKeyFromIndex(colIndex).columnKey))
       }
     }
     return output
@@ -179,7 +183,7 @@ export class GridSelectionRange implements IGridSelectionRange {
 
   public clone(): IGridSelectionRange {
     return new GridSelectionRange(
-      this.gridEvents,
+      this.controller,
       {
         secondarySelection: this.secondarySelection?.clone() || null,
         multiSelect: this.multiSelect,
@@ -229,10 +233,12 @@ export class GridSelectionRange implements IGridSelectionRange {
       }
       const row = this.globalUtils.getRowFromRowKey(rowKey)
       if (!row) throw new Error(`Unable to find row for key ${rowKey}`)
-      return this._visibleRows.indexOf(row)
+      const index = this._visibleRows.findIndex(x => x.rowKey === rowKey)
+      if (index === -1) throw new Error(`Unable to find row index for key ${rowKey}`)
+      return index
     },
     getRowFromRowKey: (rowKey: TPrimaryKey): IGridRow | undefined => {
-      return this.gridEvents.GridDataChangedEvent.state?.getRow(rowKey)
+      return this._source.getRow(rowKey)
     },
     getColumnIndex: (column: TColumnKey): number => {
       return this._columns.findIndex(c => c.columnKey === column)
@@ -273,15 +279,15 @@ export class GridSelectionRange implements IGridSelectionRange {
   }
 
   private get _columns(): IGridColumn[] {
-    return this.gridEvents.GridDataChangedEvent.state?.columns || []
+    return this._source.columns
   }
 
   private get _visibleRows(): IGridRow[] {
-    return this._source?.rows.latestValue ?? []
+    return this._source.rows.latestValue
   }
 
   private get _source() {
-    return this.gridEvents.GridDataChangedEvent.state
+    return this.controller.dataSource
   }
 
 }

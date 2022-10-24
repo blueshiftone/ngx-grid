@@ -1,15 +1,28 @@
 import { CdkDragSortEvent } from '@angular/cdk/drag-drop'
 import { DOCUMENT } from '@angular/common'
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, QueryList, ViewChildren } from '@angular/core'
-import { BehaviorSubject, merge } from 'rxjs'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  ViewContainerRef,
+} from '@angular/core'
+import { MatMenuTrigger } from '@angular/material/menu'
+import { BehaviorSubject, fromEvent, merge } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
 import { GridEventsService } from '../../events/grid-events.service'
 import { ESortDirection } from '../../typings/enums/sort-direction.enum'
-import { IGridColumn, IGridSeparator } from '../../typings/interfaces'
+import { EColumnIconVisibility, IGridColumn, IGridSeparator } from '../../typings/interfaces'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
+import { HasParentOfClass } from '../../utils/find-parent-element-of-class'
 
 @Component({
   selector: 'data-grid-header',
@@ -22,13 +35,19 @@ import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 })
 export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
+  @ViewChildren('columnMenuTrigger') public columnMenuTriggers?: QueryList<MatMenuTrigger>
+
   @ViewChildren('columnElement', { read: ElementRef }) public columnElements?: QueryList<ElementRef>
+
+  @ViewChild("columnMenuTemplate", { read: ViewContainerRef }) public columnMenuContainerRef?: ViewContainerRef
 
   public columns = new BehaviorSubject<IGridColumn[]>([])
   public dragDisabled                              = false
   public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
   public columnWidths = new BehaviorSubject<{[key: string]: number}>({})
+
+  public iconVisibility = EColumnIconVisibility
 
   private _isResizing = false
 
@@ -79,6 +98,24 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     this.addSubscription(this.gridController.dataSource.rows.output.pipe(
       map(rows => rows[0]?.floatingTitle?.isGroup === true),
       distinctUntilChanged()).subscribe(hasGroups => this.elRef.nativeElement.classList.toggle('has-groups', hasGroups)))
+
+    // close column menu when clicking outside of it
+    this.addSubscription(fromEvent<MouseEvent>(this.doc, 'mousedown').subscribe(e => {
+      const menuIsOpen = (this.columnMenuTriggers ?? []).some(x => x.menuOpen)
+      if (
+        menuIsOpen &&
+        !HasParentOfClass('column-menu', e.target as HTMLElement) &&
+        !HasParentOfClass('col-dropdown-btn', e.target as HTMLElement)
+      ) {
+        for (const t of this.columnMenuTriggers ?? []) {
+          if (t.menuOpen) {        
+            t.closeMenu()
+            this.cd.detectChanges()
+            break
+          }
+        }
+      }
+    }))
   }
 
   public startResize = () => this._isResizing  = true
@@ -129,6 +166,18 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         })
       })
     }
+  }
+
+  public openMenu(c: IGridColumn) {
+    if (!this.columnMenuContainerRef || !c.dropdownMenu) return
+    this.columnMenuContainerRef.clear()
+    const ref = this.columnMenuContainerRef.createComponent(c.dropdownMenu?.component)
+    ref.instance.column = c
+  }
+
+  public isThinlineIcon(iconKey: string | null): boolean {
+    if (!iconKey) return false
+    return iconKey.startsWith('Thinline')
   }
 
   private currentSortOrder(column: IGridColumn) {

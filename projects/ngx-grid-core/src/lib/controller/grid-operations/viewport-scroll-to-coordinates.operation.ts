@@ -31,7 +31,7 @@ export class ViewportScrollToCoordinates extends Operation {
   private _scrollTo(cellPos: IGridCellCoordinates) {
     const { viewPort } = this.gridOperations
     if (!viewPort) return
-    const utils              = GridImplementationFactory.gridSelectionRange(this.gridEvents).globalUtils
+    const utils              = GridImplementationFactory.gridSelectionRange(this.gridOperations.gridController).globalUtils
     const maxItemsInViewport = Math.floor(viewPort.getViewportSize() / 25) -2
     const firstVisibleIndex  = Math.floor(viewPort.measureScrollOffset('top') / 25) + 1
     const lastVisibleIndex   = firstVisibleIndex + maxItemsInViewport -1

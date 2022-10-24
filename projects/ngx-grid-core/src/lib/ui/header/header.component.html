@@ -12,10 +12,22 @@
     *ngFor="let column of (columns | async); let index = index"
     [style.width] = "((columnWidths | async)?.[column.columnKey] ?? '') + 'px'"
     class="cell display">
-    <app-resizer (output)="resizeColumn($event.x, column)" (resizeStart)="startResize()"
-      (resizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
-    <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(column)">{{ columnSortIconKey(column) }}</span>
-    <data-grid-separator *ngFor="let s of separators(column.columnKey)" Axis="y" [separator]="s"></data-grid-separator>
-    <div class="text-readonly"><lib-localized-text>{{ column.name ?? column.columnKey }}</lib-localized-text></div>
-    </div>
+      <app-resizer (output)="resizeColumn($event.x, column)" (resizeStart)="startResize()"
+        (resizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
+      <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(column)">{{ columnSortIconKey(column) }}</span>
+      <data-grid-separator *ngFor="let s of separators(column.columnKey)" Axis="y" [separator]="s"></data-grid-separator>
+      <div class="text-readonly"><lib-localized-text>{{ column.name ?? column.columnKey }}</lib-localized-text></div>
+      <button mat-icon-button class="col-dropdown-btn" *ngIf="column.dropdownMenu"
+        (mousedown)="$event.stopPropagation()"
+        (click)="$event.stopPropagation(); openMenu(column)"
+        [matMenuTriggerFor]="columnMenu"
+        #columnMenuTrigger="matMenuTrigger"
+        (menuClosed)="columnMenuContainerRef?.clear()"
+        [ngClass]="{ keepIconVisible: (column.dropdownMenu.iconVisibility | async) === iconVisibility.Always }">
+          <mat-icon [ngClass]="{thinLine: isThinlineIcon(column.dropdownMenu.icon | async)}" [svgIcon]="(column.dropdownMenu.icon | async) ?? ''"></mat-icon>
+      </button>
+  </div>
+  <mat-menu #columnMenu="matMenu" [hasBackdrop]="false" class="column-menu">
+    <ng-template #columnMenuTemplate></ng-template>
+  </mat-menu>
 </div>

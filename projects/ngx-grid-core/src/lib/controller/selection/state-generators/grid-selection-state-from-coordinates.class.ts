@@ -1,4 +1,3 @@
-import { IGridEventsFactory } from '../../../events/grid-events.service'
 import { ESelectMode } from '../../../typings/enums/select-mode.enum'
 import { ESelectionType } from '../../../typings/enums/selection-type.enum'
 import {
@@ -9,6 +8,7 @@ import {
   IGridSelectionState,
 } from '../../../typings/interfaces'
 import { GridImplementationFactory } from '../../../typings/interfaces/implementations/grid-implementation.factory'
+import { GridControllerService } from '../../grid-controller.service'
 
 export class GridSelectionStateFromCoordinates implements IGridSelectionState {
 
@@ -20,16 +20,16 @@ export class GridSelectionStateFromCoordinates implements IGridSelectionState {
   public mode              : ESelectMode          = ESelectMode.Add
 
   constructor(
-    public  startCellPos   : IGridCellCoordinates,
-    public  endCellPos     : IGridCellCoordinates,
-    private readonly events: IGridEventsFactory,
-    input? : Partial<IGridSelectionState>,
-    private _ctrlKey       : boolean = false,
-    private _shiftKey      : boolean = false,
+    public   startCellPos: IGridCellCoordinates,
+    public   endCellPos  : IGridCellCoordinates,
+    readonly controller  : GridControllerService,
+             input?      : Partial<IGridSelectionState>,
+    private  _ctrlKey    : boolean = false,
+    private  _shiftKey   : boolean = false,
   ) {
     Object.assign(this, input)
 
-    this.initialSelection = input?.initialSelection || GridImplementationFactory.gridSelectionRange(this.events)
+    this.initialSelection = input?.initialSelection || GridImplementationFactory.gridSelectionRange(controller)
     this.currentSelection = this.initialSelection.clone()
 
   }
