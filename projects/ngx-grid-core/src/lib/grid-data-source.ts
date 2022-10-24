@@ -30,10 +30,10 @@ export class GridDataSource implements IGridDataSource {
   public set rows(_: RowPipeline) {
     throw new Error('Cannot set rows directly.')
   }
-  
+
   // first step in the row pipeline, just sets the rows
   public initialTransform = new GenericTransformer<IGridRow>('InitialRows', async () => this._underlyingRows)
-  
+
   private _columnsSubset?: IGridColumn[]
 
   public dataSetName      = ''
@@ -42,7 +42,7 @@ export class GridDataSource implements IGridDataSource {
   public disabled         = false
   public maskNewIds       = false
   public leafLevel        = -1
-  
+
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
 
@@ -52,7 +52,7 @@ export class GridDataSource implements IGridDataSource {
   private _rowMap = new Map<TPrimaryKey, IGridRow>()
   private _colMap = new Map<TColumnKey, IGridColumn>()
   private _changesStream = new Subject<void>()
-  
+
   public onChanges = this._changesStream.pipe(debounceTime(1))
 
   constructor(input?: Partial<IGridDataSource>) {
@@ -67,7 +67,7 @@ export class GridDataSource implements IGridDataSource {
       delete input.columns
     }
     if (input) Object.assign(this, input)
-    
+
     for (const col of this.columns) this._colMap.set(col.columnKey, col)
 
     this.initialTransform.value = this._underlyingRows
@@ -78,7 +78,7 @@ export class GridDataSource implements IGridDataSource {
   public get rowTemplateString(): string {
     return this.metadata.get<string>(EMetadataType.RecordPreviewTemplateString) ?? ""
   }
-  
+
   public get canUpdate(): boolean {
     return this.metadata.get<boolean>(EMetadataType.CanUpdate) ?? true
   }
@@ -101,7 +101,7 @@ export class GridDataSource implements IGridDataSource {
       metadata        : g.metadata,
       cellMeta        : g.cellMeta
     }
-    if (typeof input?.dataGridID === 'undefined'){
+    if (typeof input?.dataGridID === 'undefined') {
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`
     }
     return new GridDataSource(Object.assign(props, input))
@@ -122,7 +122,7 @@ export class GridDataSource implements IGridDataSource {
     return this._colMap.get(key)
   }
 
-  public createRowFromObject(rowObj: {[key: TColumnKey]: any}): IGridRow {
+  public createRowFromObject(rowObj: { [key: TColumnKey]: any }): IGridRow {
     return GridImplementationFactory.gridRow(this.primaryColumnKey, new Map<TColumnKey, IGridCellValue>(
       Object.keys(rowObj).map(key => ([key, new GridCellValue(new GridCellCoordinates(rowObj[this.primaryColumnKey], key), rowObj[key])]))
     ))
@@ -152,10 +152,10 @@ export class GridDataSource implements IGridDataSource {
 
     const effectiveTail = this.rows.getEffectiveTail()
     const effectiveTailValue = effectiveTail?.value ?? []
-    
+
     if (Array.isArray(indexRowOrRows)) rows = indexRowOrRows
     else if (typeof indexRowOrRows === 'object') rows.unshift(indexRowOrRows)
-    
+
     const index = Number.isInteger(indexRowOrRows) ? (indexRowOrRows as number) : effectiveTailValue.length
 
     for (const row of rows) {
@@ -209,7 +209,7 @@ export class GridDataSource implements IGridDataSource {
   }
 
   public removeRows(...rows: (TPrimaryKey | IGridRow)[]): void {
-    
+
     const effectiveTail = this.rows.getEffectiveTail()
 
     for (let row of rows) {
@@ -237,7 +237,22 @@ export class GridDataSource implements IGridDataSource {
     this._changesStream.next()
   }
 
-  public setColumns(columns: IGridColumn[], subset = false): void {
+  public setColumns(columnKeys: string[], subset?: boolean): void
+  public setColumns(columns: IGridColumn[], subset?: boolean): void
+  public setColumns(columnsOrColumnKeys: IGridColumn[] | string[], subset = false): void {
+
+    const isStringArray = (columnsOrColumnKeys: IGridColumn[] | string[]): columnsOrColumnKeys is string[] => {
+      return columnsOrColumnKeys.length > 0 && typeof columnsOrColumnKeys[0] === 'string'
+    }
+
+    let columns: IGridColumn[]
+
+    if (isStringArray(columnsOrColumnKeys)) {
+      columns = columnsOrColumnKeys.map(c => this.getColumn(c) ?? GridImplementationFactory.gridColumn(c))
+    } else {
+      columns = columnsOrColumnKeys
+    }
+
     if (subset) this._columnsSubset = columns
     else {
       if (this._columnsSubset) {
@@ -254,7 +269,7 @@ export class GridDataSource implements IGridDataSource {
     this._underlyingRows = rows
     this._rowMap.clear()
     this.initialTransform.touch()
-    
+
     for (const row of rows) this._rowMap.set(row.rowKey, row)
     this._changesStream.next()
   }

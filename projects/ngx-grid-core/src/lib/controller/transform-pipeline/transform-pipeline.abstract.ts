@@ -25,6 +25,7 @@ export abstract class TransformPipeline<T> {
   public get tail() { return this._tail }
 
   private _rejectCurrentTransform?: (reason?: any) => void
+  private _runningTransform: Transformer<T> | null = null
 
   private _newTransformers = new Set<Transformer<T>>()
   private _transformerAdded = new Subject<void>()
@@ -35,19 +36,21 @@ export abstract class TransformPipeline<T> {
 
     // subscribe to the reprocess subject and reprocess the pipeline from the transformation that was touched onwards
     this._reProcess
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntil(this.destroyed), debounceTime(1))
       .subscribe(async transformation => {
 
         // if there is a current transformation running, reject it
         if (this._rejectCurrentTransform) {
           this._rejectCurrentTransform('Superceded by new transformation')
           this._rejectCurrentTransform = undefined
+          this._runningTransform = null
         }
         // run the pipeline from the touched transformation onwards
         try {
           const output = await this._runTransforms(transformation)
           this.output.next(output)
           this._rejectCurrentTransform = undefined
+          this._runningTransform = null
         } catch (e: any) {
           if (e instanceof Error)  {
             console.warn(e.message)
@@ -57,7 +60,7 @@ export abstract class TransformPipeline<T> {
         }
       })
 
-    // subscribe to the transformer added subject and run the pipeline from the first new transformer
+    // subscribe to _transformerAdded and run the pipeline from the first new transformer
     this._transformerAdded
       .pipe(takeUntil(this.destroyed), debounceTime(0))
       .subscribe(() => {
@@ -76,7 +79,7 @@ export abstract class TransformPipeline<T> {
 
   public addTransformation(transformation: Transformer<T>, insertAfter = this._tail) {
     if (this._rejectCurrentTransform) {
-      console.warn('Adding a transformation while a transform is running')
+      console.warn(`Transformation Pipeline: Adding '${transformation.name}' while '${this._runningTransform?.name}' is running`)
     }
 
     // insert the transformation into the pipeline
@@ -147,6 +150,7 @@ export abstract class TransformPipeline<T> {
     }
     return new Promise<T[]>(async (resolve, reject) => {
       this._rejectCurrentTransform = reject
+      this._runningTransform = transformation
       let next: Transformer<T> | undefined = transformation
       let output = this.output.value
       let seenTransforms = new Set<Transformer<T>>()
