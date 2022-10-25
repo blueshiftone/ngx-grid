@@ -116,7 +116,6 @@ export class DropdownSingleSelectCellType extends BaseCellType {
   public override measureWidth(): number {
     const additionalPadding = 37
     if (!this.value) return 0
-    console.log(this._displayValue, CharacterSizer.measure(this._displayValue, this.getFont(), this.maxWidth) + additionalPadding)    
     return CharacterSizer.measure(this._displayValue, this.getFont(), this.maxWidth) + additionalPadding
   }
 
