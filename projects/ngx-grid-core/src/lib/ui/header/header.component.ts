@@ -54,8 +54,6 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   public iconVisibility = EColumnIconVisibility
 
-  public iconVisibility = EColumnIconVisibility
-
   private _isResizing = false
 
   constructor(
@@ -177,18 +175,6 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       const formattedValue = this.loc.getLocalizedString(v.name ?? v.columnKey)
       this.gridController.column.InitialiseColumnWidth.bufferHeaderCellWidth([v.columnKey, CharacterSizer.measure(formattedValue, this._getFont()) + additionalWidth])
     })
-  }
-
-  public openMenu(c: IGridColumn) {
-    if (!this.columnMenuContainerRef || !c.dropdownMenu) return
-    this.columnMenuContainerRef.clear()
-    const ref = this.columnMenuContainerRef.createComponent(c.dropdownMenu?.component)
-    ref.instance.column = c
-  }
-
-  public isThinlineIcon(iconKey: string | null): boolean {
-    if (!iconKey) return false
-    return iconKey.startsWith('Thinline')
   }
 
   public openMenu(c: IGridColumn) {
