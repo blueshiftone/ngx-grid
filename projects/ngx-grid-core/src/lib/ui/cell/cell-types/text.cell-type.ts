@@ -47,7 +47,8 @@ export class TextCellType extends BaseCellType {
 
   public override measureWidth(): number {
     if (!this.value) return 0
-    return CharacterSizer.measure(this.value, this.getFont(), this.maxWidth)
+    const additionalPadding = 7
+    return CharacterSizer.measure(this.value, this.getFont(), this.maxWidth) + additionalPadding
   }
 
 }

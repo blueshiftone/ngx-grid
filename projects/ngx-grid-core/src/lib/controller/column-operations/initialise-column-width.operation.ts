@@ -8,7 +8,7 @@ export class InitialiseColumnWidth extends Operation {
 
   private readonly columnWidthsMap   = new Map<TColumnKey, number>()
   private readonly headerWidthsMap   = new Map<TColumnKey, number>()
-  private readonly commonCellPadding = 6
+  private readonly commonCellPadding = 14
   private readonly bufferOperation   = new BufferOperation((args: any) => this._measureCellWidth(args))
 
   constructor(factory: IColumnOperationFactory) {
