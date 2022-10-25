@@ -4,6 +4,7 @@ import { GridControllerService } from '../../../controller/grid-controller.servi
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums'
 import { IGridCellComponent, IGridCellType } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { ParseDate } from '../../../utils/parse-date-string'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
@@ -49,6 +50,12 @@ export class DateRangeCellType extends BaseCellType {
   private get _dateFormat(): string {
     const format = this.gridController.localize.getLocalizedString('dateFormat')
     return format === 'dateFormat' ? this.gridController.defaultDateFormat : format
+  }
+
+  public override measureWidth(): number {
+    if (!this.value) return 0
+    const formattedVal = this.gridController.cell.GetFormattedValue.getPlainText(this.coordinates, this.value)
+    return CharacterSizer.measure(formattedVal, this.getFont(), this.maxWidth)
   }
 
 }

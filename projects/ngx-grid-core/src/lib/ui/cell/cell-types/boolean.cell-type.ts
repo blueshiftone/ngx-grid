@@ -59,4 +59,8 @@ export class BooleanCellType extends BaseCellType {
     return this._checkboxNode
   }
 
+  public override measureWidth(): number {
+    return 35
+  }
+
 }

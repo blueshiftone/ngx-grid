@@ -5,6 +5,7 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
 export class RichTextCellType extends BaseExpandableCellType {
@@ -43,6 +44,12 @@ export class RichTextCellType extends BaseExpandableCellType {
 
   private _generateEditableNode(): HTMLElement {
     return this.displayNode
+  }
+
+  public override measureWidth(): number {
+    if (!this.value) return 0
+    const plainText = new DOMParser().parseFromString(this.value, 'text/html').body.innerText
+    return CharacterSizer.measure(plainText, this.getFont(), this.maxWidth)
   }
 
 }

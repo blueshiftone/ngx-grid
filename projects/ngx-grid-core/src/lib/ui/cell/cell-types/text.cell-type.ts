@@ -4,6 +4,7 @@ import { GridControllerService } from '../../../controller/grid-controller.servi
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class TextCellType extends BaseCellType {
@@ -42,6 +43,11 @@ export class TextCellType extends BaseCellType {
   private _generateEditableNode(): HTMLElement {
     const [node] = this.createBasicInput('text', this.editableCssClassName)
     return this._editableNode = node
+  }
+
+  public override measureWidth(): number {
+    if (!this.value) return 0
+    return CharacterSizer.measure(this.value, this.getFont(), this.maxWidth)
   }
 
 }

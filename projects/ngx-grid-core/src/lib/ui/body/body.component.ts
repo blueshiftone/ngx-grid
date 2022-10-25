@@ -60,10 +60,11 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
       .subscribe(rows => {
           if (isFirstRows && rows.length) {
             // if this is the first time we've seen rows
-            // then reset grid initialisation state so column widths are calculated
-            this.events.factory.GridInitialisedEvent.emit(false)
+            // then reset column widths so they can be re-measured
+            this.gridController.column.InitialiseColumnWidth.reset()
             isFirstRows = false
           }
+          
           this.rows = rows
           this.cd.detectChanges()}))
 

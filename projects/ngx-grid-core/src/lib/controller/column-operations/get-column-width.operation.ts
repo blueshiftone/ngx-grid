@@ -7,7 +7,7 @@ export class GetColumnWidth extends Operation {
   constructor(factory: IColumnOperationFactory) { super(factory.gridController) }
 
   public run (columnKey: TColumnKey): number | null {
-    return this._getWidths()?.columns.find(col => col.columnKey === columnKey)?.width ?? null
+    return this._getWidths()?.columns.get(columnKey) ?? null
   }
 
   private _getWidths() {

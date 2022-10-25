@@ -3,7 +3,6 @@ import {
   IGridCellCoordinates,
   IGridCellFocused,
   IGridColumn,
-  IGridColumnWidth,
   IGridColumnWidths,
   IGridMetadataCollection,
   IGridMetadataInfo,
@@ -18,12 +17,12 @@ import { IGridStyle } from '../grid-style.interface'
 import { GridMetadataCollection } from './grid-metadata-collection.implementation'
 
 export class GridImplementationFactory {
-  public static gridMetadataCollection = (metadata: IGridMetadataInfo[] = [])                : IGridMetadataCollection => new GridMetadataCollection(metadata)
-  public static gridColumnWidths       = (column: IGridColumnWidth[], changed: string | null): IGridColumnWidths       => new GridColumnWidths(column, changed)
-  public static gridFocusedCell        = (pos: IGridCellCoordinates)                         : IGridCellFocused        => new GridFocusedCell(pos)
-  public static gridRow                = (primaryKeyColumn: TColumnKey, values: TRowValues)  : IGridRow                => new GridRow(primaryKeyColumn, values)
-  public static gridColumn             = (columnKey: TColumnKey)                             : IGridColumn             => new GridColumn(columnKey)
-  public static gridStyle              = (style: EGridStyle)                                 : IGridStyle              => new GridStyle(style)
+  public static gridMetadataCollection = (metadata: IGridMetadataInfo[] = [])                    : IGridMetadataCollection => new GridMetadataCollection(metadata)
+  public static gridColumnWidths       = (column: Map<string, number>, changedOne: string | null): IGridColumnWidths       => new GridColumnWidths(column, changedOne)
+  public static gridFocusedCell        = (pos: IGridCellCoordinates)                             : IGridCellFocused        => new GridFocusedCell(pos)
+  public static gridRow                = (primaryKeyColumn: TColumnKey, values: TRowValues)      : IGridRow                => new GridRow(primaryKeyColumn, values)
+  public static gridColumn             = (columnKey: TColumnKey)                                 : IGridColumn             => new GridColumn(columnKey)
+  public static gridStyle              = (style: EGridStyle)                                     : IGridStyle              => new GridStyle(style)
 
   public static gridSelectionRange = (controller: GridControllerService,
     input?: Partial<IGridSelectionRange>,
