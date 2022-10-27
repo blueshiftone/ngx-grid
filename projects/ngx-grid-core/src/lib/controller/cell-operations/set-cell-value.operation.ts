@@ -34,7 +34,7 @@ export class SetCellValue extends Operation {
     }
 
     if (!type || parseResults.isInvalid) return parseResults
-    
+
     row?.setValue(columnKey, parseResults.transformedValue)
 
     this.cellOperations.ValidateCell.run(coordinates)

@@ -18,7 +18,7 @@ export class GenerateNewRow extends Operation {
     const primaryKeyColumn = this.dataSource.primaryColumnKey
     const values           = [cols.map<[TColumnKey, IGridCellValue]>(col => ([col.columnKey, new GridCellValue(new GridCellCoordinates(rowKey, col.columnKey), null)]))]
     const row: IGridRow    = GridImplementationFactory.gridRow(primaryKeyColumn, new Map<TColumnKey, IGridCellValue>(...values))
-    // row.setValue(primaryKeyColumn, rowKey)
+    row.setValue(primaryKeyColumn, rowKey)
     return row
   }
 }
