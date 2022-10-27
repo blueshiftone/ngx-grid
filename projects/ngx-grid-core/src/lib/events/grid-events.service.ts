@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Subject, Subscription } from 'rxjs'
+import { filter, map, Observable, Subject, Subscription } from 'rxjs'
 
 import * as gridEvents from '.'
 import { IGridEventPacket } from '../typings/interfaces'
@@ -44,12 +44,34 @@ export class GridEventsService {
     }
   }
 
-  public on<T = any>(...e: TGridEventName[]): Subject<T> {
-    const observables = e.map<Subject<any>>(e => this._getObservable<T>(e))
-    if (observables.length === 1) return observables[0]
-    else {
-      throw new Error('Listening to multiple events in one call is not yet implemented')
+  /**
+   * Provides an observable for event payloads
+   * 
+   * @param eventName - The name of the event to listen to
+   * @param ignoreEventsFromSource - Will ignore events that were emitted from the source
+   * 
+   */
+   public on<T = any>(eventName: TGridEventName, ignoreEventsFromSource?: any): Observable<T> {
+    let observable: Observable<IGridEventPacket<T>> = this._getObservable<T>(eventName)
+    if (ignoreEventsFromSource !== undefined) {
+      observable = observable.pipe(filter(e => e.eventSource !== ignoreEventsFromSource))
     }
+    return observable.pipe(map(e => e.payload))
+  }
+
+  /**
+   * Provides an observable for event payloads + source
+   * 
+   * @param eventName - The name of the event to listen to
+   * @param ignoreEventsFromSource - Will ignore events that were emitted from the source
+   * 
+   */
+   public onWithSource<T = any>(eventName: TGridEventName, ignoreEventsFromSource?: any): Observable<{source: any, payload: T}> {
+    let observable: Observable<IGridEventPacket<T>> = this._getObservable<T>(eventName)
+    if (ignoreEventsFromSource !== undefined) {
+      return observable.pipe(filter(e => e.eventSource !== ignoreEventsFromSource), map(e => ({ source: e.eventSource, payload: e.payload })))
+    }
+    return observable.pipe(map(e => ({ source: e.eventSource, payload: e.payload })))
   }
 
   public stateOf<T = any>(e: TGridEventName): T | undefined {
@@ -61,12 +83,11 @@ export class GridEventsService {
   }
 
   private _notifyListeners(e: IGridEventPacket): void {
-    this._getObservable(e.eventName).next(e.payload)
+    this._getObservable(e.eventName).next(e)
   }
 
   private _getObservable<T>(evName: TGridEventName): Subject<IGridEventPacket<T>> {
     return this._observables.get(evName) ?? this._observables.set(evName, new Subject<IGridEventPacket<T>>()).get(evName)!
   }
-  
 
 }

@@ -11,6 +11,7 @@ export interface IGridEvent<TPayload = any> {
 }
 
 export interface IGridEventPacket<TPayload = any> {
-  eventName: TGridEventName
-  payload  : TPayload
+  eventName   : TGridEventName
+  payload     : TPayload
+  eventSource?: any
 }

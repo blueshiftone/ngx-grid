@@ -1,4 +1,4 @@
-import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs'
+import { BehaviorSubject, buffer, debounceTime, map, Subject, takeUntil } from 'rxjs'
 
 import { Transformer } from './transformer.abstract'
 
@@ -35,9 +35,33 @@ export abstract class TransformPipeline<T> {
   constructor() {
 
     // subscribe to the reprocess subject and reprocess the pipeline from the transformation that was touched onwards
+    // use a debounce to prevent multiple reprocesses from happening at the same time (e.g. when multiple transformers are touched at the same time)
+    // use a buffer to collect all the transformers that were touched and reprocess starting from the one closest to the head
     this._reProcess
-      .pipe(takeUntil(this.destroyed), debounceTime(1))
-      .subscribe(async transformation => {
+      .pipe(takeUntil(this.destroyed), buffer(this._reProcess.pipe(debounceTime(1))), map(e => new Set(e)))
+      .subscribe(async transformations => {
+
+        if (!transformations.size) return
+        
+        let earliestTransformer: Transformer<T> | undefined = undefined
+
+        if (transformations.size > 1) {
+          // find the transformer closest to the head
+          let transformer = this._head
+          while (transformer !== undefined) {
+            if (transformations.has(transformer)) {
+              earliestTransformer = transformer
+              break
+            }
+            transformer = transformer.next()
+          }
+        } else {
+          [earliestTransformer] = transformations
+        }
+
+        if (!earliestTransformer) {         
+          throw new Error('Transformer not found')
+        }
 
         // if there is a current transformation running, reject it
         if (this._rejectCurrentTransform) {
@@ -47,7 +71,7 @@ export abstract class TransformPipeline<T> {
         }
         // run the pipeline from the touched transformation onwards
         try {
-          const output = await this._runTransforms(transformation)
+          const output = await this._runTransforms(earliestTransformer)
           this.output.next(output)
           this._rejectCurrentTransform = undefined
           this._runningTransform = null
