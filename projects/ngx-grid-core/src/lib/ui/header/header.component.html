@@ -10,7 +10,7 @@
     [ngClass]="{ 'col-selected': columnsSelected[column.columnKey] }"
     type="Text"
     *ngFor="let column of (columns | async); let index = index"
-    [style.width] = "((columnWidths | async)?.[column.columnKey] ?? '') + 'px'"
+    [style.width] = "((columnWidths | async)?.get(column.columnKey) ?? '') + 'px'"
     class="cell display">
       <app-resizer (output)="resizeColumn($event.x, column)" (resizeStart)="startResize()"
         (resizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>

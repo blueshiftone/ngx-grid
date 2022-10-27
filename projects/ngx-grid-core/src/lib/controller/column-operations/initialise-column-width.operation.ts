@@ -1,45 +1,88 @@
-import { Subject, Subscription } from 'rxjs'
-import { buffer, debounceTime, filter, take } from 'rxjs/operators'
-
-import { IColumnOperationFactory, IGridColumnWidth, IGridColumnWidths } from '../../typings/interfaces'
+import { IColumnOperationFactory, IGridCellType } from '../../typings/interfaces'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
-import { DistinctValues } from '../../utils/distinct-values'
+import { TColumnKey } from '../../typings/types'
+import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 
 export class InitialiseColumnWidth extends Operation {
 
-  public values = new Subject<IGridColumnWidth>()
-  
-  private readonly subs: Set<Subscription> = new Set()
-  private readonly maxInitialCellWidth     = 300
+  private readonly columnWidthsMap   = new Map<TColumnKey, number>()
+  private readonly headerWidthsMap   = new Map<TColumnKey, number>()
+  private readonly commonCellPadding = 14
+  private readonly bufferOperation   = new BufferOperation((args: any) => this._measureCellWidth(args))
 
   constructor(factory: IColumnOperationFactory) {
     super(factory.gridController)
-    this._run()
   }
 
-  public override onDestroy(): void {
-    this.subs.forEach(s => s.unsubscribe())
+  /**
+   * Clear column widths
+   * 
+   * @remarks
+   * This is used when we want to re-calibrate all column widths
+   * e.g. before loading a new dataset
+   * 
+   */
+  public reset() {
+    this.columnWidthsMap.clear()
   }
 
-  private _run(): void {
-    this.values.pipe(buffer(this.values.pipe(debounceTime(0))), take(1)).subscribe(initialWidths => {
-      initialWidths.push(...this._getExistingColumnWidths())
-      const keys = DistinctValues(initialWidths.map(v => v.columnKey))
-      const colWidths = initialWidths.reduce<IGridColumnWidths>((output, element) => {
-        output.setWidth(element.columnKey, Math.min(this.maxInitialCellWidth, Math.max(output.getWidth(element.columnKey), element.width)))
-        return output
-      }, GridImplementationFactory.gridColumnWidths(keys.map(key => ({ columnKey: key, width: 0 })), null))
-      this.gridEvents.ColumnWidthChangedEvent.emit(colWidths)
+  /**
+   * A buffered operation to initialize the column widths based on cell type measurements
+   * 
+   * @param cellType - The cell type component to measure
+   * 
+   */
+  public bufferCellType = (cellType: IGridCellType) => this.bufferOperation.next([cellType])
+
+  /**
+   * A buffered operation to initialize header column widths
+   * 
+   * @param columnWidth - An tuple array of column key and width
+   * 
+   */
+  public bufferHeaderCellWidth = (columnWidth: THeaderCloumnWidth) => this.bufferOperation.next([columnWidth])
+
+  private _measureCellWidth = async (args: [IGridCellType | THeaderCloumnWidth][]) => {
+
+    const existingColumnWidths = new Set(this.columnWidthsMap.keys())
+    let wasChanged = false
+
+    const isTHeaderCloumnWidth = (arg: IGridCellType | THeaderCloumnWidth): arg is THeaderCloumnWidth => Array.isArray(arg)
+
+    for (const [cellTypeOrColumnWidth] of args) {
+      if (isTHeaderCloumnWidth(cellTypeOrColumnWidth)) {
+        const [columnKey, width] = cellTypeOrColumnWidth
+        if (existingColumnWidths.has(columnKey)) continue
+        this.columnWidthsMap.set(columnKey, Math.max(
+          this.headerWidthsMap.get(columnKey) ?? 0,
+          this.columnWidthsMap.get(columnKey) ?? 0,
+          width + this.commonCellPadding)
+        )
+        this.headerWidthsMap.set(columnKey, Math.max(
+          this.headerWidthsMap.get(columnKey) ?? 0,
+          width + this.commonCellPadding)
+        )
+        wasChanged = true
+      } else {
+        const cellType = cellTypeOrColumnWidth
+        if (existingColumnWidths.has(cellType.coordinates.columnKey)) continue
+        this.columnWidthsMap.set(cellType.coordinates.columnKey, Math.max(
+          this.headerWidthsMap.get(cellType.coordinates.columnKey) ?? 0,
+          this.columnWidthsMap.get(cellType.coordinates.columnKey) ?? 0,
+          cellType.measureWidth() + this.commonCellPadding)
+        )
+        wasChanged = true
+      }      
+    }
+
+    if (wasChanged) {
+      this.gridEvents.ColumnWidthChangedEvent.emit(GridImplementationFactory.gridColumnWidths(new Map(this.columnWidthsMap), null))  
       this.gridEvents.GridInitialisedEvent.emit(true)
-    }).add(() => {
-      // Restart when grid is re-initialised
-      this.subs.add(this.gridEvents.GridInitialisedEvent.on().pipe(filter(v => v === false), take(1)).subscribe(_ => this._run()))
-    })
-  }
+    }
 
-  private _getExistingColumnWidths(): IGridColumnWidth[] {
-    return this.gridEvents.ColumnWidthChangedEvent.state?.columns || []
   }
 
 }
+
+export type THeaderCloumnWidth = [TColumnKey, number]

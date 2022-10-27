@@ -5,6 +5,7 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { ECellMode, EPositionPreference } from '../../../typings/enums'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridSelectListOption, TGridUITheme } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { ColorBrightness } from '../../../utils/color-brightness'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
@@ -88,11 +89,8 @@ export class DropdownSingleSelectCellType extends BaseCellType {
     return this
   }
 
-  private get _displayValue(): string | number {
-    if (typeof this.type.list?.relatedGridID !== 'undefined') {
-      return this.gridController.grid.GetRelatedDataPreviewString.run(this.type.list.relatedGridID!, this.value)
-    }
-    else return this.value
+  private get _displayValue(): string {
+    return this.gridController.cell.GetFormattedValue.getPlainText(this.coordinates, this.value)
   }
 
   private get _isRelatedGrid(): boolean {
@@ -113,6 +111,12 @@ export class DropdownSingleSelectCellType extends BaseCellType {
 
   private _getStaticListItem(value?: any): IGridSelectListOption | undefined {
     return this.type?.list?.staticOptions?.find(op => op.value === value)
+  }
+
+  public override measureWidth(): number {
+    const additionalPadding = 37
+    if (!this.value) return 0
+    return CharacterSizer.measure(this._displayValue, this.getFont(), this.maxWidth) + additionalPadding
   }
 
 }

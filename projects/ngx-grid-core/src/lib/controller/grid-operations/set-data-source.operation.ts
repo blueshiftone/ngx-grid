@@ -29,7 +29,7 @@ export class SetDataSource extends Operation {
       pairwise()).subscribe(e => {
         const [ prevRows, nextRows ] = e
         if (!prevRows?.latestValue?.length && nextRows?.latestValue?.length) {
-          this.gridEvents.GridInitialisedEvent.emit(false)
+          this.columnOperations.InitialiseColumnWidth.reset()
         }
       this.gridEvents.GridDataChangedEvent.emit(source)
     }))

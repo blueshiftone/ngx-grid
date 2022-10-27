@@ -11,6 +11,9 @@ import { HasParentOfClass } from '../../../../utils/find-parent-element-of-class
 import { TO_ARRAY } from '../../../../utils/to-array'
 
 export abstract class BaseCellType implements IGridCellType {
+
+  private static _font = ''
+
   public abstract mode        : BehaviorSubject<ECellMode>
   public focus                : BehaviorSubject<boolean>
   public abstract displayNode : HTMLElement
@@ -22,6 +25,9 @@ export abstract class BaseCellType implements IGridCellType {
   public readonly subscriptions = new Set<Subscription>()
 
   private readonly _valueDebounceMs = 100
+
+  protected maxWidth = 350
+  public abstract measureWidth(): number
 
   constructor(
     private readonly overlayService: GridOverlayService,
@@ -174,6 +180,14 @@ export abstract class BaseCellType implements IGridCellType {
 
   protected getValue():any {
     return this.value
+  }
+
+  protected getFont(): string {
+    if (BaseCellType._font === '') {
+      const style = window.getComputedStyle(this.parentCell.element)
+      BaseCellType._font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
+    }
+    return BaseCellType._font
   }
 
 }

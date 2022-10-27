@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -18,7 +18,7 @@ import CELL_TYPES from './cell-types'
   styleUrls      : ['./cell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewChecked, IGridCellComponent {
+export class CellComponent extends AutoUnsubscribe implements OnInit, IGridCellComponent {
 
   public focus     = new BehaviorSubject<any>(false)
   public destroyed = new Subject<void>()
@@ -49,14 +49,6 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
     this.renderCellType()
   }
 
-  ngAfterViewChecked(): void {
-    if (!this.gridController.isInitialised) {
-      window.requestAnimationFrame(_ => {
-        this.gridController.column.InitialiseColumnWidth.values.next({ columnKey: this.column.columnKey, width: this.element.getBoundingClientRect().width })
-      })
-    }
-  }
-
   override appOnDestroy(): void {
     this.gridController.cell.CellComponents.removed(this)
     this.typeComponent?.onDestroy()
@@ -74,6 +66,9 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, AfterViewC
     }
     this._setCellTypeClass(TO_KEBAB(cellType.name))
     this._lastSeenType = cellType
+    if (this.typeComponent) {
+      this.gridController.column.InitialiseColumnWidth.bufferCellType(this.typeComponent)
+    }
   }
 
   public detectChanges = () => {

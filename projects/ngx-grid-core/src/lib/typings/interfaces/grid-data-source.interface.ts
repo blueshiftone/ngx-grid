@@ -24,13 +24,32 @@ export interface IGridDataSource extends IDestroyable {
   metadata         : IGridMetadataCollection
   leafLevel        : number
 
-  getRow               (key: TPrimaryKey)                        : IGridRow | undefined
-  setRows              (rows: IGridRow[])                        : void
-  addRow               (row: IGridRow)                           : void
-  getColumn            (key: TColumnKey)                         : IGridColumn | undefined
-  hasColumnSubset      ()                                        : boolean
-  getUnderlyingColumns ()                                        : IGridColumn[]
-  setColumns           (columns: IGridColumn[], subset?: boolean): void
+  getRow               (key: TPrimaryKey): IGridRow | undefined
+  setRows              (rows: IGridRow[]): void
+  addRow               (row: IGridRow)   : void
+  getColumn            (key: TColumnKey) : IGridColumn | undefined
+  hasColumnSubset      ()                : boolean
+  getUnderlyingColumns ()                : IGridColumn[]
+  
+  /**
+   * Sets the columns in the grid from columnKeys
+   *
+   * @remarks
+   * Re-uses existing column objects if they exist, otherwise creates new column objects
+   * 
+   * @param columnKeys - The columns to replace the existing columns with
+   *
+   */
+  setColumns(columnKeys: string[], subset?: boolean) : void
+
+  /**
+   * Sets the columns in the grid using provided columns
+   *
+   * @param columns - The columns to replace the existing columns with
+   *
+   */
+  setColumns (columns: IGridColumn[], subset?: boolean): void
+
   clearColumnSubset    ()                                        : void
   upsertRows           (rows: IGridRow[])                        : void
   insertNewRows        (rows: IGridRow[])                        : void

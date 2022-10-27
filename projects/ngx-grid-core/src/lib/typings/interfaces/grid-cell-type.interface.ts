@@ -20,6 +20,7 @@ export interface IGridCellType {
   coordinates     : IGridCellCoordinates
   isEditable      : boolean
   valueHasChanged?: () => boolean
+  measureWidth    : () => number
 
   onDestroy    ()              : void
   open         ()              : IGridCellType

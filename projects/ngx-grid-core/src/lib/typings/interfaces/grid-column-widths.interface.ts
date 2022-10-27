@@ -1,8 +1,7 @@
-import { IGridColumnWidth } from './grid-column-width.interface'
-
+import { TColumnKey } from '../types'
 
 export interface IGridColumnWidths {
-  columns   : IGridColumnWidth[]
+  columns   : Map<TColumnKey, number>,
   changedOne: string | null
   getWidth   (columnKey: string)                  : number
   setWidth   (columnKey: string, width: number)   : void

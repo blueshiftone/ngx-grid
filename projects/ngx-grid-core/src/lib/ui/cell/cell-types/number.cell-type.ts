@@ -5,6 +5,7 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { EMetadataType, ERowStatus } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 
 export class NumberCellType extends BaseCellType {
@@ -62,6 +63,13 @@ export class NumberCellType extends BaseCellType {
   public override setValue(value: any): boolean {
     if (value === '') value = null
     return super.setValue(value)
+  }
+
+  public override measureWidth(): number {
+    if (!this.value) return 0
+    const additionalWidth = 4
+    const formattedVal = this.gridController.cell.GetFormattedValue.getPlainText(this.coordinates, this.value)
+    return CharacterSizer.measure(formattedVal, this.getFont(), this.maxWidth) + additionalWidth
   }
 
 }

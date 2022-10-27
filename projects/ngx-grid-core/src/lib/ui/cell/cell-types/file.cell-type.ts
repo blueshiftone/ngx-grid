@@ -7,6 +7,7 @@ import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridFileUpload } from '../../../typings/interfaces'
 import { IGridFileCellValue } from '../../../typings/interfaces/grid-file-cell-value.interface'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
 export class FileCellType extends BaseExpandableCellType  {
@@ -121,6 +122,16 @@ export class FileCellType extends BaseExpandableCellType  {
 
   private _generateEditableNode(): HTMLElement {
     return this.displayNode
+  }
+
+  public override measureWidth(): number {
+    const additionalPadding = 30
+    if (typeof this.value === 'object' && this.value !== null) {
+      const val = this.value as IGridFileCellValue
+      return CharacterSizer.measure(val.fileName, this.getFont(), this.maxWidth) + additionalPadding
+    } else {
+      return 0
+    }
   }
 
 }

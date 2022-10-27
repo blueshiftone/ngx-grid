@@ -87,11 +87,11 @@ export class GridControllerService {
     addSubscription(gridEvents.ColumnWidthChangedEvent.on().subscribe(colWidths => {
       if(colWidths.changedOne) {
         const column = this.cell.CellComponents.findForColumn(colWidths.changedOne)
-        this.column.SetColumnWidth.run(column, colWidths.columns.find(c => c.columnKey === colWidths.changedOne)?.width ?? 0)
+        this.column.SetColumnWidth.run(column, colWidths.columns.get(colWidths.changedOne) ?? 0)
       } else {
-        for (const el of colWidths.columns) {
-          const column = this.cell.CellComponents.findForColumn(el.columnKey)
-          this.column.SetColumnWidth.run(column, el.width)
+        for (const [columnKey, width] of colWidths.columns) {
+          const column = this.cell.CellComponents.findForColumn(columnKey)
+          this.column.SetColumnWidth.run(column, width)
         }
       }
     }))
@@ -237,7 +237,7 @@ export class GridControllerService {
         resolve(true)
         return
       }
-      this._subs.add(this.events.factory.GridInitialisedEvent.on().pipe(filter(v => v === true), take(1)).subscribe(_ => resolve(true)));
+      this._subs.add(this.events.factory.GridInitialisedEvent.onWithInitialValue().pipe(filter(v => v === true), take(1)).subscribe(_ => resolve(true)));
     })
   }
 

@@ -5,6 +5,7 @@ import { GridOverlayService } from '../../../services/grid-overlay-service.servi
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridSelectListOption, TGridUITheme } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { ColorBrightness } from '../../../utils/color-brightness'
 import { BaseExpandableCellType } from './abstractions/base-expandable-cell-type.abstract'
 
@@ -98,6 +99,15 @@ private readonly readonlyCssClassName = 'multi-select-readonly'
 
   private get _themeMode(): TGridUITheme {
     return this.gridController.grid.GetThemeMode.run()
+  }
+
+  public override measureWidth(): number {
+    const padding = 8
+    const margin = 4
+    if (!this.value || !Array.isArray(this.value)) return 0
+    const formatedValue = this.value.map(v => this._isRelatedGrid ? this.gridController.grid.GetRelatedDataPreviewString.run(this.type.list!.relatedGridID!, v) : v.toString()) as string[]
+    const additionalWidth = (padding * margin * this.value.length) - margin
+    return CharacterSizer.measure(formatedValue.join(''), this.getFont(), this.maxWidth) + additionalWidth
   }
 
 }

@@ -4,6 +4,7 @@ import { GridControllerService } from '../../../controller/grid-controller.servi
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
+import { CharacterSizer } from '../../../utils/character-sizer'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 import { ColorParser } from './value-parsing/parsers/color.parser'
 
@@ -76,6 +77,12 @@ export class ColorCellType extends BaseCellType {
       this._editableNode = this._displayNode
     }
     return this.displayNode
+  }
+
+  public override measureWidth(): number {
+    if (!this.value) return 0
+    const formattedVal = this.gridController.cell.GetFormattedValue.getPlainText(this.coordinates, this.value)
+    return CharacterSizer.measure(formattedVal, this.getFont(), this.maxWidth)
   }
 
 }

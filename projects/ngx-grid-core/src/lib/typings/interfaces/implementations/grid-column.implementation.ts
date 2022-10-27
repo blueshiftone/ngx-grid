@@ -30,6 +30,11 @@ export class GridColumn implements IGridColumn {
     clone.sortOrder = this.sortOrder
     clone.separators = [...this.separators ?? []]
     clone.metadata = GridImplementationFactory.gridMetadataCollection(this.metadata.items)
+    clone.dropdownMenu = this.dropdownMenu ? {
+      component: this.dropdownMenu.component,
+      icon: new BehaviorSubject(this.dropdownMenu.icon.value),
+      iconVisibility: new BehaviorSubject(this.dropdownMenu.iconVisibility.value)
+    } : undefined
     return clone
   }
 
