@@ -28,12 +28,13 @@ export class NumberParser extends BaseParser implements IParsingTest {
 
       if (finalVal === '') return this.failed()
 
-      const match = finalVal.match(/^(-?[0-9]+)\.?([0-9]+)?$/)
+      const match = finalVal.match(/^(-?(?:[0-9]+)?)?\.?([0-9]+)?$/)
 
       if (!match) return this.failed()
 
       let [_, integer, decimals] = match
       if ((integer ?? decimals ?? null) === null) return this.failed()
+      if (integer === '-') integer = '-0'
       integer = integer ?? 0
       
       let transformedValue = parseFloat(`${integer}${typeof decimals !== 'undefined' ? `.${decimals}` : ``}`)
