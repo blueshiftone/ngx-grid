@@ -10,6 +10,8 @@ import { IParsingTest } from './parsing-test.interface'
   "22.0%"
   "9196.98"
   "$           1,209.58"
+  "-$   200.00"
+  "-5"
 
 */
 
@@ -22,16 +24,17 @@ export class NumberParser extends BaseParser implements IParsingTest {
 
     if (typeof this.initialValue === 'string') {
 
-      let finalVal = this.initialValue.replace(/\s|\,/g, '')
+      let finalVal = this.initialValue.replace(/[^0-9\.\-]/g, '')
 
       if (finalVal === '') return this.failed()
 
-      const match = finalVal.match(/^(?:[^\d\.]{0,2})(\d+)?(?:\.(\d+))?(?:[^\d]{0,2})$/)
+      const match = finalVal.match(/^(-?(?:[0-9]+)?)?\.?([0-9]+)?$/)
 
       if (!match) return this.failed()
 
-      let [result, integer, decimals] = match
+      let [_, integer, decimals] = match
       if ((integer ?? decimals ?? null) === null) return this.failed()
+      if (integer === '-') integer = '-0'
       integer = integer ?? 0
       
       let transformedValue = parseFloat(`${integer}${typeof decimals !== 'undefined' ? `.${decimals}` : ``}`)
