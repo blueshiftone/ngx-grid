@@ -2,6 +2,7 @@ import { Observable } from 'rxjs'
 
 import { IGridCellMeta, IGridColumn, IGridMetadataCollection } from '.'
 import { RowPipeline } from '../../controller/transform-pipeline/row-pipeline'
+import { ILocalization } from '../../services/localization.service'
 import { TColumnKey, TPrimaryKey } from '../types'
 import { IDestroyable } from './destroyable.interface'
 import { IGridRow } from './grid-row.interface'
@@ -23,6 +24,7 @@ export interface IGridDataSource extends IDestroyable {
   maskNewIds       : boolean
   metadata         : IGridMetadataCollection
   leafLevel        : number
+  localizations?   : ILocalization[]
 
   getRow               (key: TPrimaryKey): IGridRow | undefined
   setRows              (rows: IGridRow[]): void

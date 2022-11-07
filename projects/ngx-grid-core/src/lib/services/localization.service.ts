@@ -22,8 +22,8 @@ export class LocalizationService {
   constructor(
     private readonly prefs : LocalPreferencesService,
   ) {
-    for (const entry of GRID_LOCALIZATION_DEFAULTS.entries()) {
-      this._defaultLocMap.set(entry[0], entry[1])
+    for (const [key, val] of GRID_LOCALIZATION_DEFAULTS.entries()) {
+      this._defaultLocMap.set(key, val)
     }
   }
 

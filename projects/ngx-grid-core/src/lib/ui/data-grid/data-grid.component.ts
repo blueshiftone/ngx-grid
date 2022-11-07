@@ -85,6 +85,8 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     if (this._parentIsStatic) this._parentEl.style.position = 'relative'
 
     this.gridController.grid.SetDataSource.run(this.data)
+
+    if (this.data.localizations) this.localizations.setLocalizations(this.data.localizations)
     
     this._afterGridInit(() => {
       this.initialised = true

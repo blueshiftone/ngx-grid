@@ -167,11 +167,8 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       this.columns.next(nextColumns)
     }
 
-    let additionalWidth = 20
+    const additionalWidth = 35
     this.columns.value.forEach(v => {
-      if (this.currentSortOrder(v) !== ESortDirection.Natural) {
-        additionalWidth += 15
-      }
       const formattedValue = this.loc.getLocalizedString(v.name ?? v.columnKey)
       this.gridController.column.InitialiseColumnWidth.bufferHeaderCellWidth([v.columnKey, CharacterSizer.measure(formattedValue, this._getFont()) + additionalWidth])
     })
