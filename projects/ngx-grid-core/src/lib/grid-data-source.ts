@@ -42,6 +42,7 @@ export class GridDataSource implements IGridDataSource {
   public disabled         = false
   public maskNewIds       = false
   public leafLevel        = -1
+  public localizations    = undefined
 
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
