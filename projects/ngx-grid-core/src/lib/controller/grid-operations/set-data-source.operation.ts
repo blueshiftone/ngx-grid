@@ -19,9 +19,14 @@ export class SetDataSource extends Operation {
 
     this.onDestroy()
 
-    this.gridOperations.gridController.dataSource.onDestroy()
+    this.controller.dataSource.onDestroy()
 
-    this.gridOperations.gridController.dataSource = source
+    if (source === undefined) {
+      throw new Error('Cannot set data source to undefined')
+    }
+    
+    this.controller.dataSource = source
+    this.gridEvents.GridDataChangedEvent.emit(source)
 
     this._subs.add(source.onChanges.pipe(
       map(_ => source.rows),
@@ -34,7 +39,7 @@ export class SetDataSource extends Operation {
       this.gridEvents.GridDataChangedEvent.emit(source)
     }))
     
-    this.gridOperations.UpdateRelatedDataMap.run()
+    this.gridOperations.UpdateRelatedDataSources.run()
 
     for (const relatedSource of source.relatedData.entries()) {
       this._watchRelatedDataSource(...relatedSource)
@@ -66,7 +71,7 @@ export class SetDataSource extends Operation {
 
   private _watchRelatedDataSource(sourceGridID: string, source: IGridDataSource): void {
     this._subs.add(source.onChanges.subscribe(_ => {
-      this.gridOperations.UpdateRelatedDataMap.run([[sourceGridID, source]])
+      this.gridOperations.UpdateRelatedDataSources.run([[sourceGridID, source]])
       this.gridOperations.UpdateForeignKeyCells.run(sourceGridID)
     }))
   }

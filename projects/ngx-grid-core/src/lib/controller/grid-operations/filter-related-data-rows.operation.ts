@@ -8,11 +8,12 @@ export class FilterRelatedDataRows extends Operation {
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
   
   public run(gridID: string, rowKeys: TPrimaryKey[]): IGridRow[] {
-    const grid = this.gridOperations.relatedDataMap.get(gridID)
+    const source = this.gridOperations.relatedDataSources.get(gridID)
     const rows: IGridRow[] = []
     for (const primaryKey of rowKeys) {
-      const row = grid?.source.getRow(primaryKey)
-      if (typeof row !== 'undefined') rows.push(row)
+      if (source?.rowExists(primaryKey)) {
+        rows.push(source.getRow(primaryKey)!)
+      }
     }
     return rows
   }

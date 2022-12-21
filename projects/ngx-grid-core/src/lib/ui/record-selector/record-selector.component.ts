@@ -12,7 +12,6 @@ import {
   ViewChild,
 } from '@angular/core'
 import { merge, Subject } from 'rxjs'
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators'
 
 import { LIST_ANIMATION } from '../../animations/list.animation'
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -42,14 +41,12 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
 
   @Input() public source: IGridDataSource     = new GridDataSource()
   @Input() public icon: string                = 'add'
-  @Input() public filterString                = ''
   @Input() public selectedRows: TPrimaryKey[] = []
 
   @Output() public selected = new EventEmitter<IGridRecordSelectedEvent>()
 
   public get rows() { return this.gridController.dataSource.rows.output }
 
-  private _nextFilterString = new Subject<string>()
   private _sourceChanged = new  Subject<void>()
 
   constructor(
@@ -69,10 +66,6 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
       this.gridController.row.RowComponents.getAll().forEach(r => r.detectChanges())
     }))
 
-    this.addSubscription(this._nextFilterString.pipe(debounceTime(100), distinctUntilChanged()).subscribe(val => {
-      this.events.factory.GridFilterStringChangedEvent.emit(val)
-    }))
-
     this.addSubscription(this.events.factory.GridDataChangedEvent.on().subscribe(_ => {
       window.requestAnimationFrame(_ => this.viewportComponent.checkViewportSize())
     }))
@@ -84,9 +77,6 @@ export class RecordSelectorComponent extends AutoUnsubscribe implements OnInit, 
       this.gridController.grid.SetDataSource.run(changes['source'].currentValue)
       this._sourceChanged.next()
     }
-
-    if (this._hasChange('filterString', changes))
-      this._nextFilterString.next(changes['filterString'].currentValue)
   }
 
   public override appOnDestroy(): void {

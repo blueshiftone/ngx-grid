@@ -17,8 +17,8 @@ export class SetCellValue extends Operation {
   ): IGridValueParsingResult {
 
     const { rowKey, columnKey } = coordinates
-    const row    = this.rowOperations.GetRow.run(rowKey)
-    const type   = this.cellOperations.GetCellType.run(coordinates).name
+    const row  = this.dataSource.getRow(rowKey)
+    const type = this.cellOperations.GetCellType.run(coordinates).name
 
     const { primaryColumnKey, maskNewIds } = this.dataSource
 

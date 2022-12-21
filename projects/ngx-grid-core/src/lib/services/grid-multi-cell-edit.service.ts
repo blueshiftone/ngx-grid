@@ -1,6 +1,6 @@
 import { Overlay, OverlayConfig, OverlayRef, PositionStrategy } from '@angular/cdk/overlay'
 import { ComponentPortal } from '@angular/cdk/portal'
-import { Injectable, InjectionToken, Injector } from '@angular/core'
+import { Injectable, InjectionToken, Injector, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, merge, Subject, Subscription } from 'rxjs'
 import { delay, filter, first, skip, takeUntil } from 'rxjs/operators'
 
@@ -35,10 +35,11 @@ export class GridMultiCellEditService {
   private readonly overlayCSSClassName = 'grid-multi-cell-edit'
 
   constructor(
-    private readonly gridController: GridControllerService,
-    private readonly overlays      : GridOverlayService,
-    private readonly overlay       : Overlay,
-    private readonly events        : GridEventsService,
+    private readonly gridController  : GridControllerService,
+    private readonly overlays        : GridOverlayService,
+    private readonly overlay         : Overlay,
+    private readonly events          : GridEventsService,
+    private readonly viewContainerRef: ViewContainerRef
   ) {
     this._subscriptions.add(merge(
       this.events.factory.GridScrollStartedEvent.on(), 
@@ -85,22 +86,23 @@ export class GridMultiCellEditService {
 
     // Basic implementation of IGridCellComponent and IGridRowComponent
     this._cell = {
-      destroyed    : new Subject<void>(),
-      column       : this.gridController.dataSource.getColumn(coords.columnKey)!,
-      coordinates  : coords,
-      detectChanges: () => {},
-      focus        : new BehaviorSubject<boolean>(true),
-      typeComponent: {} as IGridCellType,
-      type         : type,
-      rowKey       : coords.rowKey,
-      element      : el,
-      style        : el.style,
-      toggleClass  : (className: string, classState: boolean) => el.classList.toggle(className, classState),
-      startEdit    : () => this._cellType?.open(),
-      stopEdit     : () => this._cellType?.close(),
-      setValue     : (val: any) => this._cellType?.receiveValue(val),
-      overlays     : this.overlays,
-      rowComponent : {
+      destroyed       : new Subject<void>(),
+      column          : this.gridController.dataSource.getColumn(coords.columnKey)!,
+      coordinates     : coords,
+      detectChanges   : () => {},
+      focus           : new BehaviorSubject<boolean>(true),
+      typeComponent   : {} as IGridCellType,
+      type            : type,
+      rowKey          : coords.rowKey,
+      element         : el,
+      style           : el.style,
+      toggleClass     : (className: string, classState: boolean) => el.classList.toggle(className, classState),
+      startEdit       : () => this._cellType?.open(),
+      stopEdit        : () => this._cellType?.close(),
+      setValue        : (val: any) => this._cellType?.receiveValue(val),
+      overlays        : this.overlays,
+      viewContainerRef: this.viewContainerRef,
+      rowComponent    : {
         columns          : [],
         detectChanges    : () => {},
         element          : el,

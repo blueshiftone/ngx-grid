@@ -26,13 +26,13 @@ export const DATA_GRIDS_FOCUSED_TREE: string[] = []
 @Injectable()
 export class GridControllerService {
   
+  public dataSource: IGridDataSource = new GridDataSource()
+
   public cell       = new CellOperationFactory   (this).factory
   public row        = new RowOperationFactory    (this).factory
   public grid       = new GridOperationFactory   (this).factory
   public column     = new ColumnOperationFactory (this, this.prefs).factory
   public selection  = new GridSelectionController(this, this.row).factory
-
-  public dataSource: IGridDataSource = new GridDataSource()
 
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
 

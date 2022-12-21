@@ -68,7 +68,7 @@ export class MultiSelectGridCellPreviewComponent extends BasePreviewComponent im
       },
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement: this.elREf.nativeElement,
-    })
+    }, this.cellViewContainerRef)
     await overlay.afterClosed
     this._selectIsOpen = false
   }
@@ -86,7 +86,7 @@ export class MultiSelectGridCellPreviewComponent extends BasePreviewComponent im
       data: this.data.customData,
       positionPreference: EPositionPreference.HorizontalRight,
       referenceElement: this.elREf.nativeElement,
-    })   
+    }, this.cellViewContainerRef)
 
     const selectOutput = overlay.component.instance.selected as EventEmitter<void>
     this.addSubscription(selectOutput.pipe(takeUntil(overlay.overlayRef.detachments())).subscribe(_ => {

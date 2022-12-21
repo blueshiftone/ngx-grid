@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, ViewChild, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
@@ -33,8 +33,9 @@ export class RecordSelectorCellComponent extends AutoUnsubscribe implements IGri
   private _lastSeenType?: IGridDataType
 
   constructor(
-    private readonly gridController: GridControllerService,
-    public  readonly overlays      : GridOverlayService
+    private readonly gridController  : GridControllerService,
+    public  readonly overlays        : GridOverlayService,
+    public  readonly viewContainerRef: ViewContainerRef
   ) { super() }
 
   ngOnInit(): void {

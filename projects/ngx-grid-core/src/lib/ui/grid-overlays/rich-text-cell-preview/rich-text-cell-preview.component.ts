@@ -32,7 +32,7 @@ export class RichTextCellPreviewComponent extends BasePreviewComponent implement
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement: this.elRef.nativeElement,
-    })
+    }, this.cellViewContainerRef)
 
     await output.afterClosed
 

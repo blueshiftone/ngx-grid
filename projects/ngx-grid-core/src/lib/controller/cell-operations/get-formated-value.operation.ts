@@ -99,7 +99,7 @@ export class GetFormattedValue extends Operation {
       case 'Date':
         const date = typeof value === 'string' ? ParseDate(value) : value
         if (date) {
-          const formattedDate = this.gridOperations.gridController.datePipe.transform(date, this._dateFormat)
+          const formattedDate = this.controller.datePipe.transform(date, this._dateFormat)
           if (formattedDate) return formattedDate
         }
         break
@@ -127,7 +127,7 @@ export class GetFormattedValue extends Operation {
   }
 
   private get _dateFormat(): string {
-    return this.gridOperations.gridController.getDateFormat()
+    return this.controller.getDateFormat()
   }
 
 }

@@ -9,8 +9,8 @@ export class InsertRowAboveSelection extends Operation {
   public run(row = this.rowOperations.GenerateNewRow.run()): void {
     const selection = this._getSelection()
     if (!selection) return
-    const referenceRow = this.rowOperations.GetRow.run(selection.rowKeys[0])
-    if (typeof referenceRow === 'undefined') return
+    const referenceRow = this.dataSource.getRow(selection.rowKeys[0])
+    if (referenceRow === undefined) return
     this.rowOperations.InsertRowBefore.run(row, referenceRow)
   }  
 

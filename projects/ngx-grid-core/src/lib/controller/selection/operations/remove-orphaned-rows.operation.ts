@@ -16,7 +16,7 @@ export class RemoveOrphanedRows {
     const nextSelection = lastSelection.clone()
 
     for (const key of rowKeys) {
-      if (this.controller.gridController.row.GetRow.run(key) === undefined) {
+      if (!this.controller.gridController.dataSource.rowExists(key)) {
         orphanedRowKeys.add(key)
       }
     }

@@ -9,16 +9,7 @@ export class GetRelatedDataPreviewString extends Operation {
   ) { super(factory.gridController) }
 
   public run(gridID: string, rowKey: TPrimaryKey): string {
-    const grid = this.gridOperations.relatedDataMap.get(gridID)
-    const row = grid?.source.getRow(rowKey)
-    if (!grid || !row) return (rowKey ?? '').toString()
-    let outputString = grid.source.rowTemplateString
-    for (const col of grid.source.columns) {
-      if (outputString.includes(col.columnKey)) {
-        const regex = new RegExp(`\\{\\{(?:\\s+)?${col.columnKey}(?:\\s+)?\\}\\}`, 'g')
-        outputString = outputString.replace(regex, row.getValue(col.columnKey)?.value)
-      }
-    }
-    return outputString
+    const source = this.gridOperations.relatedDataSources.get(gridID)
+    return this.rowOperations.GetRowPreviewString.run(rowKey, source)    
   }
 }

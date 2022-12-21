@@ -13,4 +13,5 @@ export enum EMetadataType {
   ToolTip,
   HideValue,
   NestingLevel,
+  ValueLocalizationKey,
 }

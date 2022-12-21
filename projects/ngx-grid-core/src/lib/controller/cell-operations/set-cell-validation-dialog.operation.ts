@@ -31,7 +31,7 @@ export class SetCellValidationDialog extends Operation {
           data: validationResults, 
           positionPreference: EPositionPreference.VerticalBottom,
           flexibleDimensions: true
-        })
+        }, this.cellOperations.CellComponents.findWithCoords(cellCoordinates)?.viewContainerRef ?? null)
 
       }
 

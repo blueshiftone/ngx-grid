@@ -22,7 +22,7 @@ export class InsertRow extends Operation {
       
       let [insertRow, options] = arg
 
-      if (typeof this.rowOperations.GetRow.run(insertRow.rowKey) !== 'undefined') continue
+      if (this.dataSource.rowExists(insertRow.rowKey)) continue
 
       options.increment = Math.max(0, Math.min(options.increment ?? 0, 1))
       

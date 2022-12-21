@@ -4,9 +4,7 @@ import { Subject } from 'rxjs'
 import { LocalPreferencesService } from './local-preferences.service'
 import { GRID_LOCALIZATION_DEFAULTS } from './localization.defaults'
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LocalizationService {
 
   public static readonly defaultCulture     = navigator.language

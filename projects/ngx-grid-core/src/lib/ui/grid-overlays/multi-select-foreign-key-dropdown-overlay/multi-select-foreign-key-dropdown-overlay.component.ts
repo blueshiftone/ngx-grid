@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GridDataSource } from '../../../grid-data-source'
@@ -24,8 +24,8 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
   @ViewChild('selector') public selectorComponent?: RecordSelectorComponent
 
   public dataSource?: IGridDataSource
-  public values     : TPrimaryKey[] = []
-  public searchCtrl                 = new FormControl()
+  public values: TPrimaryKey[] = []
+  public searchCtrl = new FormControl()
 
   public gridConfig = new DataGridConfigs().withRowMultiSelect().withConfigs({ scrollToPreselected: false })
 
@@ -50,7 +50,7 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
   override ngOnInit(): void {
     const list = this.data.currentCell?.type.list
     if (!list) return
-    
+
     const primaryKeyValues = this.data.currentCell.value
     this.values = primaryKeyValues ?? []
 
@@ -58,7 +58,7 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
       this.values = change[1] || []
       if (typeof this.selectorComponent !== 'undefined') {
         const removed = WithoutValues<TPrimaryKey>(change[0], change[1]).map(pk => this._getRow(pk))
-        const added   = WithoutValues<TPrimaryKey>(change[1], change[0])
+        const added = WithoutValues<TPrimaryKey>(change[1], change[0])
         const controller = this.selectorComponent.gridController
         for (const pk of added) controller.row.RemoveRow.buffer(pk)
         const gridID = this._relatedGridID
@@ -77,22 +77,19 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
       this.cd.detectChanges()
     }))
 
-    this.addSubscription(this.loadingState.subscribe(dropdownState => {
-      if (dropdownState == EForeignKeyDropdownState.Idle) {
-        this.dataSource = this._getDataSource()
-        window.requestAnimationFrame(_ => {
-          this._searchEl.focus()
-          window.requestAnimationFrame(_ => {
-            if (this.selectorComponent) { 
-              for (const pk of this.values) {
-                this.selectorComponent.gridController.row.RemoveRow.buffer(pk)
-              }
-            }
-          })
-        })
-      }
-    }))
+    this.addSubscription(this.loadingState
+      .pipe(filter(state => state === EForeignKeyDropdownState.Idle), debounceTime(50))
+      .subscribe(async _ => {
+        const source = this.dataSource = await this._getDataSource()
+        if (source?.rows.isRunning()) await source.rows.whenIdle()
+        source?.removeRows(...this.values)
+        this.cd.detectChanges()        
+        window.requestAnimationFrame(_ => this._searchEl.focus())        
+      }))
 
+    this.addSubscription(this.searchCtrl.valueChanges.pipe(debounceTime(100), distinctUntilChanged()).subscribe(value => {
+      this.selectorComponent?.gridController.gridEvents.GridFilterStringChangedEvent.emit(value)
+    }))
   }
 
   public checkGridSize(): void {
@@ -109,11 +106,15 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
 
   private get _searchEl(): HTMLInputElement { return this.searchInput.nativeElement }
 
-  private _getDataSource(): IGridDataSource {
+  private async _getDataSource(): Promise<IGridDataSource | undefined> {
     const gridID = this._relatedGridID
-    if (!gridID) return new GridDataSource()
-    const grid = this.gridController.grid.GetRelatedData.run(gridID)
-    return grid ? GridDataSource.cloneSource(grid) : new GridDataSource()
+    if (!gridID) return undefined
+    const dataSource = this.gridController.grid.GetRelatedData.run(gridID)
+    if (dataSource) {
+      if (dataSource.rows.isRunning()) await dataSource.rows.whenIdle()
+      return GridDataSource.cloneSource(dataSource)
+    }
+    return undefined
   }
 
   private _getRow(pk: TPrimaryKey): IGridRow | undefined {

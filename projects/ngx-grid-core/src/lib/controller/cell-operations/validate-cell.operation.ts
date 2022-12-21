@@ -38,7 +38,7 @@ export class ValidateCell extends Operation {
         const columnValidators = ColumnValidatorMap[EMetadataType[metaDataType] as keyof typeof EMetadataType]
         if (columnValidators) {
           for (const validator of columnValidators) {
-            new validator(this.gridOperations.gridController, columnKey).run()
+            new validator(this.controller, columnKey).run()
           }
         }
       }

@@ -1,6 +1,11 @@
-import { BehaviorSubject, buffer, debounceTime, map, Subject, takeUntil } from 'rxjs'
+import { BehaviorSubject, buffer, debounceTime, filter, firstValueFrom, map, Subject, takeUntil, timeout } from 'rxjs'
 
 import { Transformer } from './transformer.abstract'
+
+export enum ETransformPipelineState {
+  Idle = 'Idle',
+  Running = 'Running',
+}
 
 export abstract class TransformPipeline<T> {
   // This class manages transformations of rows in the grid
@@ -31,6 +36,8 @@ export abstract class TransformPipeline<T> {
   private _transformerAdded = new Subject<void>()
 
   private _transformNames = new Set<string>()
+
+  public state = new BehaviorSubject<ETransformPipelineState>(ETransformPipelineState.Idle)
 
   constructor() {
 
@@ -75,6 +82,7 @@ export abstract class TransformPipeline<T> {
           this.output.next(output)
           this._rejectCurrentTransform = undefined
           this._runningTransform = null
+          this.state.next(ETransformPipelineState.Idle)
         } catch (e: any) {
           if (e instanceof Error)  {
             console.warn(e.message)
@@ -118,7 +126,7 @@ export abstract class TransformPipeline<T> {
     // subscribe to the touched event of the transformation
     transformation.touched
       .pipe(takeUntil(transformation.destroyed))
-      .subscribe(() => this._reProcess.next(transformation))
+      .subscribe(() => this._triggerReProcess(transformation))
 
     this._transformNames.add(transformation.name)
     this._newTransformers.add(transformation)
@@ -139,7 +147,7 @@ export abstract class TransformPipeline<T> {
       this._tail = prev
     }
     this._transformNames.delete(transformation.name)
-    if (next) this._reProcess.next(next)
+    if (next) this._triggerReProcess(next)
   }
 
   public hasTransform(name: string) {
@@ -168,6 +176,18 @@ export abstract class TransformPipeline<T> {
     return effectiveTail
   }
 
+  public isRunning() {
+    return this.state.value === ETransformPipelineState.Running
+  }
+
+  public isIdle() {
+    return this.state.value === ETransformPipelineState.Idle
+  }
+
+  public async whenIdle(timeoutMs = 1000) {
+    return this.isIdle() || firstValueFrom(this.state.pipe(filter(state => state === ETransformPipelineState.Idle), timeout(timeoutMs)))
+  }
+
   private _runTransforms(transformation: Transformer<T>): Promise<T[]> {
     if (this._rejectCurrentTransform !== undefined) {
       return Promise.reject('Transform already running')
@@ -191,6 +211,13 @@ export abstract class TransformPipeline<T> {
       }
       resolve(output)
     })
+  }
+
+  private _triggerReProcess(t: Transformer<T>) {
+    this._reProcess.next(t)
+    if (this.state.value === ETransformPipelineState.Idle) {
+      this.state.next(ETransformPipelineState.Running)
+    }
   }
 
 }

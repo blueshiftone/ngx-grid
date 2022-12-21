@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
+import { EMetadataType } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
 import { CharacterSizer } from '../../../utils/character-sizer'
@@ -22,7 +23,6 @@ export class TextCellType extends BaseCellType {
     overlayService: GridOverlayService,
     parentCell    : IGridCellComponent
   ) { super(overlayService, parentCell, gridController) }
-  
 
   public get displayNode()  { return this._displayNode  || this._generateDisplayNode() }
   public get editableNode() { return this._editableNode || this._generateEditableNode() }
@@ -30,6 +30,13 @@ export class TextCellType extends BaseCellType {
   public override receiveValue(value: any = this.value): void {
     super.receiveValue(value)
     if (!this._displayNode) return;
+    const valueLocalizationKey = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.ValueLocalizationKey)
+    if (valueLocalizationKey !== null) {
+      const localizedValue = this.gridController.localize.getLocalizedString(valueLocalizationKey)
+      if (localizedValue !== valueLocalizationKey) {
+        value = localizedValue
+      }
+    }
     this._displayNode.innerText = value
   }
 
