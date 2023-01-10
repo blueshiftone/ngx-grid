@@ -81,31 +81,26 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
 
     const matchedRows: IGridRow[] = []
 
+    // parse an array of primaryKey values like [1, 2, 3]
     for(let k of keys) {
       if (typeof k === 'string' && k.match(/^[0-9\.]+$/)) k = parseInt(k)
-      const row = gridController.grid.GetRelatedGridRow.run(gridID, k) 
+      const row = gridController.grid.GetRelatedGridRow.run(gridID, k)
       if (typeof row !== 'undefined') {
         matchedRows.push(row)
       } else unmatchedKeys.push(k)
     }
 
-    const grid = gridController.grid.GetRelatedData.run(gridID)
+    const relatedGridDataSource = gridController.grid.GetRelatedData.run(gridID)
 
-    if (unmatchedKeys.length && typeof grid !== 'undefined') {
+    // parse an array of row preview template strings values like ['Customer 1', 'Customer 2', 'Customer 3']
+    if (unmatchedKeys.length && typeof relatedGridDataSource !== 'undefined') {
 
       const previewStringMap = new Map<string, IGridRow>()
-      const rows             = grid.rows
-      const columns          = grid.columns
+      const rows = relatedGridDataSource.rows
 
       for(const row of rows.latestValue) {
-        let outputString = grid.rowTemplateString
-        for (const col of columns) {
-          if (outputString.includes(col.columnKey)) {
-            const regex = new RegExp(`\\{\\{(?:\\s+)?${col.columnKey}(?:\\s+)?\\}\\}`, 'g')
-            outputString = outputString.replace(regex, row.getValue(col.columnKey)?.value)
-          }
-        }
-        previewStringMap.set(outputString, row)
+        const previewString = gridController.row.GetRowPreviewString.run(row.rowKey, relatedGridDataSource)
+        previewStringMap.set(previewString, row)
       }
 
       for (const k of unmatchedKeys) {

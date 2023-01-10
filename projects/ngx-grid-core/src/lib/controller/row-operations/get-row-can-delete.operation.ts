@@ -14,7 +14,7 @@ export class GetRowCanDelete extends Operation {
     } else {
       row = input
     }
-    return (row?.canDelete ?? this.gridOperations.gridController.dataSource.canDelete) === true
+    return (row?.canDelete ?? this.controller.dataSource.canDelete) === true
   }
 
 }

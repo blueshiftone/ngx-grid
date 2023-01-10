@@ -10,7 +10,7 @@
     </div>
     <lib-loading-dots [showText]="true" *ngIf="(loadingState | async) === LoadingState.Loading"></lib-loading-dots>
     <div class="grid" *ngIf="dataSource && (loadingState | async) === LoadingState.Idle">
-      <data-grid-record-selector #selector [source]="dataSource" (selected)="rowSelected($event)" [filterString]="searchCtrl.value" [selectedRows]="values"></data-grid-record-selector>
+      <data-grid-record-selector #selector [source]="dataSource" (selected)="rowSelected($event)" [selectedRows]="values"></data-grid-record-selector>
     </div>
   </div>
 </app-floating-window>

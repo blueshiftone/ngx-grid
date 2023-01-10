@@ -63,7 +63,7 @@ export class FileGridCellPreviewOverlayComponent extends BasePreviewComponent im
       flexibleDimensions: true,
       positionPreference: EPositionPreference.HorizontalRight,
       referenceElement: this.elRef.nativeElement,
-    })
+    }, this.cellViewContainerRef)
 
     await output.afterClosed
 

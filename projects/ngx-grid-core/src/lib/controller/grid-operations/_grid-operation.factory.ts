@@ -1,26 +1,26 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 
 import * as GridOperations from '.'
-import { IGridDataSource, IGridRow, IGridViewportAutoScrollConfigs } from '../../typings/interfaces'
+import { IGridDataSource, IGridViewportAutoScrollConfigs } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
-import { TInstanceTypeProps, TPrimaryKey } from '../../typings/types'
+import { TInstanceTypeProps } from '../../typings/types'
 import { GridControllerService } from '../grid-controller.service'
 
 export type TGridOperations = TInstanceTypeProps<typeof GridOperations>
 
 export class GridOperationFactory {
 
-  public relatedDataMap     : TRelatedDataMap = new Map()
+  public relatedDataSources: TRelatedSourcesMap = new Map()
 
   public readonly operations: TGridOperations
   public readonly factory   : IGridOperationFactory
 
   constructor(gridController: GridControllerService) {
-    const { relatedDataMap } = this
+    const { relatedDataSources } = this
     const { gridEvents }     = gridController
 
     this.factory = {
-      relatedDataMap,
+      relatedDataSources,
       gridController,
       gridEvents,
       attachViewport: (viewPort: CdkVirtualScrollViewport, configs: IGridViewportAutoScrollConfigs) => {
@@ -40,4 +40,4 @@ export class GridOperationFactory {
 
 }
 
-export type TRelatedDataMap = Map<string, { source: IGridDataSource, rowMap: Map<TPrimaryKey, IGridRow> }>
+export type TRelatedSourcesMap = Map<string, IGridDataSource>

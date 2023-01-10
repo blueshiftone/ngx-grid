@@ -14,7 +14,7 @@ export class GridSetupFileDrag extends Operation {
 
   public run(): void {
 
-    const uploads = this.gridOperations.gridController.uploads;
+    const uploads = this.controller.uploads;
     const addSubscription = (s: Subscription) => this._subscriptions.add(s)
     const dragState       = () => this.gridEvents.GridFileDragStateChangedEvent.state
     const dragoverStream  = new Subject<HTMLElement>();

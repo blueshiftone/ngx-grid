@@ -53,7 +53,7 @@ export class MultiSelectStaticCellPreviewComponent extends BasePreviewComponent 
       flexibleDimensions: true,
       positionPreference: EPositionPreference.VerticalBottom,
       referenceElement: this.elREf.nativeElement,
-    })
+    }, this.cellViewContainerRef)
     await overlay.afterClosed
     this._selectIsOpen = false
   }
@@ -71,7 +71,7 @@ export class MultiSelectStaticCellPreviewComponent extends BasePreviewComponent 
       data: this.data.customData,
       positionPreference: EPositionPreference.HorizontalRight,
       referenceElement: this.elREf.nativeElement,
-    })
+    }, this.cellViewContainerRef)
     
     await overlay.afterClosed
 

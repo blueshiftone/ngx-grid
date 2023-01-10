@@ -10,10 +10,10 @@ export class GetIndexOfRow extends Operation {
   public run(input: IGridRow | TPrimaryKey): number {
     let row: IGridRow | undefined
     
-    if   (typeof input === 'object') row = input as IGridRow
-    else row = this.rowOperations.GetRow.run(input as TPrimaryKey)
+    if   (typeof input === 'object') row = input
+    else row = this.dataSource.getRow(input)
 
-    return typeof row !== 'undefined' ? this.dataSource.rows.latestValue.indexOf(row) ?? -1 : -1
+    return row !== undefined ? this.dataSource.rows.latestValue.indexOf(row) ?? -1 : -1
   }
 
 }

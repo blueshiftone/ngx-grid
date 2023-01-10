@@ -26,6 +26,7 @@ export interface IGridDataSource extends IDestroyable {
   leafLevel        : number
   localizations?   : ILocalization[]
 
+  rowExists            (key: TPrimaryKey): boolean
   getRow               (key: TPrimaryKey): IGridRow | undefined
   setRows              (rows: IGridRow[]): void
   addRow               (row: IGridRow)   : void

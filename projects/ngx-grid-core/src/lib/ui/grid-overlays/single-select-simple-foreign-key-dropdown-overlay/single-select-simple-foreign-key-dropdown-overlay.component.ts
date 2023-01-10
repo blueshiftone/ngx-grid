@@ -188,7 +188,8 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
           width: 550,
           height: 300
         }
-      }
+      },
+      this.cellViewContainerRef
     )
   }
 

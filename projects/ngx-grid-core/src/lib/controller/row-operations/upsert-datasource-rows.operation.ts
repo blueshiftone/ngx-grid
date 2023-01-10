@@ -9,8 +9,7 @@ export class UpsertDatasourceRows extends Operation {
 
   public run(rows: IGridRow[]): void {
     for (const row of rows) {
-      const existing = this.rowOperations.GetRow.run(row.rowKey) !== undefined
-      if (!existing) {
+      if (!this.dataSource.rowExists(row.rowKey)) {
         this.dataSource.insertNewRows(row)
       } else {
         for (const item of row.valuesArray) {

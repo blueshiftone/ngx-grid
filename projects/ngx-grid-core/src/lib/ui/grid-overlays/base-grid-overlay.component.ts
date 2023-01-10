@@ -58,4 +58,8 @@ export class BaseOverlayComponent extends AutoUnsubscribe implements OnInit {
     return this.gridController.gridEvents.GridUIThemeChangedEvent.state ?? 'light'
   }
 
+  protected get cellViewContainerRef() {
+    return this.gridController.cell.CellComponents.findWithCoords(this.data.currentCell.coordinates)?.viewContainerRef ?? null
+  }
+
 }

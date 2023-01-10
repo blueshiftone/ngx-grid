@@ -14,9 +14,9 @@ export class FilterRows extends Operation {
 
   constructor(factory: IRowOperationFactory) {
     super(factory.gridController)
-    this.gridEvents.GridInitialisedEvent.on().pipe(switchMap(_ => this.gridEvents.GridDataChangedEvent.onWithInitialValue()
-      .pipe(startWith(this.dataSource), filter(x => x !== undefined), distinctUntilChanged()))).subscribe(e => {
-        const { rows } = (e as IGridDataSource)
+    this.gridEvents.GridInitialisedEvent.onWithInitialValue().pipe(switchMap(_ => this.gridEvents.GridDataChangedEvent.onWithInitialValue()
+      .pipe(startWith(this.dataSource), filter(x => x !== undefined), distinctUntilChanged()))).subscribe(source => {
+        const { rows } = (source as IGridDataSource)
         if (!rows.hasTransform(this._transformerName)) {
           this._transformer = new GenericTransformer<IGridRow>(this._transformerName, async () => this._filterROws())
           rows.addTransformation(this._transformer)

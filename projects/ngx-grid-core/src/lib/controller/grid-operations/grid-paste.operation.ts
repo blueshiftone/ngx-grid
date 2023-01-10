@@ -104,7 +104,7 @@ export class GridPaste extends Operation {
         if (!isCreatingNewRows) {
           if (!rowKey) rowKey = startCell.rowKey
           else {
-            const gridRow = this.rowOperations.GetRow.run(rowKey)
+            const gridRow = this.dataSource.getRow(rowKey)
             if (typeof gridRow === 'undefined') throw new Error(`Unable to get grid row with primary key of ${rowKey}`)
             const rowIndex = this.rowOperations.GetIndexOfRow.run(gridRow)
             const nextRow  = visibleRows[rowIndex + 1]

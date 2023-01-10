@@ -80,7 +80,7 @@ export abstract class BaseCellType implements IGridCellType {
   }
 
   public openOverlay(componentType: EGridOverlayType, configs?: IGridOverlayConfigs): IGridOverlayOpened {
-    return this.overlayService.open(this, componentType, configs)
+    return this.overlayService.open(this, componentType, configs, this.parentCell.viewContainerRef)
   }
 
   public onDestroy(): void {

@@ -1,3 +1,4 @@
+import { ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 
 import { IGridCellType as IGridCellTypeComponent } from '.'
@@ -9,17 +10,18 @@ import { IGridDataType } from './grid-data-type.interface'
 import { IGridRowComponent } from './grid-row-component.interface'
 
 export interface IGridCellComponent {
-  column        : IGridColumn
-  rowComponent  : IGridRowComponent
-  coordinates   : IGridCellCoordinates
-  focus         : BehaviorSubject<boolean>
-  style         : CSSStyleDeclaration
-  element       : HTMLElement
-  type          : IGridDataType
-  destroyed     : Subject<void>
-  typeComponent?: IGridCellTypeComponent
-  rowKey        : TPrimaryKey
-  overlays      : GridOverlayService
+  column          : IGridColumn
+  rowComponent    : IGridRowComponent
+  coordinates     : IGridCellCoordinates
+  focus           : BehaviorSubject<boolean>
+  style           : CSSStyleDeclaration
+  element         : HTMLElement
+  type            : IGridDataType
+  destroyed       : Subject<void>
+  typeComponent?  : IGridCellTypeComponent
+  rowKey          : TPrimaryKey
+  overlays        : GridOverlayService
+  viewContainerRef: ViewContainerRef | null
 
   toggleClass   (className: string, classState: boolean): void
   detectChanges ()                                      : void

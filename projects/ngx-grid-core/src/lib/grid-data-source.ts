@@ -119,6 +119,10 @@ export class GridDataSource implements IGridDataSource {
     return this._rowMap.get(key)
   }
 
+  public rowExists(key: TPrimaryKey): boolean {
+    return this._rowMap.has(key)
+  }
+
   public getColumn(key: TColumnKey): IGridColumn | undefined {
     return this._colMap.get(key)
   }
@@ -134,6 +138,7 @@ export class GridDataSource implements IGridDataSource {
   }
 
   public upsertRows(rows: IGridRow[]) {
+    const newRows: IGridRow[] = []
     for (const row of rows) {
       const existingRow = this.getRow(row.rowKey)
       if (existingRow) {
@@ -141,8 +146,11 @@ export class GridDataSource implements IGridDataSource {
           existingRow.setValue(key, val.value)
         }
       } else {
-        this.insertNewRows(row)
+        newRows.push(row)
       }
+    }
+    if (newRows.length) {
+      this.insertNewRows(newRows)
     }
   }
 
@@ -210,16 +218,19 @@ export class GridDataSource implements IGridDataSource {
   }
 
   public removeRows(...rows: (TPrimaryKey | IGridRow)[]): void {
-
     const effectiveTail = this.rows.getEffectiveTail()
 
     for (let row of rows) {
       if (typeof row !== 'object') {
         const existingRow = this.getRow(row)
-        if (!existingRow) return
+        if (!existingRow) {
+          console.warn(`Cannot remove row with key ${row} because it does not exist.`) 
+          return
+        } 
         row = existingRow
       }
       const { rowKey } = row
+
       let transform: Transformer<IGridRow> | undefined = this.initialTransform
       while (transform !== undefined) {
         if (!transform.hasOwnValue) {
@@ -233,6 +244,7 @@ export class GridDataSource implements IGridDataSource {
         }
         transform = transform.next()
       }
+      this._rowMap.has(row.rowKey)
       this._rowMap.delete(row.rowKey)
     }
     this._changesStream.next()
@@ -269,9 +281,8 @@ export class GridDataSource implements IGridDataSource {
   public setRows(rows: IGridRow[]): void {
     this._underlyingRows = rows
     this._rowMap.clear()
-    this.initialTransform.touch()
-
     for (const row of rows) this._rowMap.set(row.rowKey, row)
+    this.initialTransform.touch()
     this._changesStream.next()
   }
 

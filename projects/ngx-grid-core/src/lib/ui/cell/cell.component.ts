@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit, ViewContainerRef } from '@angular/core'
 import { BehaviorSubject, Subject } from 'rxjs'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -35,10 +35,11 @@ export class CellComponent extends AutoUnsubscribe implements OnInit, IGridCellC
   @Input() public column! : IGridColumn
 
   constructor(
-    public  readonly overlays      : GridOverlayService,
-    private readonly gridController: GridControllerService,
-    private readonly events        : GridEventsService,
-    private readonly elRef         : ElementRef<HTMLElement>
+    public  readonly overlays        : GridOverlayService,
+    public  readonly viewContainerRef: ViewContainerRef,
+    private readonly gridController  : GridControllerService,
+    private readonly events          : GridEventsService,
+    private readonly elRef           : ElementRef<HTMLElement>
   ) {
     super()
   }

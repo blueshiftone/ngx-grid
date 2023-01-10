@@ -1,6 +1,6 @@
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay'
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal'
-import { ComponentRef, Injectable, InjectionToken, Injector } from '@angular/core'
+import { ComponentRef, Injectable, InjectionToken, Injector, ViewContainerRef } from '@angular/core'
 import { merge, Subscription } from 'rxjs'
 import { first, takeUntil } from 'rxjs/operators'
 
@@ -33,7 +33,7 @@ export class GridOverlayService {
     ).subscribe(_ => this._overlayRefs.size && this.closeAll()))
   }
 
-  public open(originCell: IGridCellType, componentType: EGridOverlayType, configs: IGridOverlayConfigs = {}): IGridOverlayOpened {
+  public open(originCell: IGridCellType, componentType: EGridOverlayType, configs: IGridOverlayConfigs = {}, viewContainerRef: ViewContainerRef | null = null): IGridOverlayOpened {
     const component = GRID_OVERLAYS.get(componentType)
     if (!component) throw new Error(`Overlay component for component type ${EGridOverlayType[componentType]} is not registered.`);
     for (const ref of this._overlayRefs) {
@@ -47,7 +47,8 @@ export class GridOverlayService {
     let ref: OverlayRef
     ref = this._createOverlayRef(pos, configs.referenceElement ?? originCell.activeNode, configs)
     const promise = new Promise<void>(resolve => this._resolveMap.set(ref, resolve))
-    const componentPortal = new ComponentPortal(component, null, this._createInjector(originCell, ref, configs.data))
+    const injector = this._createInjector(originCell, ref, configs.data, viewContainerRef?.injector)
+    const componentPortal = new ComponentPortal(component, viewContainerRef, injector)
     const componentRef    = ref.attach(componentPortal)
     componentRef.changeDetectorRef.detectChanges()
     this._components.set(ref, componentRef)
@@ -99,7 +100,7 @@ export class GridOverlayService {
     return ref
   }
 
-  private _createInjector(cell: IGridCellType, ref: OverlayRef, customData?: any) {
+  private _createInjector(cell: IGridCellType, ref: OverlayRef, customData?: any, parent?: Injector) {
     const data: IGridOverlayData = {
       currentCell   : cell,
       overlayRef    : ref,
@@ -107,11 +108,9 @@ export class GridOverlayService {
       gridController: this.gridController,
       customData,
     }
-    return Injector.create({ providers: [{ provide: GRID_OVERLAY_DATA, useValue: data }] })
+    return Injector.create({ providers: [{ provide: GRID_OVERLAY_DATA, useValue: data }], parent })
   }
 
 }
 
 export const GRID_OVERLAY_DATA = new InjectionToken<IGridOverlayData>('GRID_OVERLAY_DATA')
-
-
