@@ -67,6 +67,13 @@ export class GetFormattedValue extends Operation {
 
       formatString = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
 
+      if (dataType.name === 'Text') {
+        const valueLocalizationKey = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.ValueLocalizationKey)
+        if (valueLocalizationKey !== null) {
+          const localizedValue = this.controller.localize.getLocalizedString(valueLocalizationKey)
+          if (localizedValue !== valueLocalizationKey) return localizedValue
+        }
+      }
     }
     
     if (value === null || value === undefined) return ''    

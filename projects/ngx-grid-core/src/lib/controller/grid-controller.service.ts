@@ -15,6 +15,7 @@ import { IGridCellComponent, IGridDataSource } from '../typings/interfaces'
 import { GridCellCoordinates } from '../typings/interfaces/implementations/grid-cell-coordinates.implementation'
 import { TPrimaryKey } from '../typings/types'
 import { DeleteFromArray } from '../utils/array-delete'
+import { HasParentOfClass } from '../utils/find-parent-element-of-class'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
 import { ColumnOperationFactory } from './column-operations/_column-operation.factory'
 import { GridOperationFactory } from './grid-operations/_grid-operation.factory'
@@ -128,9 +129,13 @@ export class GridControllerService {
 
     // Handle paste event
     addSubscription(fromEvent<ClipboardEvent>(window, 'paste').subscribe(clipboard => {
-      const html = clipboard.clipboardData?.getData('text/html')
-      const plainText = clipboard.clipboardData?.getData('text/plain')
-      this.grid.GridPaste.run({ html, plainText })
+      const inputIsFocused    = new Set(['INPUT', 'TEXTAREA']).has(document.activeElement?.tagName.toUpperCase() ?? '')
+      const inputIsInsideCell = HasParentOfClass('cell', document.activeElement as HTMLElement | null)
+      if (!inputIsFocused || inputIsInsideCell) {
+        const html = clipboard.clipboardData?.getData('text/html')
+        const plainText = clipboard.clipboardData?.getData('text/plain')
+        this.grid.GridPaste.run({ html, plainText })
+      }
     }))
 
     // Update viewport size when data changes
