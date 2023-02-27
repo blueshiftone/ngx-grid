@@ -30,15 +30,11 @@ export class NumberFormater {
 
   private _parseNumberValue(input: number): string {
 
-    let { isPercent, minimumIntegerDigits, maximumFractionDigits, minimumFractionDigits, separateThousands, scaleFactor } = this._valueNode.numberFormat!
+    let { minimumIntegerDigits, maximumFractionDigits, minimumFractionDigits, separateThousands, scaleFactor } = this._valueNode.numberFormat!
 
-    if (isPercent) {
-      input *= 100
-    } else {
-      while (scaleFactor > 0) {
-        input /= 1000
-        scaleFactor--
-      }
+    while (scaleFactor > 0) {
+      input /= 1000
+      scaleFactor--
     }
 
     return new Intl.NumberFormat('en-AU', { // Todo localize this according to provided locale

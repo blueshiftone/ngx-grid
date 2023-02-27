@@ -9,7 +9,7 @@ export enum EMetadataType {
   Style,
   RecordPreviewTemplateString,
   ForeignEntityName,
-  NumberFormatString,
+  NumberOptions,
   ToolTip,
   HideValue,
   NestingLevel,

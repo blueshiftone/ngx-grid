@@ -48,7 +48,7 @@ export class TextCellType extends BaseCellType {
   }
 
   private _generateEditableNode(): HTMLElement {
-    const [node] = this.createBasicInput('text', this.editableCssClassName)
+    const [node] = this.createBasicInput({ type: 'text', cssClass: this.editableCssClassName })
     return this._editableNode = node
   }
 
