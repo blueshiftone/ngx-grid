@@ -1,6 +1,6 @@
 import { GridControllerService } from '../controller/grid-controller.service'
 import { EMetadataType } from '../typings/enums'
-import { IGridSelectionSlice } from '../typings/interfaces'
+import { IGridSelectionSlice, INumberOptions } from '../typings/interfaces'
 import { GridCellCoordinates } from '../typings/interfaces/implementations'
 
 export class ExcelFormatter {
@@ -70,12 +70,12 @@ export class ExcelFormatter {
         value = value?.fileName ?? ''
       break
       case 'Number': 
-        const numberFormatString = this.gridController.cell.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
-        if (numberFormatString) {
-          if (numberFormatString.includes('%')) {
+        const numberOptions = this.gridController.cell.GetCellMetaValue.run<INumberOptions>(coords, EMetadataType.NumberOptions)
+        if (numberOptions) {
+          if (numberOptions.formatString?.includes('%')) {
             msoNumberFormat = '0%'
           }
-          else if (numberFormatString.includes(this.currencySymbol)) {
+          else if (numberOptions.formatString?.includes(this.currencySymbol)) {
             msoNumberFormat = `"_-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;\\\\-\\0022${this.currencySymbol}\\0022* \\#\\,\\#\\#0\\.00_-\\;_-\\0022${this.currencySymbol}\\0022* \\0022-\\0022??_-\\;_-\\@_-"`;
           }
         }

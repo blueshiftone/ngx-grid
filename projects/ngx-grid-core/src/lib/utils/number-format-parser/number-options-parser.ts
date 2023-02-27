@@ -1,5 +1,43 @@
+import { INumberOptions } from '../../typings/interfaces'
 import { CharParser } from './char-parser'
 import { NumberFormater } from './number-formatter'
+
+export class NumberOptionsParser {
+
+  private _numberOptions: INumberOptions
+  private _parser: NumberFormatParser | null
+
+  constructor(numberOptions: INumberOptions, parser: NumberFormatParser | null = null) {
+    this._numberOptions = numberOptions
+    this._parser = parser
+  }
+
+  public static getParser(numberOptions: INumberOptions): NumberOptionsParser {
+    const parser = numberOptions.formatString ? (NumberFormatParser.getParser(numberOptions.formatString) ?? new NumberFormatParser(numberOptions.formatString)) : null
+    return new NumberOptionsParser(numberOptions, parser)
+  }
+
+  private _getVal(val: number): number {
+    return val * (this._numberOptions.scaleFactor ?? 1)
+  }
+
+  public getHtml(val: number): string {
+    if (this._parser) {
+      return this._parser.getHtml(this._getVal(val))
+    } else {
+      return this._getVal(val).toString()
+    }
+  }
+
+  public getPlainText(val: number): string {
+    if (this._parser) {
+      return this._parser.getPlainText(this._getVal(val))
+    } else {
+      return this._getVal(val).toString()
+    }
+  }
+
+}
 
 export class NumberFormatParser {
   

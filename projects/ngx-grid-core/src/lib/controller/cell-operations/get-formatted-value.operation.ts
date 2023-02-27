@@ -1,7 +1,7 @@
 import { EMetadataType } from '../../typings/enums'
-import { IGridCellCoordinates, IGridColumn, IGridDataType } from '../../typings/interfaces'
+import { IGridCellCoordinates, IGridColumn, IGridDataType, INumberOptions } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
-import { NumberFormatParser } from '../../utils/number-format-parser/number-format-parser'
+import { NumberOptionsParser } from '../../utils/number-format-parser/number-options-parser'
 import { ParseDate } from '../../utils/parse-date-string'
 import { Operation } from '../operation.abstract'
 
@@ -47,7 +47,7 @@ export class GetFormattedValue extends Operation {
     
     let dataType: IGridDataType = { name: 'Text' }
 
-    let formatString: string | null = null
+    let numberOptions: INumberOptions | null = null
 
     if (this._isColumn(coordsOrColumn)) { // is IGridColumn
 
@@ -55,7 +55,7 @@ export class GetFormattedValue extends Operation {
       
       dataType = column.type ?? dataType
 
-      formatString = column.metadata.get(EMetadataType.NumberFormatString)
+      numberOptions = column.metadata.get(EMetadataType.NumberOptions)
 
     } else if (this._isCoordinates(coordsOrColumn)) { // is IGridCellCoordinates
 
@@ -65,7 +65,7 @@ export class GetFormattedValue extends Operation {
 
       dataType = this.cellOperations.GetCellType.run(coords)
 
-      formatString = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.NumberFormatString)
+      numberOptions = this.cellOperations.GetCellMetaValue.run<INumberOptions>(coords, EMetadataType.NumberOptions)
 
       if (dataType.name === 'Text') {
         const valueLocalizationKey = this.cellOperations.GetCellMetaValue.run<string>(coords, EMetadataType.ValueLocalizationKey)
@@ -81,13 +81,13 @@ export class GetFormattedValue extends Operation {
     switch (dataType.name) {
       case 'NumberRange':
       case 'Number':
-        if (formatString) {
+        if (numberOptions && numberOptions.formatString) {
           if (!returnHtml) {
             // Remove spacer chars from format string
             // Spacer char is any character following an _, e.g. _-
             // This is done to prevent the number format parser from
             // interpreting spacer chars as part of the format string when outputting plaintext
-            formatString = formatString.replace(/_[^_]/g, '')
+            numberOptions.formatString = numberOptions.formatString?.replace(/_[^_]/g, '')
           }
           let numbers: number[] = []
           if (Array.isArray(value)) {
@@ -95,7 +95,7 @@ export class GetFormattedValue extends Operation {
           } else {
             numbers.push(value)
           }
-          const formatter = NumberFormatParser.getParser(formatString)
+          const formatter = NumberOptionsParser.getParser(numberOptions)
           if (returnHtml) {
             return numbers.map(n => formatter.getHtml(n)).join(' — ')
           } else {

@@ -62,7 +62,7 @@ export class ColorCellType extends BaseCellType {
   private _generateEditableNode(): HTMLElement {
     if (!this._editableNode || !this._editableInput) {
       
-      const [node, input] = this.createBasicInput('color')
+      const [node, input] = this.createBasicInput({ type: 'color' })
 
       this._editableInput = input
 

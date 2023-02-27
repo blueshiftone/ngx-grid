@@ -114,22 +114,29 @@ export abstract class BaseCellType implements IGridCellType {
 
   /* Helper Node Creators */
 
-  public createBasicInput(type = 'text', cssClass?: string): [HTMLDivElement, HTMLInputElement] {
+  public createBasicInput(options: IBasicInputOptions): [HTMLDivElement, HTMLInputElement] {
+    const { cssClass, type, transformInput } = options
+    
     const div   = this.createDiv(cssClass)
     const input = this.createInput(type)
-    input.value = this.value
+
+    const transformedGetterValue = (value: any) => transformInput ? transformInput.get(value) : value
+    const transformedSetterValue = (value: any) => transformInput ? transformInput.set(value) : value
+
+    input.value = transformedGetterValue(this.value)
+
     div.appendChild(input)
     
     this.subscriptions.add(fromEvent(input, 'input')
       .pipe(debounceTime(this._valueDebounceMs), filter(_ => this.value !== input.value))
-      .subscribe(_ => this.setValue(input.value)))
+      .subscribe(_ => this.setValue(transformedSetterValue(input.value))))
 
     this.subscriptions.add(fromEvent(input, 'blur')
       .pipe(debounceTime(this._valueDebounceMs))
-      .subscribe(_ => input.value = this.value))
+      .subscribe(_ => input.value = transformedGetterValue(this.value)))
 
     this.subscriptions.add(this.mode.pipe(filter(mode => mode === ECellMode.Editable)).subscribe(_ => {
-      const val = input.value = this.value
+      const val = input.value = transformedGetterValue(this.value)
       window.requestAnimationFrame(_ => {
         if ((val ?? '').toString().length > 1) input.select()
         else input.focus()
@@ -190,4 +197,18 @@ export abstract class BaseCellType implements IGridCellType {
     return BaseCellType._font
   }
 
+}
+
+export type TTransformValue = {
+  get: (value: any) => any
+  set: (value: any) => any
+}
+
+export interface IBasicInputOptions {
+  type: 'text' | 'number' | 'date' | 'color'
+  cssClass?: string
+  transformInput?: {
+    get: (value: any) => any
+    set: (value: any) => any
+  }
 }

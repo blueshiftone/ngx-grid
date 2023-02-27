@@ -4,9 +4,10 @@ import { GridControllerService } from '../../../controller/grid-controller.servi
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
 import { EMetadataType, ERowStatus } from '../../../typings/enums'
 import { ECellMode } from '../../../typings/enums/cell-mode.enum'
-import { IGridCellComponent } from '../../../typings/interfaces'
+import { IGridCellComponent, INumberOptions } from '../../../typings/interfaces'
 import { CharacterSizer } from '../../../utils/character-sizer'
-import { BaseCellType } from './abstractions/base-cell-type.abstract'
+import { BaseCellType, TTransformValue } from './abstractions/base-cell-type.abstract'
+import { CELL_VALUE_PARSERS } from './value-parsing'
 
 export class NumberCellType extends BaseCellType {
 
@@ -40,7 +41,30 @@ export class NumberCellType extends BaseCellType {
   }
 
   private _generateEditableNode(): HTMLElement {
-    const [node] = this.createBasicInput('number', this.editableCssClassName)
+
+    let transformInput: TTransformValue | undefined = undefined
+
+    if (this._scaleFactor) {
+      const scale = this._scaleFactor
+      const transform = (value: any, action: (value: number) => number) => {
+        const validationResult = CELL_VALUE_PARSERS[this.type.name].validate(value, this.gridController, this.coordinates)
+        if (validationResult.isValid) {
+          const num = validationResult.transformedValue as number
+          return action(num)
+        }
+        return value
+      }
+      transformInput = {
+        get: (value: string) => transform(value, (num: number) => num * scale),
+        set: (value: string) => transform(value, (num: number) => num / scale)
+      }
+    }
+
+    const [node] = this.createBasicInput({
+      cssClass      : this.editableCssClassName,
+      type          : 'number',
+      transformInput
+    })
     return this._editableNode = node
   }
 
@@ -52,8 +76,7 @@ export class NumberCellType extends BaseCellType {
     const isPrimarykey = source.primaryColumnKey === this.parentCell.column.columnKey
     if (source.maskNewIds && isNewRow && isPrimarykey) return ''    
     let val: number = typeof this.value === 'number' ? this.value : parseFloat(this.value)
-    const formatString = this.gridController.cell.GetCellMetaValue.run<string>(this.coordinates, EMetadataType.NumberFormatString)
-    if (formatString !== null) {
+    if (this._numberOptions !== null) {
       return this.gridController.cell.GetFormattedValue.getHTML(this.coordinates, val)
     } else {
       return val.toString()
@@ -70,6 +93,14 @@ export class NumberCellType extends BaseCellType {
     const additionalWidth = 4
     const formattedVal = this.gridController.cell.GetFormattedValue.getPlainText(this.coordinates, this.value)
     return CharacterSizer.measure(formattedVal, this.getFont(), this.maxWidth) + additionalWidth
+  }
+
+  private get _numberOptions(): INumberOptions | null {
+    return this.gridController.cell.GetCellMetaValue.run<INumberOptions>(this.coordinates, EMetadataType.NumberOptions)
+  }
+
+  private get _scaleFactor(): number | null {
+    return this._numberOptions?.scaleFactor || null
   }
 
 }

@@ -1,7 +1,9 @@
 import { fromEvent, Subscription } from 'rxjs'
 import { filter, map, repeat, take } from 'rxjs/operators'
 
-import { IGridCellComponent, IGridCellFocused, IGridKeyboardEvent, IGridOperationFactory } from '../../typings/interfaces'
+import { EMetadataType } from '../../typings/enums'
+import { IGridCellComponent, IGridCellFocused, IGridKeyboardEvent, IGridOperationFactory, INumberOptions } from '../../typings/interfaces'
+import { CELL_VALUE_PARSERS } from '../../ui/cell/cell-types/value-parsing'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { FindParentOfClass } from '../../utils/find-parent-element-of-class'
 import { Operation } from '../operation.abstract'
@@ -44,10 +46,22 @@ export class ViewportSetupEditTriggers extends Operation {
       const focusedComponent = this.cellOperations.GetFocusedCell.run()
       if (!focusedComponent || !e || !focusedComponent.element.classList.contains('is-editable')) return
       if (this._editingCell && this._editingCell === focusedComponent) return
-      let validationResult = this.cellOperations.SetCellValue.run(focusedComponent.coordinates, e.valueOfKey)
+      let validationResult = CELL_VALUE_PARSERS[focusedComponent.type.name].validate(e.valueOfKey, this.controller, focusedComponent.coordinates)
       if (validationResult.isValid) {
-        focusedComponent.setValue(validationResult.transformedValue)
+
+        // If cell type is a number and has a scale factor, then scale down the value before setting it
+        // TODO: this should be handled somewhere else as this logic is duplicated in the number cell type class
+        if (focusedComponent.type.name === 'Number') {
+          const numberOptions = this.cellOperations.GetCellMetaValue.run<INumberOptions>(focusedComponent.coordinates, EMetadataType.NumberOptions)
+          if (numberOptions?.scaleFactor) {
+            validationResult.transformedValue /= numberOptions.scaleFactor
+          }
+        }
+
+        focusedComponent.typeComponent?.setValue(validationResult.transformedValue)
+
         this.cellOperations.SetCellDraftValue.buffer(focusedComponent.coordinates)
+        
       }
       this._emitEdit(focusedComponent, validationResult.isValid ? undefined : e)
     }))

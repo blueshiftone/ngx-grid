@@ -22,7 +22,7 @@ export class SetCellValue extends Operation {
 
     const { primaryColumnKey, maskNewIds } = this.dataSource
 
-    const parseResults = CELL_VALUE_PARSERS[type].validate(value, this.cellOperations.gridController, coordinates)
+    const parseResults = CELL_VALUE_PARSERS[type].validate(value, this.controller, coordinates)
 
     if (maskNewIds) {
       const row = this.dataSource.getRow(rowKey)
