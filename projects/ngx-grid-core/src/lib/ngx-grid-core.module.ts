@@ -6,7 +6,6 @@ import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatDatepickerModule } from '@angular/material/datepicker'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { ComponentLibraryModule } from './modules/component-lib/component-library.module'
 import { MarkdownEditorModule } from './modules/markdown-editor/markdown-editor.module'
@@ -115,7 +114,6 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
   ],
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     ScrollingModule,
     ComponentLibraryModule,
     FormsModule,

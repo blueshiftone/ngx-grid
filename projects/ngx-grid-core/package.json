@@ -1,6 +1,6 @@
 {
   "name": "@blueshiftone/ngx-grid-core",
-  "version": "0.17.2",
+  "version": "0.18.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/blueshiftone/ngx-grid",
@@ -8,13 +8,11 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@angular/cdk": "^14.0.1",
-    "@angular/common": "^14.0.1",
-    "@angular/core": "^14.0.1",
-    "@angular/forms": "^14.0.1",
-    "@angular/material": "^14.0.1",
-    "@angular/platform-browser": "^14.0.1",
-    "@angular/platform-browser-dynamic": "^14.0.1",
+    "@angular/cdk": "^15.2.4",
+    "@angular/common": "^15.2.4",
+    "@angular/core": "^15.2.4",
+    "@angular/forms": "^15.2.4",
+    "@angular/material": "^15.2.4",
     "prosemirror-commands": "^1.1.12",
     "prosemirror-history": "^1.2.0",
     "prosemirror-inputrules": "^1.1.3",

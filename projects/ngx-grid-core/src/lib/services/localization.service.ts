@@ -27,7 +27,7 @@ export class LocalizationService {
 
   public getLocalizedString(str: string): string {
     if (str.includes('$')) {
-      const [matched, ...captureGroups] = str.match(/\$\{([^\}\\]|\\.)(.+)\}/) ?? []
+      const [matched, ...captureGroups] = str.match(/\$\{([^\}\\]|\\.)(.+)\}/) ?? [] as string[]
       const replacement = this._locMap.get(str.replace(matched, '')) ?? this._defaultLocMap.get(str.replace(matched, '')) ?? str
       return str.replace(str.replace(matched, ''), replacement).replace(matched, captureGroups.join(''))
     } else {
