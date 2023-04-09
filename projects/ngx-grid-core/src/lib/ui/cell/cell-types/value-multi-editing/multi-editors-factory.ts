@@ -15,4 +15,5 @@ export const CELL_MULTI_EDITORS: {[key in TCellTypeName]: Array<new (cellValue: 
   DropdownMultiSelect : [ editors.ClearValues ],
   File                : [ editors.ClearValues ],
   Color               : [ editors.ClearValues ],
+  Button              : [],
 }

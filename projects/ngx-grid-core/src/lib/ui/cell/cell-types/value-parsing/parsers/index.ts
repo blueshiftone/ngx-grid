@@ -6,6 +6,8 @@ import { FileParser as File } from './file.parser'
 import { MultiSelectParser as MultiSelect } from './multi-select.parser'
 import { NumberParser as Number } from './number.parser'
 import { StringParser as String } from './string.parser'
+import { AnyParser as Any } from './any.parser'
+import { ButtonParser as Button } from './button.parser'
 
 export {
   Array,
@@ -15,5 +17,7 @@ export {
   Number,
   String, 
   File,
-  Color
+  Color,
+  Any,
+  Button
 }

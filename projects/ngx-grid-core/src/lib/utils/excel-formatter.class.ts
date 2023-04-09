@@ -60,6 +60,9 @@ export class ExcelFormatter {
     let styles: string[] = []
 
     switch (cellType.name) {
+      case 'Button':
+        value = value?.text ?? ''
+        break
       case 'RichText' :
         const node = document.createElement('div')
         node.innerHTML = value

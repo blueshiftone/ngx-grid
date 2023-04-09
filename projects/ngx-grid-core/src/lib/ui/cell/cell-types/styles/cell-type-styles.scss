@@ -22,6 +22,7 @@
   height: 100%;
   display: flex;
   font-size: inherit;
+
   input {
     width: 100%;
     margin: 0;
@@ -39,6 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   input {
     margin: 0;
   }
@@ -48,6 +50,7 @@
   .value {
     overflow: hidden;
     text-overflow: ellipsis;
+
     * {
       margin: 0 !important;
       padding: 0 !important;
@@ -63,6 +66,7 @@ input[type="number"] {
   text-align: right;
   /* Remove arrows/spinners */
   -moz-appearance: textfield;
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -73,13 +77,14 @@ input[type="number"] {
 .number-readonly {
   text-align: right;
   padding-left: 10px;
-  
+
   .number-color {
     width: 100%;
   }
 }
 
-.number-readonly, .number-readonly > .number-color {
+.number-readonly,
+.number-readonly>.number-color {
   display: flex;
   align-items: center;
   white-space: nowrap;
@@ -109,6 +114,7 @@ input[type="number"] {
   height: 100%;
   width: 100%;
   box-sizing: border-box;
+
   .chip {
     display: block;
     padding: 2px 4px;
@@ -117,12 +123,15 @@ input[type="number"] {
 
     width: fit-content;
     max-width: 100%;
+
     &.dark {
       color: var(--light-text);
     }
+
     &.light {
       color: var(--dark-text);
     }
+
     .label {
       width: calc(100%);
       white-space: nowrap;
@@ -136,6 +145,7 @@ input[type="number"] {
   &.static .chip {
     border-radius: 20px;
   }
+
   &.related .chip {
     border-radius: 4px;
   }
@@ -153,8 +163,10 @@ input[type="number"] {
 
 .multi-select-readonly {
   overflow: hidden;
+
   .chip {
     margin-right: 4px;
+
     &:last-child {
       margin-right: 0px;
     }
@@ -164,11 +176,13 @@ input[type="number"] {
 .file-cell-type {
   position: relative;
   min-width: 80px;
+
   .chip {
     display: inline-flex;
     place-items: center;
     border-radius: 4px;
     margin-right: 3px;
+
     svg {
       width: 14px;
       min-width: 14px;
@@ -177,6 +191,7 @@ input[type="number"] {
       opacity: 0.7;
       fill: currentColor;
     }
+
     .progressBar {
       --size: 11px;
       width: var(--size);
@@ -188,6 +203,7 @@ input[type="number"] {
       border-radius: 50%;
       margin: 0 3px 0 5px;
     }
+
     .progressTxt {
       font-size: 9px;
     }
@@ -195,11 +211,12 @@ input[type="number"] {
 }
 
 .file-cell-type {
-&.dropzone-active {
+  &.dropzone-active {
     .inner {
       opacity: 0.2;
     }
   }
+
   &.hover {
     .file-dropzone {
       &:before {
@@ -209,11 +226,34 @@ input[type="number"] {
   }
 }
 
-.color-readonly, .color-editable {
+.color-readonly,
+.color-editable {
   min-width: 80px;
+
   .bubble {
     width: 100%;
     height: 100%;
     border-radius: 4px;
+  }
+}
+
+button.grid-cell-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 0px;
+  border: none;
+  cursor: pointer;
+  background: var(--heavy-dull-highlight);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 11px;
+  background: var(--primary-color-themed);
+  color: #fff;
+
+  &:hover {
+    background: var(--primary-color-contrast);
   }
 }

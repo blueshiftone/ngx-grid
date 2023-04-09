@@ -22,6 +22,16 @@ export class GridRow implements IGridRow {
     this.metadata          = metadata ?? this.metadata
   }
 
+  public toString(): string {
+    return JSON.stringify(this.toJSON())
+  }
+
+  public toJSON<T = { [key: string]: any }>() {
+    const output: any = {}
+    this.valuesArray.forEach(itm => output[itm.columnKey] = itm.value.value)
+    return output as T
+  }
+
   public get rowKey(): TPrimaryKey {
     return this.values.get(this._primaryKeyColumn)?.value ?? ''
   }
