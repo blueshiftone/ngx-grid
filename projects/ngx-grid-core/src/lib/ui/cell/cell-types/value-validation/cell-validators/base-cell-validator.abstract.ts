@@ -1,6 +1,7 @@
 import { GridControllerService } from '../../../../../controller/grid-controller.service'
 import { EValidationSeverity, IGridCellCoordinates, IGridValueValidationResult } from '../../../../../typings/interfaces'
 import { GridMetadataCollection } from '../../../../../typings/interfaces/implementations'
+import { TLocalizationKey } from '../../../../../typings/types'
 
 export interface ICellValidator {
   run(value: any): IGridValueValidationResult
@@ -17,7 +18,7 @@ export abstract class BaseCellValidator implements ICellValidator {
   public message: string = ""
   public severity        = EValidationSeverity.Error
 
-  public return(isValid: boolean, message?: string, severity?: EValidationSeverity): IGridValueValidationResult {
+  public return(isValid: boolean, message?: TLocalizationKey, severity?: EValidationSeverity): IGridValueValidationResult {
     const { value } = this
     const isInvalid = !isValid
     return { 
@@ -34,11 +35,11 @@ export abstract class BaseCellValidator implements ICellValidator {
     return this.return(true)
   }
 
-  public error(message: string): IGridValueValidationResult {
+  public error(message: TLocalizationKey): IGridValueValidationResult {
     return this.return(false, message, EValidationSeverity.Error)
   }
 
-  public warning(message: string): IGridValueValidationResult {
+  public warning(message: TLocalizationKey): IGridValueValidationResult {
     return this.return(false, message, EValidationSeverity.Warning)
   }
 

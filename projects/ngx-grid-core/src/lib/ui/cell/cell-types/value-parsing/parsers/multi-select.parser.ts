@@ -14,7 +14,7 @@ import { BaseParser } from './base-parser.abstract'
 import { IParsingTest } from './parsing-test.interface'
 
 export class MultiSelectParser extends BaseParser implements IParsingTest {
-  constructor (public readonly initialValue: TPrimaryKey[] | TPrimaryKey) { super() }
+  constructor (public readonly initialValue: (TPrimaryKey | null)[] | (TPrimaryKey | null)) { super() }
 
   public run(gridController: GridControllerService, cellCoords: TAtLeast<IGridCellCoordinates, 'columnKey'>): IGridValueParsingResult<TPrimaryKey[]> {
     
@@ -34,7 +34,7 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
 
     const options = cellMeta?.type?.list?.staticOptions ?? col?.type?.list?.staticOptions ?? []
 
-    const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k)
+    const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k).filter(k => k !== null) as string[]
 
     const matchedOptions: IGridSelectListOption[] = []
 
@@ -76,8 +76,12 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
 
     if (!gridID) return this.failed()
     
-    const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k)
+    const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k).filter(k => k !== null) as TPrimaryKey[]
     const unmatchedKeys: TPrimaryKey[] = []
+
+    if (!keys.length) {
+      return this.passed(Array.isArray(this.initialValue) ? [] : null)
+    }
 
     const matchedRows: IGridRow[] = []
 

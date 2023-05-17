@@ -66,6 +66,9 @@ export class ViewportScrollToCoordinates extends Operation {
           viewPort.scrollTo({ left: nextLeftScrollOffset })
         }
       }
+    }).add(() => {
+      this.gridEvents.GridScrollArrivedAtCoordinatesEvent.emit(cellPos)
+      componentRendered.complete()
     })
   }
 

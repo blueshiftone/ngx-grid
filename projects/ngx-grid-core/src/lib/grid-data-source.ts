@@ -108,10 +108,11 @@ export class GridDataSource implements IGridDataSource {
     return new GridDataSource(Object.assign(props, input))
   }
 
-  public static cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
+  public static async cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
     const source = GridDataSource.cloneMeta(g, input)
     source.setRows((g.rows.firstValue).map(row => row.clone()))
     source.setColumns(g.columns)
+    await source.rows.whenIdle()
     return source
   }
 

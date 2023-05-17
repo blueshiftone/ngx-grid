@@ -1,4 +1,7 @@
+import { firstValueFrom } from 'rxjs'
+
 import { EValidationSeverity, IGridCellCoordinates, IGridOperationFactory, IGridValueValidationResult } from '../../typings/interfaces'
+import { TLocalizationKey } from '../../typings/types'
 import { Operation } from '../operation.abstract'
 
 export class RemoteValidation extends Operation {
@@ -7,7 +10,7 @@ export class RemoteValidation extends Operation {
 
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
   
-  public addValidationResult(coordinates: IGridCellCoordinates[], message: string, severity = EValidationSeverity.Error): void {
+  public addValidationResult(coordinates: IGridCellCoordinates[], message: TLocalizationKey, severity = EValidationSeverity.Error): void {  
     coordinates.forEach(coords => {
       if (!this._validationMap.has(coords.compositeKey)) {
         this._validationMap.set(coords.compositeKey, [])
@@ -32,8 +35,10 @@ export class RemoteValidation extends Operation {
     const columns = this.dataSource.columns
     const visibleCoordinates = coordinates.filter(coord => columns.find(col => col.columnKey === coord.columnKey))
     if (visibleCoordinates.length) {
-      this.selection.SelectCell.run(visibleCoordinates[0]);
       this.selection.ScrollIntoView.run(visibleCoordinates[0]);
+      firstValueFrom(this.gridEvents.GridScrollArrivedAtCoordinatesEvent.on()).then(() => {
+        this.selection.SelectCell.run(visibleCoordinates[0]);
+      })
     }
   }
 

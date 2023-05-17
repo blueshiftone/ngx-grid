@@ -59,7 +59,7 @@ export class CellComponents extends Operation {
   }
 
   public findWithCoords(coords?: IGridCellCoordinates): IGridCellComponent | undefined {
-    return this.cellComponentsByCoords.get(coords ? coords.compositeKey : '')
+    return coords ? this.cellComponentsByCoords.get(coords.compositeKey) : undefined
   }
 
   public findForColumn(columnKey: string): Set<IGridCellComponent> {

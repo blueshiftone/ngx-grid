@@ -24,4 +24,5 @@ export * from './lib/services/localization.service'
 export * from './lib/services/grid-multi-cell-edit.service'
 
 export * from './lib/controller/transform-pipeline/transformer.abstract'
+export * from './lib/controller/transform-pipeline/transform-pipeline.abstract'
 export * from './lib/controller/transform-pipeline/generic-transformer'

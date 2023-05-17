@@ -7,5 +7,3 @@ export interface IGridSelectList {
   relatedGridID?: string
   color?       : string
 }
-
-

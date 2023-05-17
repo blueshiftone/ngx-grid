@@ -39,23 +39,23 @@ export class SetCellValue extends Operation {
 
     this.cellOperations.ValidateCell.run(coordinates)
 
-    this._bufferOperation.next([coordinates, parseResults, options])
+    if (WithDefaultTrue(options?.emitEvent)) {
+      this._bufferEmitChangedCells.next([coordinates, parseResults])
+    }
 
     return parseResults
   }
 
-  private _bufferOperation = new BufferOperation((args: any) => this._emitChangedCells(args))
+  private _bufferEmitChangedCells = new BufferOperation((args: any) => this._emitChangedCells(args))
 
-  private async _emitChangedCells(args: [IGridCellCoordinates, IGridValueParsingResult, Partial<ISetCellValueOptions> | undefined][]) {
+  private async _emitChangedCells(args: [IGridCellCoordinates, IGridValueParsingResult][]) {
 
     const changed: IGridCellValue[] = []
     
     for (const arg of args) {
-      const [coordinates, validation, options] = arg
+      const [coordinates, validation] = arg
       const { rowKey, columnKey } = coordinates
-      if (validation.isValid && WithDefaultTrue(options?.emitEvent)) {
-        changed.push(new GridCellValue(new GridCellCoordinates(rowKey, columnKey), validation.transformedValue))
-      }
+      changed.push(new GridCellValue(new GridCellCoordinates(rowKey, columnKey), validation.transformedValue))
     }
 
     this.gridEvents.CellValueChangedEvent.emit(changed)

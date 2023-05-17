@@ -14,16 +14,20 @@
   overflow: hidden;
   display: grid;
   grid-template-rows: 34px 1fr;
+
   .grid {
     height: 100%;
     position: relative;
     border-top: 1px solid var(--divider-color);
   }
-  button.mat-menu-item, .no-results {
+
+  button.mat-menu-item,
+  .no-results {
     height: 30px;
     line-height: 30px;
     display: flex;
     align-items: center;
+
     .bubble {
       display: block;
       white-space: nowrap;
@@ -32,6 +36,7 @@
       border-radius: 15px;
       filter: saturate(0);
       line-height: 15px;
+
       &:not(.empty) {
         background: var(--primary-color-40);
       }
@@ -42,9 +47,11 @@
 .search {
   display: flex;
   align-items: center;
-  > * {
+
+  >* {
     display: inline-block;
   }
+
   input {
     flex-grow: 1;
     border: none;
@@ -53,10 +60,17 @@
     font-size: 15px;
     background-color: transparent;
   }
+
   svg {
     margin: 5px 5px 5px 0;
     opacity: 0.6;
     transform: scale(0.8);
+  }
+
+  button.mat-mdc-icon-button {
+    height: 30px;
+    width: 30px;
+    padding: 10px;
   }
 }
 
@@ -67,5 +81,8 @@
 
 .open-simple-selector {
   opacity: 0.7;
-  span { transform: scale(0.8) }
+
+  span {
+    transform: scale(0.8)
+  }
 }
