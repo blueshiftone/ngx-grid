@@ -25,7 +25,7 @@ export class SetCellValidationDialog extends Operation {
 
       if (typeof focusedCell !== 'undefined' && focusedCell === cellComponent) {
 
-        const cellTypeComponent = cellComponent.typeComponent!      
+        const cellTypeComponent = cellComponent.typeComponent!
 
         cellComponent.overlays.open(cellTypeComponent, EGridOverlayType.CellValidationMessage, {
           data: validationResults, 
