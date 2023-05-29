@@ -8,7 +8,7 @@ import { IDestroyable } from './destroyable.interface'
 import { IGridRow } from './grid-row.interface'
 
 export interface IGridDataSource extends IDestroyable {
-  onChanges        : Observable<void>
+  onChanges        : Observable<any>
   dataSetName      : string
   dataGridID       : string
   columns          : IGridColumn[]
