@@ -36,6 +36,11 @@ export class SetRowStatus extends Operation {
       if (status === ERowStatus.Committed) this.rowOperations.dirtyRowsMap.delete(rowKey)
       else                                 this.rowOperations.dirtyRowsMap.set(rowKey, row)
 
+      const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(rowKey)
+      if (rowComponent) {
+        this.rowOperations.CheckRowIcon.run(rowComponent)
+      }
+
       if (options.emitEvent === false) emitEvent = false
     }
 
