@@ -17,10 +17,6 @@ export class SetCellValidationDialog extends Operation {
     const focusedCell       = this.cellOperations.GetFocusedCell.run()
     const hasCellComponent  = typeof cellComponent?.typeComponent !== 'undefined'
 
-    const canEdit = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
-
-    if (!canEdit) return
-
     if (!nextIsValid && hasCellComponent) {
 
       if (typeof focusedCell !== 'undefined' && focusedCell === cellComponent) {
