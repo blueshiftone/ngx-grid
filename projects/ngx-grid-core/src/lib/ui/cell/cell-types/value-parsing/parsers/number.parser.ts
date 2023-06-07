@@ -41,7 +41,7 @@ export class NumberParser extends BaseParser implements IParsingTest {
 
       if (Number.isNaN(transformedValue)) return this.failed()
 
-      if (this.initialValue.includes('%')) transformedValue /= 10
+      if (this.initialValue.includes('%')) transformedValue /= 100
 
       return this.passed(transformedValue)
 
