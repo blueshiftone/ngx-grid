@@ -1,4 +1,7 @@
-import { IGridValueParsingResult } from '../../../../../typings/interfaces'
+import { EMetadataType } from '../../../../../typings/enums'
+import { GridControllerService } from '../../../../../controller/grid-controller.service'
+import { IGridCellCoordinates, IGridValueParsingResult, INumberOptions } from '../../../../../typings/interfaces'
+import { TAtLeast } from '../../../../../typings/types/at-least.type'
 import { BaseParser } from './base-parser.abstract'
 import { IParsingTest } from './parsing-test.interface'
 
@@ -18,7 +21,7 @@ import { IParsingTest } from './parsing-test.interface'
 export class NumberParser extends BaseParser implements IParsingTest {
   constructor (public readonly initialValue: any) { super() }
 
-  public run(): IGridValueParsingResult<number> {
+  public run(gridController?: GridControllerService, cellCoords?: TAtLeast<IGridCellCoordinates, 'columnKey'>): IGridValueParsingResult<number> {
 
     if (typeof this.initialValue === 'number') return this.passed()
 
@@ -37,6 +40,13 @@ export class NumberParser extends BaseParser implements IParsingTest {
       if (integer === '-') integer = '-0'
       integer = integer ?? 0
       
+      // Truncate decimals to max number of places
+      const numberOptions = gridController?.dataSource.getColumn(cellCoords?.columnKey ?? '')?.metadata?.get<INumberOptions>(EMetadataType.NumberOptions)
+      if (numberOptions) {
+        const maxDecimalPlaces = (numberOptions.maxDecimalPlaces ?? 0) + (this.initialValue.includes('%') ? 2 : 0)
+        if (decimals && decimals.length > maxDecimalPlaces) decimals = decimals.slice(0, maxDecimalPlaces)
+      }
+
       let transformedValue = parseFloat(`${integer}${typeof decimals !== 'undefined' ? `.${decimals}` : ``}`)
 
       if (Number.isNaN(transformedValue)) return this.failed()
