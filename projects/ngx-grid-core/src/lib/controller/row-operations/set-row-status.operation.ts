@@ -1,54 +1,53 @@
 import { ERowStatus } from '../../typings/enums'
 import { IGridRow, IRowOperationFactory } from '../../typings/interfaces'
 import { TPrimaryKey } from '../../typings/types'
-import { DistinctValues } from '../../utils/distinct-values'
+import { WithDefaultTrue } from '../../utils/with-default'
 import { BufferOperation } from '../buffer-operation'
 import { Operation } from '../operation.abstract'
 
 export class SetRowStatus extends Operation {
 
-  public bufferOperation = new BufferOperation((args: any) => this._run(args))
+  public bufferEvents = new BufferOperation((args: any) => this._bufferEvents(args))
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
-  public buffer = (rowKey: TPrimaryKey, status: ERowStatus, options:ISetRowStatusOptions = {}) => this.bufferOperation.next([rowKey, status, options])
+  public run(row: IGridRow, status: ERowStatus | keyof typeof ERowStatus, options?: ISetRowStatusOptions) : void
+  public run(rowKey: TPrimaryKey, status: ERowStatus | keyof typeof ERowStatus, options?: ISetRowStatusOptions) : void 
+  public run(rowKeyOrRow: TPrimaryKey | IGridRow, status: ERowStatus | keyof typeof ERowStatus, options?: ISetRowStatusOptions) : void {
 
-  private async _run(args: [TPrimaryKey, ERowStatus | keyof typeof ERowStatus, ISetRowStatusOptions][]) {
+    if (typeof status === 'string') status = ERowStatus[status]
 
-    let valueChanged = false
-    let emitEvent = true 
-
-    for (const arg of args) {
-      let [rowKey, status, options] = arg
-
-      if (typeof status === 'string') status = ERowStatus[status]
-
-      const row = this.dataSource.getRow(rowKey)
-      if (!row) {
-        console.warn(`Row with key ${rowKey} not found`)
-        continue
-      }
-      if (status === ERowStatus.Draft && (row?.status === ERowStatus.New || row?.status === ERowStatus.Deleted)) continue
-      if (row?.status !== status) valueChanged = true
-
-      row.status = status
-  
-      if (status === ERowStatus.Committed) this.rowOperations.dirtyRowsMap.delete(rowKey)
-      else                                 this.rowOperations.dirtyRowsMap.set(rowKey, row)
-
-      if (options.emitEvent === false) emitEvent = false
+    const row = typeof rowKeyOrRow === 'string' || typeof rowKeyOrRow === 'number' ? this.dataSource.getRow(rowKeyOrRow) : rowKeyOrRow
+    
+    if (!row) {
+      console.warn(`Row with key ${rowKeyOrRow} not found`)
+      return
     }
 
-    if (valueChanged) {
-      this.gridEvents.GridWasModifiedEvent.emit(true) 
-      const primaryKeys = DistinctValues(args.map(a => a[0]))
-      if (emitEvent) {
-        this.gridEvents.RowStatusChangedEvent.emit(primaryKeys.map(pk => this.dataSource.getRow(pk)).filter(meta => meta).map(m => m?.clone()) as IGridRow[])
-      }
+    if (status === ERowStatus.Draft && (row?.status === ERowStatus.New || row?.status === ERowStatus.Deleted)) return
+    const statusChanged = row?.status !== status
+
+    row.status = status
+
+    if (status === ERowStatus.Committed) this.rowOperations.dirtyRowsMap.delete(row.rowKey)
+    else                                 this.rowOperations.dirtyRowsMap.set(row.rowKey, row)
+
+    if (WithDefaultTrue(options?.emitEvent && statusChanged)) {
+      this.bufferEvents.next([[row]])
     }
 
   }
 
+  private async _bufferEvents(args: [IGridRow][]) {
+    const primaryKeys = new Set<TPrimaryKey>()
+    
+    for (const arg of args) {
+      let [row] = arg
+      primaryKeys.add(row.rowKey)
+    }
+    this.gridEvents.GridWasModifiedEvent.emit(true) 
+    this.gridEvents.RowStatusChangedEvent.emit([...primaryKeys].map(pk => this.dataSource.getRow(pk)).filter(meta => meta).map(m => m?.clone()) as IGridRow[])
+  }
 }
 
 export interface ISetRowStatusOptions {

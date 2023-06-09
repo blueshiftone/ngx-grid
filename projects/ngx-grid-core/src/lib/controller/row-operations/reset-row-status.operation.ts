@@ -30,7 +30,7 @@ export class ResetRowStatus extends Operation {
 
       if (hasDraftValue) status = ERowStatus.Draft
 
-      promises.add(this.rowOperations.SetRowStatus.buffer(rowKey, status))
+      this.rowOperations.SetRowStatus.run(rowKey, status)
     }
 
     await Promise.all(promises)
