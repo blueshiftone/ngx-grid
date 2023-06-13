@@ -26,9 +26,9 @@ export class AddRow extends Operation {
       const [row, atIndex] = arg
       rowKey = row.rowKey
 
+      this.rowOperations.SetRowStatus.run(row, ERowStatus.New)
+      
       this.dataSource.insertNewRows(atIndex ?? -1, row)
-
-      buffers.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New))
       
       for (const column of this.dataSource.columns) {
         const isEditable = this.cellOperations.GetCellIsEditable.run(new GridCellCoordinates(rowKey, column.columnKey))

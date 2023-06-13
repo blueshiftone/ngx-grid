@@ -151,9 +151,8 @@ export class GridPaste extends Operation {
 
         let index = visibleRows.length
         for (const row of newRows) {
-          const { rowKey } = row
           dataSource.insertNewRows(row)
-          this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.New)
+          this.rowOperations.SetRowStatus.run(row, ERowStatus.New)
           index++
         }
         

@@ -33,7 +33,7 @@ export class DeleteRow extends Operation {
         if (WithDefaultTrue(options.emitEvent) === true) this.gridEvents.RowDeletedEvent.emit(rowKey)
 
       } else {
-        promises.add(this.rowOperations.SetRowStatus.buffer(rowKey, ERowStatus.Deleted, { emitEvent: options.emitEvent }))
+        this.rowOperations.SetRowStatus.run(rowKey, ERowStatus.Deleted, { emitEvent: options.emitEvent })
       }
 
       const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(rowKey)
