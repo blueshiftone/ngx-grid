@@ -15,7 +15,13 @@ export class MaxLength extends BaseCellValidator implements ICellValidator {
     const maxLength = this.gridController.cell.GetCellMetaValue.run<number>(this.cellCoords, EMetadataType.MaxLength)
 
     if (maxLength !== null && typeof value === 'string' && value.length > maxLength) {
-      return this.error(`locMaximumCharactersExceeded\${: ${value.length}/${maxLength}}`)
+      return this.error({
+        key: `locMaximumCharactersExceeded`,
+        variables: {
+          0: value.length,
+          1: maxLength
+        }
+      })
     }
 
     return this.passed()

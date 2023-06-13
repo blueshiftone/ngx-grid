@@ -116,11 +116,13 @@ export class GetFormattedValue extends Operation {
       case 'DropdownSingleSelect':
         const gridId = dataType.list?.relatedGridID
         if (gridId) return this.gridOperations.GetRelatedDataPreviewString.run(gridId, value)
+        else console.warn(`DropdownSingleSelect column ${coordsOrColumn.columnKey} has no related grid ID in its data type`)
         break
       case 'DropdownMultiSelect':
         if (Array.isArray(value)) {
           const gridId = dataType.list?.relatedGridID
           if (gridId) return value.map(v => this.gridOperations.GetRelatedDataPreviewString.run(gridId, v)).join(', ')
+          else console.warn(`DropdownMultiSelect column ${coordsOrColumn.columnKey} has no related grid ID in its data type`)
         }
         break
         case 'RichText':

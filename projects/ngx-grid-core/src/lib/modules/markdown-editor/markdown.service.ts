@@ -3,7 +3,7 @@ import { baseKeymap, chainCommands, lift, setBlockType, toggleMark, wrapIn } fro
 import { keymap } from 'prosemirror-keymap'
 import { DOMParser, DOMSerializer, Fragment, Mark, Schema, Slice } from 'prosemirror-model'
 import { addListNodes, liftListItem, wrapInList } from 'prosemirror-schema-list'
-import { EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state'
+import { Command, EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { BehaviorSubject } from 'rxjs'
 
@@ -30,7 +30,7 @@ export class MarkdownService {
   
   private _tmpAction?: IMarkdownEditorAction
   private _selectedLinkPositions: {start: number, end: number}[] = []
-  private _selectedLinkMark?: Mark<any>
+  private _selectedLinkMark?: Mark
 
   public readonly actions: IMarkdownEditorAction[] = [
     {
@@ -114,8 +114,8 @@ export class MarkdownService {
           touched = true
         }
         
-        if (attrs?.['href']) {
-          const mark = new Mark()
+        if ((attrs as any)?.['href']) {
+          const mark = new Mark() as any
           mark.type  = customSchema.marks['link']
           mark.attrs = attrs
           tr.addMark(start, end, mark)
@@ -165,7 +165,7 @@ export class MarkdownService {
 
   private _getActiveActions(
     activeItems: Set<string> = new Set(),
-    fragment: Fragment<any> = this._editor!.state.selection.content().content
+    fragment: Fragment = this._editor!.state.selection.content().content
   ): Set<string> {
     if (!this._editor) throw new Error(`No editor instance`)
     if (!fragment.size) {
@@ -215,7 +215,7 @@ export class MarkdownService {
     if (!this._editor) throw new Error('Editor is not defined')
     this._editor.focus()
     if (action.isMark) this._tmpAction = action
-    action.command(this._editor.state, this._editor.dispatch, attrs)
+    action.command(this._editor.state, this._editor.dispatch, attrs as any)
   }
 
   public updateValue(v: string): void {
@@ -326,15 +326,9 @@ export class MarkdownService {
 }
 
 export interface IMarkdownEditorAction {
-  command: TCommandFn,
+  command: Command,
   name: string,
   isMark?: boolean,
   proseName: string,
   enabled?(): boolean
 }
-
-export type TCommandFn = (
-  state: EditorState,
-  dispatch?: ((tr: Transaction) => void),
-  attrs?: { [key: string]: any }
-) => boolean

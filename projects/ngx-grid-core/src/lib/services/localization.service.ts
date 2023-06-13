@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
-import { Subject } from 'rxjs'
+import { map, Observable, startWith, Subject } from 'rxjs'
 
+import { TLocalizationKey, TLocalizationVariables } from '../typings/types'
 import { LocalPreferencesService } from './local-preferences.service'
 import { GRID_LOCALIZATION_DEFAULTS } from './localization.defaults'
 
@@ -25,14 +26,23 @@ export class LocalizationService {
     }
   }
 
-  public getLocalizedString(str: string): string {
-    if (str.includes('$')) {
-      const [matched, ...captureGroups] = str.match(/\$\{([^\}\\]|\\.)(.+)\}/) ?? []
-      const replacement = this._locMap.get(str.replace(matched, '')) ?? this._defaultLocMap.get(str.replace(matched, '')) ?? str
-      return str.replace(str.replace(matched, ''), replacement).replace(matched, captureGroups.join(''))
-    } else {
-      return this._locMap.get(str) ?? this._defaultLocMap.get(str) ?? str
+  public getLocalizedString(input: TLocalizationKey, variables?: TLocalizationVariables): string {
+    if (typeof input === 'object') {
+      variables = input.variables
+      input = input.key
     }
+    let str = this._locMap.get(input) ?? input
+    
+    if (variables) {
+      for (const [key, value] of Object.entries(variables)) {
+        str = str.replace(`{${key}}`, this.getLocalizedString(value))
+      }
+    }
+    return str
+  }
+
+  public getLocalizationStringObservable(str: string): Observable<string> {
+    return this.changes.pipe(map(() => this.getLocalizedString(str)), startWith(this.getLocalizedString(str)))
   }
 
   public setCulture(culture: string): void {

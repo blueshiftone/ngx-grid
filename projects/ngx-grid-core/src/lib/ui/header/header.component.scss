@@ -39,12 +39,20 @@ button.col-dropdown-btn {
     opacity: 0;
   }
 
-  svg,
   .mat-icon {
     width: 12px;
     height: 12px;
+    min-width: 12px;
     line-height: 12px;
     opacity: 0.8;
+
+    ::ng-deep {
+      svg {
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+      }
+    }
 
     &.thinLine {
       stroke: currentColor;
@@ -64,8 +72,7 @@ button.col-dropdown-btn {
 }
 
 ::ng-deep {
-  .mat-menu-panel.column-menu {
-    background-color: var(--app-bg);
+  .mat-mdc-menu-panel.column-menu {
     margin-top: 1px;
   }
 }

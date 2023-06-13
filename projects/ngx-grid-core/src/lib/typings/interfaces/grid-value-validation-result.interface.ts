@@ -1,7 +1,8 @@
+import { TLocalizationKey } from '../types'
 
 export interface IGridValueValidationResult<T = any> {
   value       : T
-  message     : string
+  message     : TLocalizationKey
   severity    : EValidationSeverity
   passed      : boolean
   failed      : boolean

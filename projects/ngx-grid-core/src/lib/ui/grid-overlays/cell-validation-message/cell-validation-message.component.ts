@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inj
 
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EValidationSeverity, IGridOverlayData, IGridValueValidationResult } from '../../../typings/interfaces'
+import { TLocalizationKey } from '../../../typings/types'
 import { AutoUnsubscribe } from '../../../utils/auto-unsubscribe'
 
 @Component({
@@ -32,7 +33,7 @@ export class CellValidationMessageComponent extends AutoUnsubscribe {
     return EValidationSeverity[result.severity]
   }
 
-  public localized(str: string) {
+  public localized(str: TLocalizationKey) {
     return this.data.gridController.localize.getLocalizedString(str)
   }
 

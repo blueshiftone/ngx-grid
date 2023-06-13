@@ -9,6 +9,7 @@ import { NumberRangeCellType as NumberRange } from './number-range.cell-type'
 import { NumberCellType as Number } from './number.cell-type'
 import { RichTextCellType as RichText } from './rich-text.cell-type'
 import { TextCellType as Text } from './text.cell-type'
+import { ButtonCellType as Button } from './button.cell-type'
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const CELL_TYPES = {
@@ -23,6 +24,7 @@ const CELL_TYPES = {
   DropdownMultiSelect,
   File,
   Color,
+  Button
 }
 
 export default CELL_TYPES

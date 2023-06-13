@@ -234,7 +234,9 @@ export class GridSelectionRange implements IGridSelectionRange {
       const row = this.globalUtils.getRowFromRowKey(rowKey)
       if (!row) throw new Error(`Unable to find row for key ${rowKey}`)
       const index = this._visibleRows.findIndex(x => x.rowKey === rowKey)
-      if (index === -1) throw new Error(`Unable to find row index for key ${rowKey}`)
+      if (index === -1) {
+        throw new Error(`Unable to find row index for key ${rowKey}`)
+      }
       return index
     },
     getRowFromRowKey: (rowKey: TPrimaryKey): IGridRow | undefined => {

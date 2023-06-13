@@ -48,14 +48,6 @@
             }
           },
           "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngx-grid-core/src/test.ts",
-            "tsConfig": "projects/ngx-grid-core/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-grid-core/karma.conf.js"
-          }
         }
       }
     },
@@ -79,14 +71,6 @@
             }
           },
           "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/ngx-grid-toolbar/src/test.ts",
-            "tsConfig": "projects/ngx-grid-toolbar/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-grid-toolbar/karma.conf.js"
-          }
         }
       }
     }

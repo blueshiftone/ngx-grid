@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { fromEvent } from 'rxjs'
+import { fromEvent, map } from 'rxjs'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GridDataSource } from '../../../grid-data-source'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { LocalizationService } from '../../../services/localization.service'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectionSlice } from '../../../typings/interfaces'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
@@ -27,16 +28,22 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
 
   public gridConfig = new DataGridConfigs().withRowSingleSelect()
 
+  public locBackToSimpleSelector = this.loc.getLocalizationStringObservable('locBackToSimpleSelector')
+
   constructor(
     @Inject(GRID_OVERLAY_DATA) public override data: IGridOverlayData,
-    public override readonly cd: ChangeDetectorRef
+    public override readonly cd: ChangeDetectorRef,
+    private loc: LocalizationService
   ) { super(data, cd) }
 
   override ngOnInit(): void {
     const list = this.data.currentCell.type.list
     this.value = [ this.data.currentCell.value ].filter(v => v !== null && typeof v !== 'undefined')
     if (!list) return
-    this.dataSource = this._getDataSource()
+    this._getDataSource().then(d => {
+      this.dataSource = d
+      this.cd.detectChanges()
+    })
     window.requestAnimationFrame(_ => this._searchEl.focus())
     this.addSubscription(fromEvent<KeyboardEvent>(this._searchEl, 'keydown').subscribe(e => {
       if (!this.gridComponent) return
@@ -84,13 +91,13 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
 
   private get _searchEl(): HTMLInputElement { return this.searchInput.nativeElement }
 
-  private _getDataSource(): IGridDataSource | undefined {
+  private async _getDataSource(): Promise<IGridDataSource | undefined> {
     const gridID = this.data.currentCell?.type.list?.relatedGridID
     if (!gridID) return undefined
     let source = this.gridController.grid.GetRelatedData.run(gridID)
     if (source) {
       // clone the source to avoid changing the original
-      source = GridDataSource.cloneSource(source)
+      source = await GridDataSource.cloneSource(source)
     }  
     return source
   }

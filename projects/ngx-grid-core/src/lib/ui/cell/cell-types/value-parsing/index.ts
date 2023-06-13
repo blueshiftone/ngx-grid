@@ -17,4 +17,5 @@ export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
   DropdownMultiSelect : new ValueParser([parsers.Array, parsers.MultiSelect]),
   DateRange           : new ValueParser([parsers.Array]),
   NumberRange         : new ValueParser([parsers.Array]),
+  Button              : new ValueParser([parsers.Button]),
 }

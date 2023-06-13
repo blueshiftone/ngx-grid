@@ -1,6 +1,6 @@
 import { GridControllerService } from '../../../../../controller/grid-controller.service'
 import { EValidationSeverity, IGridCellCoordinates, IGridCellValidationState, IGridValueValidationResult } from '../../../../../typings/interfaces'
-import { TColumnKey } from '../../../../../typings/types'
+import { TColumnKey, TLocalizationKey } from '../../../../../typings/types'
 
 export interface IColumnValidator {
   run(column: TColumnKey): IGridValueValidationResult
@@ -30,7 +30,7 @@ export abstract class BaseColumnValidator implements IColumnValidator {
     this.gridController.gridEvents.CellValidationStateChangedEvent.emit(newState)
   }
 
-  public return(isValid: boolean, coords: IGridCellCoordinates, message?: string, severity?: EValidationSeverity): IGridValueValidationResult {
+  public return(isValid: boolean, coords: IGridCellCoordinates, message?: TLocalizationKey, severity?: EValidationSeverity): IGridValueValidationResult {
     const value = this.gridController.cell.GetCellValue.run(coords)
     const isInvalid = !isValid
     return { 
@@ -47,11 +47,11 @@ export abstract class BaseColumnValidator implements IColumnValidator {
     return this.return(true, coords)
   }
 
-  public error(message: string, coords: IGridCellCoordinates): IGridValueValidationResult {
+  public error(message: TLocalizationKey, coords: IGridCellCoordinates): IGridValueValidationResult {
     return this.return(false, coords, message, EValidationSeverity.Error)
   }
 
-  public warning(message: string, coords: IGridCellCoordinates): IGridValueValidationResult {
+  public warning(message: TLocalizationKey, coords: IGridCellCoordinates): IGridValueValidationResult {
     return this.return(false, coords, message, EValidationSeverity.Warning)
   }
 

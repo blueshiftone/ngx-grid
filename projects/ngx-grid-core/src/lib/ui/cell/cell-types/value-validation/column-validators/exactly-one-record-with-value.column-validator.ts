@@ -61,14 +61,20 @@ export class ExactlyOneRecordWithValue extends BaseColumnValidator implements IC
 
         for (const item of cellsWithValue) {
           const coords = new GridCellCoordinates(item.rowKey, this.columnKey)
-          this.patchValidationResult(coords, this.error(`locThisColumnMustContainOnlyOneCellWithTheValueOf\${ '${value}'}`, coords))
+          this.patchValidationResult(coords,this.error({
+            key: `locThisColumnMustContainOnlyOneCellWithTheValueOf`,
+            variables: {0: value}
+          }, coords))
         }
 
       }
     } else if (cellsWithValue.length === 0) {
       for (const row of this.gridController.dataSource.rows.firstValue) {
         const coords = new GridCellCoordinates(row.rowKey, this.columnKey)
-        this.patchValidationResult(coords, this.error(`locOneCellInThisColumnMustHaveTheValueOf\${ '${value}'}`, coords))
+        this.patchValidationResult(coords, this.error({
+          key: `locOneCellInThisColumnMustHaveTheValueOf`,
+          variables: {0: value}
+        }, coords))
       }
     }
   }

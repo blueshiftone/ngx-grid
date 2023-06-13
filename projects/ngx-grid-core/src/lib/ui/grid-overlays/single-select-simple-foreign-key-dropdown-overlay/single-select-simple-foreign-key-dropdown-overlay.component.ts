@@ -7,6 +7,7 @@ import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operato
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
+import { LocalizationService } from '../../../services/localization.service'
 import { EForeignKeyDropdownState } from '../../../typings/enums'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectListOption } from '../../../typings/interfaces'
@@ -53,10 +54,13 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
 
   public ForeignKeyDropdownState = EForeignKeyDropdownState
 
+  public locOpenGridSelector = this.loc.getLocalizationStringObservable('locOpenGridSelector')
+
   constructor(
     @Inject(GRID_OVERLAY_DATA) public override data: IGridOverlayData,
     @Inject(DOCUMENT) public doc: Document,
-    public override cd: ChangeDetectorRef
+    public override cd: ChangeDetectorRef,
+    private loc: LocalizationService
   ) {
     super(data, cd)
   }

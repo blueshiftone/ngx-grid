@@ -1,4 +1,4 @@
-import { BehaviorSubject, buffer, debounceTime, filter, firstValueFrom, map, Subject, takeUntil, timeout } from 'rxjs'
+import { BehaviorSubject, buffer, debounceTime, filter, firstValueFrom, map, merge, Subject, takeUntil, timeout } from 'rxjs'
 
 import { Transformer } from './transformer.abstract'
 
@@ -125,7 +125,7 @@ export abstract class TransformPipeline<T> {
 
     // subscribe to the touched event of the transformation
     transformation.touched
-      .pipe(takeUntil(transformation.destroyed))
+      .pipe(takeUntil(merge(transformation.destroyed, this.destroyed)))
       .subscribe(() => this._triggerReProcess(transformation))
 
     this._transformNames.add(transformation.name)

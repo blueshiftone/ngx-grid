@@ -1,7 +1,7 @@
 <app-floating-window (closed)="close()" (resized)="checkGridSize()" [width]="550">
   <div class="wrapper">
     <div class="search">
-      <button mat-icon-button class="open-simple-selector" (click)="openSimpleSelector()" matTooltip="Back to simple selector">
+      <button mat-icon-button class="open-simple-selector" (click)="openSimpleSelector()" [matTooltip]="(locBackToSimpleSelector | async) ?? ''">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <input type="text" placeholder="Find an option" #searchInput autocomplete="off" [formControl]="searchCtrl">

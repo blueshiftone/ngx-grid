@@ -8,15 +8,11 @@ export class UpsertDatasourceRows extends Operation {
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
   public run(rows: IGridRow[]): void {
+    this.dataSource.upsertRows(rows)
     for (const row of rows) {
-      if (!this.dataSource.rowExists(row.rowKey)) {
-        this.dataSource.insertNewRows(row)
-      } else {
-        for (const item of row.valuesArray) {
-          const coords = new GridCellCoordinates(row.rowKey, item.columnKey)
-          this.cellOperations.SetCellValue.run(coords, item.value.value, { emitEvent: false })
-          this.cellOperations.CellComponents.findWithCoords(coords)?.detectChanges()
-        }
+      for (const item of row.valuesArray) {
+        const coords = new GridCellCoordinates(row.rowKey, item.columnKey)
+        this.cellOperations.CellComponents.findWithCoords(coords)?.detectChanges()
       }
     }
   }

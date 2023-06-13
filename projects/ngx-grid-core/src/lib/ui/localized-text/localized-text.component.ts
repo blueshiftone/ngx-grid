@@ -1,8 +1,9 @@
 import { DOCUMENT } from '@angular/common'
-import { AfterViewChecked, ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit } from '@angular/core'
+import { AfterViewChecked, ChangeDetectionStrategy, Component, ElementRef, Inject, Input, OnInit } from '@angular/core'
 
 import { GridEventsService } from '../../events/grid-events.service'
 import { LocalizationService } from '../../services/localization.service'
+import { TLocalizationKey } from '../../typings/types'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 
 @Component({
@@ -12,7 +13,9 @@ import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 })
 export class LocalizedTextComponent  extends AutoUnsubscribe implements AfterViewChecked, OnInit {
 
-  private _initialStringValue = ''
+  @Input() public key?: TLocalizationKey | null
+
+  private _initialStringValue: TLocalizationKey = ''
   private _txtNode: Text
 
   constructor(

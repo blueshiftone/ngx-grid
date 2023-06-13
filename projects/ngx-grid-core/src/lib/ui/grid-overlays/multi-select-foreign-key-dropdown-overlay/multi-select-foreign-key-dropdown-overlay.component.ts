@@ -81,9 +81,8 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
       .pipe(filter(state => state === EForeignKeyDropdownState.Idle), debounceTime(50))
       .subscribe(async _ => {
         const source = this.dataSource = await this._getDataSource()
-        if (source?.rows.isRunning()) await source.rows.whenIdle()
         source?.removeRows(...this.values)
-        this.cd.detectChanges()        
+        this.cd.detectChanges()
         window.requestAnimationFrame(_ => this._searchEl.focus())        
       }))
 
@@ -111,7 +110,6 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
     if (!gridID) return undefined
     const dataSource = this.gridController.grid.GetRelatedData.run(gridID)
     if (dataSource) {
-      if (dataSource.rows.isRunning()) await dataSource.rows.whenIdle()
       return GridDataSource.cloneSource(dataSource)
     }
     return undefined
