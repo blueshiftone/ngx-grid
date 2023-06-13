@@ -40,13 +40,17 @@ export class SetRowStatus extends Operation {
 
   private async _bufferEvents(args: [IGridRow][]) {
     const primaryKeys = new Set<TPrimaryKey>()
-    
-    for (const arg of args) {
-      let [row] = arg
-      primaryKeys.add(row.rowKey)
+    const rows: IGridRow[] = []
+
+    for (const [row] of args) {
+      if (!primaryKeys.has(row.rowKey) && this.dataSource.getRow(row.rowKey) !== undefined) {
+        rows.push(row.clone())
+        primaryKeys.add(row.rowKey)
+      }
     }
-    this.gridEvents.GridWasModifiedEvent.emit(true) 
-    this.gridEvents.RowStatusChangedEvent.emit([...primaryKeys].map(pk => this.dataSource.getRow(pk)).filter(meta => meta).map(m => m?.clone()) as IGridRow[])
+
+    this.gridEvents.GridWasModifiedEvent.emit(true)
+    this.gridEvents.RowStatusChangedEvent.emit(rows)
   }
 }
 

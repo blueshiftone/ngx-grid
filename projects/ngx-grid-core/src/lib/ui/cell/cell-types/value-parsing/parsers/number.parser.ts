@@ -1,5 +1,5 @@
-import { EMetadataType } from '../../../../../typings/enums'
 import { GridControllerService } from '../../../../../controller/grid-controller.service'
+import { EMetadataType } from '../../../../../typings/enums'
 import { IGridCellCoordinates, IGridValueParsingResult, INumberOptions } from '../../../../../typings/interfaces'
 import { TAtLeast } from '../../../../../typings/types/at-least.type'
 import { BaseParser } from './base-parser.abstract'
@@ -42,9 +42,8 @@ export class NumberParser extends BaseParser implements IParsingTest {
       
       // Truncate decimals to max number of places
       const numberOptions = gridController?.dataSource.getColumn(cellCoords?.columnKey ?? '')?.metadata?.get<INumberOptions>(EMetadataType.NumberOptions)
-      if (numberOptions) {
-        const maxDecimalPlaces = (numberOptions.maxDecimalPlaces ?? 0) + (this.initialValue.includes('%') ? 2 : 0)
-        if (decimals && decimals.length > maxDecimalPlaces) decimals = decimals.slice(0, maxDecimalPlaces)
+      if (numberOptions?.maxDecimalPlaces !== undefined && decimals && decimals.length > numberOptions.maxDecimalPlaces) {
+        decimals = decimals.slice(0, numberOptions.maxDecimalPlaces)
       }
 
       let transformedValue = parseFloat(`${integer}${typeof decimals !== 'undefined' ? `.${decimals}` : ``}`)
