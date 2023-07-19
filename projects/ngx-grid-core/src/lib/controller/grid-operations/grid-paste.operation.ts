@@ -14,7 +14,7 @@ export class GridPaste extends Operation {
 
   public run(data: IGridPasteText): void {
 
-    const {gridEvents, dataSource} = this
+    const { dataSource} = this
     if (typeof dataSource === 'undefined') return
 
     const startCell = this._getStartCell()
@@ -26,16 +26,12 @@ export class GridPaste extends Operation {
 
     const rowData: ICellData[][] = []
 
-    const parseCSV = (text: string) => {
-      const results = ParseCSV(text)
-      for (const row of results) {
-        rowData.push(row.map(val => ({ plainText: val, html: val })))
-      }
+    function notEmpty(val?: string): val is string {
+      return typeof val !== 'undefined' && val !== null && val.trim() !== ''
     }
 
-    const csvData = LooksLikeCSV((data.plainText ?? '').trim()) ? ParseCSV((data.plainText ?? '').trim()) : []
-
-    if (typeof data.html !== 'undefined' && data.html.trim() !== '') {
+    // Parse HTMl if present, and populate row data with html values
+    if (notEmpty(data.html)) {
       const div = document.createElement('div')
       div.innerHTML = data.html
       const body = div.getElementsByTagName('tbody')[0] as HTMLElement | undefined
@@ -50,10 +46,8 @@ export class GridPaste extends Operation {
             if (td.nodeType !== 1) return
             const tdEl = td as HTMLElement
             const cellValue = {
-              plainText: tdEl.innerText.trim(),
-              html     : tdEl.innerHTML
+              html: tdEl.innerHTML
             }
-            if (cellValue.plainText.match(/^\#+$/)) cellValue.plainText = cellValue.html = csvData[rowIndex]?.[colIndex] ?? ''
             row.push(cellValue)
             colIndex++
           })
@@ -61,15 +55,41 @@ export class GridPaste extends Operation {
           rowIndex++
         })
       } else {
+
         const plainText = data.plainText ?? div.innerText
-        if (LooksLikeCSV(plainText.trim())) parseCSV(plainText.trim())
-        else rowData.push([{ plainText: plainText, html: data.html }])
+
+        let parsedRows: ICellData[][] = []
+
+        if (LooksLikeCSV(plainText.trim())) {
+          parsedRows = ParseCSV(plainText.trim()).map(r => r.map(c => ({ html: c }))) as ICellData[][]
+        }
+        else parsedRows = [[{ html: data.html }]]
+
+        for (const row of parsedRows) rowData.push(row)
       }
-    } else if (typeof data.plainText !== 'undefined') {
+    }
+    
+    // Parse plain text if present, and populate row data with plain text values
+    if (notEmpty(data.plainText)) {
 
-      if(LooksLikeCSV(data.plainText)) parseCSV(data.plainText)
-      else rowData.push([{ plainText: data.plainText }])
+      let parsedRows: ICellData[][] = []
 
+      if(LooksLikeCSV(data.plainText)) {
+        parsedRows = ParseCSV(data.plainText.trim()).map(r => r.map(c => ({ plainText: c }))) as ICellData[][]
+      }
+      else parsedRows = [[{ plainText: data.plainText }]]
+
+      if (notEmpty(data.html)) {
+        parsedRows.forEach((row, index) => {
+          if (typeof rowData[index] === 'undefined') rowData[index] = []
+          row.forEach((cell, cellIndex) => {
+            if (typeof rowData[index][cellIndex] === 'undefined') rowData[index][cellIndex] = {}
+            rowData[index][cellIndex].plainText = cell.plainText
+          })
+        })
+      } else {
+        rowData.push(...parsedRows)
+      }
     }
 
     if (rowData.length > 0) {
@@ -82,10 +102,14 @@ export class GridPaste extends Operation {
         let colIndex = columns.findIndex(c => c.columnKey === startColumn)
         let finalRow: any[] = []
         for (const cellValue of row) {
+          
           if (typeof columns[colIndex] === 'undefined') continue
+          
           const column = columns[colIndex]
-          const type       = column.type?.name ?? 'Text'
-          const validation = CELL_VALUE_PARSERS[type].validate(type === 'RichText' ? (cellValue.html ?? cellValue.plainText) : cellValue.plainText, this.cellOperations.gridController, { columnKey: column.columnKey })
+          const type   = column.type?.name ?? 'Text'
+          const val    = type === 'RichText' ? (cellValue.html ?? cellValue.plainText) : (cellValue.plainText ?? cellValue.html)
+
+          const validation = CELL_VALUE_PARSERS[type].validate(val, this.cellOperations.gridController, { columnKey: column.columnKey })
           if (validation.isInvalid) finalRow.push(null)
           else finalRow.push(validation.transformedValue)
           colIndex++
@@ -115,19 +139,22 @@ export class GridPaste extends Operation {
         rowKey = rowKey as TPrimaryKey
         let   startColumn = startCell.columnKey
         let   colIndex    = columns.findIndex(c => c.columnKey === startColumn)
+        const endColIndex = colIndex + row.length - 1
         
         if (isCreatingNewRows) {
           const newRow        = this.rowOperations.GenerateNewRow.run()
           const newPrimaryKey = newRow.rowKey
           for (const cellValue of row) {
             const column = columns[colIndex]
-            newRow.setValue(column.columnKey, cellValue)
+            if (this.dataSource.primaryColumnKey !== column.columnKey) {
+              newRow.setValue(column.columnKey, cellValue)
+            }
             newCells.push(new GridCellCoordinates(newPrimaryKey, column.columnKey))
             colIndex++
           }
           newRows.push(newRow)
           endCell.rowKey    = newPrimaryKey
-          endCell.columnKey = columns[colIndex].columnKey
+          endCell.columnKey = columns[endColIndex].columnKey
         } else {
           for (const cellValue of row) {
             const column = columns[colIndex]
@@ -183,6 +210,6 @@ export interface IGridPasteText {
 }
 
 interface ICellData {
-  plainText: string,
+  plainText?: string,
   html?: string
 }
