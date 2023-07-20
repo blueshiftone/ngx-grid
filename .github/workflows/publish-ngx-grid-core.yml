@@ -25,8 +25,7 @@ jobs:
       - run: |
           curVersion=$(jq -r .version ./package.json)
           prevVersion=$(cat ./previous_package_version)
-          echo $curVersion
-          echo $prevVersion
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ./.npmrc
           if [ "$curVersion" != "$prevVersion" ]; then
             rm previous_package_version
             npm publish --access public
@@ -34,4 +33,4 @@ jobs:
             echo "Versions didn't change. No new version to publish."
           fi
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
