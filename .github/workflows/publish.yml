@@ -5,34 +5,30 @@ name: Publish NGX Grid Core
 
 on: 
   workflow_dispatch:
-#   workflow_run:
-#     workflows: ["Build"]
-#     types: [completed]
-#     branches:
-#       - main
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+    branches:
+      - main
 
 jobs:
-  build:
+  publish-npm:
     runs-on: ubuntu-latest
-    steps:
+    steps:      
       - name: Download Ngx Grid Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           workflow_conclusion: success
-          name: omni-server
+          name: ngx-grid-core
           branch: main
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
+      - run: |
+          #cd ./artifacts
+          #npm publish --access public
+          ls -la
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
