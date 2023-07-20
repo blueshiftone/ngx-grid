@@ -51,6 +51,8 @@ export class GridControllerService {
     icons: IconsService,
   ) {
 
+    console.log('Blueshift ONE NGX Grid Core v0.19.5')
+
     icons.init();
 
     const { gridEvents } = this
