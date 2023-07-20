@@ -22,7 +22,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: |
+      - name: Publish to NPM
+        run: |
           curVersion=$(jq -r .version ./package.json)
           prevVersion=$(cat ./previous_package_version)
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ./.npmrc
