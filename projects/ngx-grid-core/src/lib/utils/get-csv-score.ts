@@ -1,5 +1,8 @@
 export function GetCsvScore(data: string, delimiter: string): number {
 
+  // return high score if delimiter is a tab character
+  if (delimiter.match(/\t/)) return 100
+
   let score = 0
 
   let lines = data.split(/\r\n|\n|\r/)
