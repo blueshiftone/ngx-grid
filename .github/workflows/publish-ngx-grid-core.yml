@@ -25,6 +25,8 @@ jobs:
       - run: |
           curVersion=$(jq -r .version ./package.json)
           prevVersion=$(cat previous_package_version)
+          echo $curVersion
+          echo $prevVersion
           if [ "$curVersion" != "$prevVersion" ]; then
             rm previous_package_version
             npm publish --access public
