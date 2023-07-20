@@ -3,7 +3,7 @@ name: Publish NGX Grid Core
 on: 
   workflow_dispatch:
   workflow_run:
-    workflows: ["Build"]
+    workflows: ["Build Ngx Grid Core"]
     types: [completed]
     branches:
       - main
