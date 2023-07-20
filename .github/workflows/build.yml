@@ -62,7 +62,10 @@ jobs:
         
     - name: Copy previous package version number
       run: |
-        ls -la
+        ls -la ./artifacts
+        version=$(jq -r .version ./artifacts/package.json)
+        echo $version > ./dist/ngx-grid-core/previous_package_version
+        cat ./dist/ngx-grid-core/previous_package_version
     
     - uses: actions/upload-artifact@v3
       with:
