@@ -14,11 +14,56 @@ jobs:
       with:
         node-version: 16
         cache: 'npm'
+    - name: Get previous artifact
+      id: get_previous_artifact
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const artifactName = "ngx-grid-core";
+          const workflowRuns = await github.rest.actions.listWorkflowRunsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: context.workflow,
+            status: "completed",
+          });
+
+          for (const run of workflowRuns.data.workflow_runs) {
+            if (run.id === context.runId) continue; // skip current run
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run.id,
+            });
+
+            const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
+            if (artifact) {
+              console.log(`Found artifact (ID: ${artifact.id}) from run (ID: ${run.id})`);
+              return artifact.id;
+            }
+          }
+          return null;
+          
+    - name: Download previous artifact
+      if: steps.get_previous_artifact.outputs.result != 'null'
+      run: |
+        artifact_id=${{ steps.get_previous_artifact.outputs.result }}
+        artifact_url=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -s https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$artifact_id | \
+          jq -r '.archive_download_url')
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o artifact.zip $artifact_url
+        unzip -q artifact.zip -d artifacts
+        echo "Downloaded artifact from run ${{ steps.get_previous_artifact.outputs.result }} to artifacts/"
+        
     - name: Build Main App
       run: |
         npm ci
         cd projects/ngx-grid-core
         npx ng build
+        
+    - name: Copy previous package version number
+      run: |
+        ls -la
+    
     - uses: actions/upload-artifact@v3
       with:
         name: ngx-grid-core
