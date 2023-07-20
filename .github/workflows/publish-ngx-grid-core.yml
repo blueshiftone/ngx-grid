@@ -15,7 +15,7 @@ jobs:
       - name: Download Ngx Grid Artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: build.yml
+          workflow: build-ngx-grid-core.yml
           workflow_conclusion: success
           name: ngx-grid-core
           branch: main
@@ -23,9 +23,8 @@ jobs:
         with:
           node-version: 16
       - run: |
-          ls -la ../
           curVersion=$(jq -r .version ./package.json)
-          prevVersion=$(cat previous_package_version)
+          prevVersion=$(cat ./previous_package_version)
           echo $curVersion
           echo $prevVersion
           if [ "$curVersion" != "$prevVersion" ]; then
