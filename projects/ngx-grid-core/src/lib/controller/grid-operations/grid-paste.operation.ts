@@ -178,17 +178,19 @@ export class GridPaste extends Operation {
 
         let index = visibleRows.length
         for (const row of newRows) {
-          dataSource.insertNewRows(row)
           this.rowOperations.SetRowStatus.run(row, ERowStatus.New)
+          dataSource.insertNewRows(row)
           index++
         }
         
         for (const cell of newCells) {
-          this.cellOperations.SetCellDraftValue.buffer(cell)
-          this.cellOperations.SetCellMeta.run(cell, [{ key: EMetadataType.CanUpdate, value: true }])
+          const isEditable = this.cellOperations.GetCellIsEditable.run(cell)
+          if (isEditable) {
+            this.cellOperations.SetCellDraftValue.buffer(cell)
+            this.cellOperations.SetCellMeta.run(cell, [{ key: EMetadataType.CanUpdate, value: true }])
+          }
         }
-
-      } 
+      }
 
       this.selection.SelectRange.run(startCell, endCell)
       this.selection.EmitNextSelectionSlice.run()
