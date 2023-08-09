@@ -82,6 +82,7 @@ export class GetFormattedValue extends Operation {
       case 'NumberRange':
       case 'Number':
         if (numberOptions && numberOptions.formatString) {
+          numberOptions = {...numberOptions}
           if (!returnHtml) {
             // Remove spacer chars from format string
             // Spacer char is any character following an _, e.g. _-
