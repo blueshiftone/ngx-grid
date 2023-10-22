@@ -5,5 +5,5 @@
 </div>
 <div class="grid" [ngClass]="{ Disabled: disabled === true, initialised: initialised }">
   <data-grid-header></data-grid-header>
-  <data-grid-body tabindex="0" [name]="name"></data-grid-body>
+  <data-grid-body tabindex="0" [name]="name ?? data.dataSetName"></data-grid-body>
 </div>

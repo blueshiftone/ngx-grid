@@ -14,4 +14,5 @@ export enum EMetadataType {
   HideValue,
   NestingLevel,
   ValueLocalizationKey,
+  Sticky
 }

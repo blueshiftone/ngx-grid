@@ -46,7 +46,7 @@ import { WINDOW } from '../../utils/window'
 })
 export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChanges {
 
-  @Input() public name           : string = 'Data Grid'
+  @Input() public name          ?: string
   @Input() public config         : IGridConfiguration = new DataGridConfigs()
   @Input() public data!          : IGridDataSource
   @Input() public preselectedRows: Array<number | string> = []

@@ -217,7 +217,6 @@ export class GridControllerService {
       }
       affectedCellComponents.forEach(c => this.cell.SetCellStylesFromMeta.run(c))
     }))
-    
   }
 
   public get gridEvents() { return this.events.factory }
