@@ -122,7 +122,6 @@ export class GridPaste extends Operation {
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
       const newRows: IGridRow[] = []
-      const newCells: IGridCellCoordinates[] = [] 
       
       for (const row of finalValues) {
         if (!isCreatingNewRows) {
@@ -149,7 +148,8 @@ export class GridPaste extends Operation {
             if (this.dataSource.primaryColumnKey !== column.columnKey) {
               newRow.setValue(column.columnKey, cellValue)
             }
-            newCells.push(new GridCellCoordinates(newPrimaryKey, column.columnKey))
+            const cellCoordinates = new GridCellCoordinates(newPrimaryKey, column.columnKey)
+            this._setCellProperties(cellCoordinates, cellValue)
             colIndex++
           }
           newRows.push(newRow)
@@ -159,13 +159,7 @@ export class GridPaste extends Operation {
           for (const cellValue of row) {
             const column = columns[colIndex]
             const cellCoordinates = new GridCellCoordinates(rowKey, column.columnKey)
-            const isEditable      = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
-            if (isEditable) {
-              this.cellOperations.SetCellValue.run(cellCoordinates, cellValue)
-              this.cellOperations.SetCellDraftValue.buffer(cellCoordinates)
-              const cellComponent = this.cellOperations.CellComponents.findWithCoords(cellCoordinates)
-              if (cellComponent) cellComponent.setValue(cellValue)
-            }
+            this._setCellProperties(cellCoordinates, cellValue)
             colIndex++
             endCell.rowKey    = rowKey
             endCell.columnKey = column.columnKey
@@ -175,20 +169,12 @@ export class GridPaste extends Operation {
 
       // Insert new rows
       if (newRows.length) {
-
         let index = visibleRows.length
         for (const row of newRows) {
           this.rowOperations.SetRowStatus.run(row, ERowStatus.New)
           dataSource.insertNewRows(row)
+          this.gridEvents.RowInsertedEvent.emit(row)
           index++
-        }
-        
-        for (const cell of newCells) {
-          const isEditable = this.cellOperations.GetCellIsEditable.run(cell)
-          if (isEditable) {
-            this.cellOperations.SetCellDraftValue.buffer(cell)
-            this.cellOperations.SetCellMeta.run(cell, [{ key: EMetadataType.CanUpdate, value: true }])
-          }
         }
       }
 
@@ -198,6 +184,17 @@ export class GridPaste extends Operation {
 
     }
 
+  }
+
+  private _setCellProperties(cellCoordinates: GridCellCoordinates, cellValue: any) {
+    const isEditable = this.cellOperations.GetCellIsEditable.run(cellCoordinates)
+    if (isEditable) {
+      this.cellOperations.SetCellValue.run(cellCoordinates, cellValue)
+      this.cellOperations.SetCellDraftValue.buffer(cellCoordinates)
+      this.cellOperations.SetCellMeta.run(cellCoordinates, [{ key: EMetadataType.CanUpdate, value: true }])
+      const cellComponent = this.cellOperations.CellComponents.findWithCoords(cellCoordinates)
+      if (cellComponent) cellComponent.setValue(cellValue)
+    }
   }
 
   private _getStartCell() {
