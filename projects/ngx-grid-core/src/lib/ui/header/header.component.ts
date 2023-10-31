@@ -13,7 +13,7 @@ import {
   ViewContainerRef,
 } from '@angular/core'
 import { MatMenuTrigger } from '@angular/material/menu'
-import { BehaviorSubject, fromEvent, merge, startWith } from 'rxjs'
+import { BehaviorSubject, fromEvent, merge, startWith, debounceTime } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -25,6 +25,7 @@ import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { CharacterSizer } from '../../utils/character-sizer'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { HasParentOfClass } from '../../utils/find-parent-element-of-class'
+import { EMetadataType } from '../../typings/enums'
 
 @Component({
   selector: 'data-grid-header',
@@ -39,7 +40,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
 
   @ViewChildren('columnMenuTrigger') public columnMenuTriggers?: QueryList<MatMenuTrigger>
 
-  @ViewChildren('columnElement', { read: ElementRef }) public columnElements?: QueryList<ElementRef>
+  @ViewChildren('columnElement', { read: ElementRef }) public columnElements?: QueryList<ElementRef<HTMLDivElement>>
 
   @ViewChild("columnMenuTemplate", { read: ViewContainerRef }) public columnMenuContainerRef?: ViewContainerRef
 
@@ -47,6 +48,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
   public dragDisabled                              = false
   public isDragging                                = new BehaviorSubject<boolean>(false)
   public columnsSelected: {[key: string]: boolean} = {}
+  public stickyColumns: {[key: string]: { isSticky: boolean, offset: string }} = {}
 
   public columnWidths = 
     merge(this._gridEvents.ColumnWidthChangedEvent.onWithInitialValue(), this._gridEvents.ColumnsChangedEvent.on())
@@ -79,12 +81,20 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       this.cd.detectChanges()
     }))
 
+    this.addSubscription(merge(this.columns, this.gridController.dataSource.onChanges, ...[
+        this.gridController.gridEvents.MetadataChangedEvent,
+        this.gridController.gridEvents.ColumnsChangedEvent,
+        this.gridController.gridEvents.ColumnWidthChangedEvent,
+        this.gridController.gridEvents.GridInitialisedEvent
+      ].map(e => e.on())).pipe(startWith(null), debounceTime(50))
+    .subscribe(_ => this.updateStickyColumns()))
+
     this.addSubscription(
       this._gridEvents.GridScrollOffsetChangedEvent.on().pipe(
         removeNullish(),
         map(offset => offset.fromLeft),
         distinctUntilChanged()
-      ).subscribe(leftOffset => this.elRef.nativeElement.style.transform = `translateX(${-leftOffset}px)`)
+      ).subscribe(leftOffset => this.elRef.nativeElement.scrollLeft = leftOffset)
     )
 
     this.addSubscription(this._gridEvents.CellSelectionChangedEvent.on().subscribe(selection => {
@@ -174,6 +184,35 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     })
   }
 
+  public updateStickyColumns(): void {
+    let offset = 22; // thumb width
+    const widths = this._gridEvents.ColumnWidthChangedEvent.state?.columns ?? new Map<string, number>();
+    const stickyColIndexes: number[] = []
+    this.gridController.dataSource.columns.forEach((column, index) => {
+      const isSticky = column.metadata.get<boolean>(EMetadataType.IsSticky) ?? false
+      const offsetCss = isSticky ? `${offset}px` : ''
+      this.stickyColumns[column.columnKey] = { isSticky, offset: offsetCss }
+      if (isSticky) {
+        offset += widths.get(column.columnKey) ?? 0
+        stickyColIndexes.push(index)
+      }
+    })
+    window.requestAnimationFrame(_ => {
+      this.gridController.dataSource.columns.forEach((column, index) => {
+        const {offset, isSticky} = this.stickyColumns[column.columnKey]
+        const headerElement = this.columnElements?.get(index)
+        if (headerElement) {
+          headerElement.nativeElement.style.left = offset
+          headerElement.nativeElement.classList.toggle("sticky", isSticky)
+        }
+        for (const component of this.gridController.cell.CellComponents.findForColumn(column.columnKey)) {
+          component.element.style.left = offset
+          component.element.classList.toggle("sticky", isSticky)
+        }
+      })
+    })
+  }
+  
   public openMenu(c: IGridColumn) {
     if (!this.columnMenuContainerRef || !c.dropdownMenu) return
     this.columnMenuContainerRef.clear()

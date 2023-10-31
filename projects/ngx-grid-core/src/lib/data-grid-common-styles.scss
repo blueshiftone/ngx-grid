@@ -104,8 +104,8 @@
   align-items: center;
   justify-content: center;
   height: 25px;
-  border-right: 1px solid var(--divider-color);
-  border-bottom: 1px solid var(--divider-color);
+  border-right: 1px solid var(--divider-color-solid, #DCDCE0);
+  border-bottom: 1px solid var(--divider-color-solid, #DCDCE0);
   font-size: 13px;
   line-height: 13px;
   box-sizing: border-box;
@@ -127,10 +127,16 @@
       outline: 1px solid var(--primary-color-40);
       outline-offset: -1px;
       z-index: 2;
+
+      &.sticky {
+        z-index: 11;
+      }
     }
 
     &.is-editable {
-      background-color: var(--primary-color-10);
+      ::ng-deep .backdrop {
+        background-color: var(--primary-color-10);
+      }
     }
   }
 
@@ -204,6 +210,33 @@
         bottom: 1px;
         right: 1px;
         z-index: 2;
+      }
+    }
+  }
+
+  ::ng-deep {
+    .app-bg, .backdrop {
+      position: absolute;
+      inset: 0px;
+    }
+    .app-bg {
+      z-index: -2;
+      background-color: var(--app-bg);
+      display: none;
+    }
+    .backdrop {
+      z-index: -1;
+    }
+  }
+
+  &.sticky {
+    position: sticky;
+    z-index: 10;
+    border-right-width: 2px;
+
+    ::ng-deep {
+      .app-bg {
+        display: block;
       }
     }
   }

@@ -31,7 +31,7 @@ export class LocalizationService {
       variables = input.variables
       input = input.key
     }
-    let str = this._locMap.get(input) ?? input
+    let str = this._locMap.get(input) ?? this._defaultLocMap.get(input) ?? input
     
     if (variables) {
       for (const [key, value] of Object.entries(variables)) {

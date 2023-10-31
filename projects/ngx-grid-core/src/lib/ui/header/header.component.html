@@ -8,10 +8,12 @@
     cdkDragLockAxis="x"
     [cdkDragDisabled]="dragDisabled"
     [ngClass]="{ 'col-selected': columnsSelected[column.columnKey] }"
+    [ngStyle]="{width: (columnWidths | async)?.get(column.columnKey) + 'px'}"
     type="Text"
     *ngFor="let column of (columns | async); let index = index"
-    [style.width] = "((columnWidths | async)?.get(column.columnKey) ?? '') + 'px'"
     class="cell display">
+      <div class="app-bg"></div> <!-- app background color -->
+      <div class="backdrop"></div> <!-- for painting the cell background -->
       <app-resizer (output)="resizeColumn($event.x, column)" (resizeStart)="startResize()"
         (resizeEnd)="endResize()" (mouseenter)="disableDrag()" (mouseleave)="enableDrag()"></app-resizer>
       <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(column)">{{ columnSortIconKey(column) }}</span>
