@@ -3,39 +3,11 @@ import { fromEvent, Subscription } from 'rxjs'
 import { IGridKeyboardEvent } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { Operation } from '../operation.abstract'
-
-const keysToCapture = [
-  'Delete',
-  'Backspace',
-  'Enter',
-  'ArrowLeft',
-  'ArrowUp',
-  'ArrowRight',
-  'ArrowDown',
-  'End',
-  'Home',
-  'PageUp',
-  'PageDown',
-  'Escape',
-  'Tab',
-  'Space',
-  'Ctrl+A',
-  'Ctrl+C',
-] as const
-
-const keysToSwallow = new Set([
-  'PageUp',
-  'PageDown',
-  'Space',
-  'ArrowLeft',
-  'ArrowUp',
-  'ArrowRight',
-  'ArrowDown',
-  'End',
-  'Home',
-])
-
-export type TGridCmdKeys = typeof keysToCapture[number] | 'InputKey'
+import { IKeyCombination } from '../../typings/interfaces/key-combination.interface'
+import { IKeyboardShortcut } from '../../typings/interfaces/keyboard-shortcut.interface'
+import { GridControllerService } from '../grid-controller.service'
+import { DefaultKeyboardShortcuts } from '../default-keyboard-shortcuts'
+import { GridSelectionKeyboardCombinations } from '../selection/grid-selection-keyboard-combinations'
 
 export class KeyBindings extends Operation {
 
@@ -46,33 +18,46 @@ export class KeyBindings extends Operation {
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
 
   public run(): void {
+    const allKeys = new Map<string, IKeyCombination>()
+    const actionMap = new Map<string, (controller: GridControllerService) => void>()
+    const addKeyboardShortcuts = (shortcuts: IKeyboardShortcut[]) => {
+      for (const shortcut of shortcuts) {
+          if (!Array.isArray(shortcut.key)) {
+              allKeys.set(shortcut.key.combination.toLowerCase(), shortcut.key)
+              if (shortcut.action) actionMap.set(shortcut.key.combination.toLowerCase(), shortcut.action)
+          } else {
+              for (const key of shortcut.key) {
+                  allKeys.set(key.combination.toLowerCase(), key)
+                  if (shortcut.action) actionMap.set(key.combination.toLowerCase(), shortcut.action)
+              }
+          }
+      }
+    }
+    addKeyboardShortcuts(GridSelectionKeyboardCombinations.map<IKeyboardShortcut>(combination => ({key: combination})))
+    addKeyboardShortcuts(DefaultKeyboardShortcuts)
+    addKeyboardShortcuts(this.dataSource.keyboardShortcuts ?? [])
+
     this.subscriptions.add(fromEvent<KeyboardEvent>(document.documentElement, 'keydown').subscribe(e => {
       if (!this.gridOperations.HasGridFocus.run() || this._documentHasEditableFocus || this.gridOperations.GetIsDisabled.run()) return
-      for (const key of keysToCapture) {
-        if (key === 'Tab') continue
+      for (const [_, key] of allKeys) {
+        const combination = key.combination.toLowerCase()
         if (isKey(key, e)) {
+          // Emit the event
           this.gridEvents.GridKeyCmdPressedEvent.emit({
-            key: key,
+            key: combination,
             hasCtrlKey: e.ctrlKey || e.metaKey,
             hasShiftKey: e.shiftKey
           })
-          if (this._hasSelection && (e.shiftKey || e.ctrlKey || (keysToSwallow.has(key)))) {
+          // Stop propagation to parents and to browser if `swallowEvents` is true
+          if (key.swallowEvents) {
             e.preventDefault()
             e.stopPropagation()
           }
-          return
+          // Invoke action if it exists in `actionMap`
+          if (actionMap.has(combination.toLowerCase())) {
+            actionMap.get(combination.toLowerCase())?.(this.controller)
+          }
         }
-      }
-      if (e.key.length === 1 && (!e.metaKey && !e.ctrlKey)) {
-        this.gridEvents.GridKeypressedEvent.emit({
-          key       : 'InputKey',
-          valueOfKey: e.key,
-          hasCtrlKey: e.ctrlKey || e.metaKey,
-          hasShiftKey: e.shiftKey
-        })
-        e.preventDefault()
-        e.stopPropagation()
-        return
       }
     }))
   }
@@ -87,14 +72,12 @@ export class KeyBindings extends Operation {
     home      :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Home', input),
     pageUp    :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('PageUp', input),
     pageDown  :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('PageDown', input),
-    escape    :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Escape', input),
     tab       :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Tab', input),
     space     :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Space', input),
-    ctrlA     :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Ctrl+A', input),
-    ctrlC     :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Ctrl+C', input)
+    ctrlA     :(input?: Partial<IGridKeyboardEvent>) => this.emitKeyCmd('Ctrl+A', input)
   }
 
-  public emitKeyCmd(key: TGridCmdKeys, input?: Partial<IGridKeyboardEvent>) {
+  public emitKeyCmd(key: string, input?: Partial<IGridKeyboardEvent>) {
     const output: IGridKeyboardEvent = {
       key        : key,
       hasCtrlKey : input?.hasCtrlKey ?? false,
@@ -114,15 +97,14 @@ export class KeyBindings extends Operation {
         activeEl.hasAttribute('contenteditable')) || false
   }
 
-  private get _hasSelection(): boolean {
-    return (this.gridEvents.CellSelectionChangedEvent.state?.cellCount ?? 0) > 0
-  }
-
 }
 
-const isKey = (k: string, e: KeyboardEvent): boolean => {
-  k = k.toLowerCase()
-  if (k.includes('ctrl+') && (e.ctrlKey || e.metaKey)) k = k.replace('ctrl+', '')
-  if (e.code.toLowerCase().replace(/^key([a-z])/g, '$1') === k) return true
+const isKey = (key: IKeyCombination, e: KeyboardEvent): boolean => {
+  let combination = key.combination.toLowerCase()
+  const ctrlModiferOk = key.ignoreAllModifiers || key.ignoreCtrlModifier || (e.ctrlKey == combination.includes('ctrl+'))
+  const shiftModiferOk = key.ignoreAllModifiers || key.ignoreShiftModifier || (e.shiftKey == combination.includes('shift+'))
+  const altModiferOk = key.ignoreAllModifiers || key.ignoreAltModifier || (e.altKey == combination.includes('alt+'))
+  if (!ctrlModiferOk || !shiftModiferOk || !altModiferOk) return false 
+  if (e.code.toLowerCase().replace(/^key([a-z])/g, '$1') === combination.replace(/(ctrl|shift|alt)\+/g, '')) return true
   return false
 }

@@ -20,7 +20,7 @@ export interface IGridRow {
 
   getValue(columnKey: TColumnKey): IGridCellValue
   setValue(columnKey: TColumnKey, value: any): void
-  clone(): IGridRow
+  clone(newPrimaryKey?: TPrimaryKey): IGridRow
   toString(): string
   toJSON<T = { [key: string]: any }>(): T
 }

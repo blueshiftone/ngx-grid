@@ -16,28 +16,27 @@ export class ExcelFormatter {
     this.currencySymbol = this.gridController.localize.getLocalizedString('$')
   }
 
-  public toPlainText() {
+  public toPlainText(withHeaders: boolean = false) {
 
-    const cells = this.selectionSlice.cellsFormatted 
-
-    const plain = cells.map((row, rowIndex) => {
-      return row.map((cellValue, colIndex) => this._formatValAsPlain(cellValue, colIndex, rowIndex)).join(this.csvDelimiter)
-    }).join('\r\n')
+    const cells = this.selectionSlice.cellsFormatted
+    const headers = withHeaders ? this.selectionSlice.columnKeys.map(k => this.gridController.localize.getLocalizedString(this.gridController.dataSource.getColumn(k)?.name ?? `loc${k}`)) : []
+    
+    const plain = `${withHeaders ? headers.join(this.csvDelimiter) + '\r\n' : ''}${cells.map((row, rowIndex) => row.map((cellValue, colIndex) => this._formatValAsPlain(cellValue, colIndex, rowIndex)).join(this.csvDelimiter)).join('\r\n')}`
 
     return plain
 
   }
 
-  public toExcelHTML() {
+  public toExcelHTML(withHeaders: boolean = false) {
 
     const cells = this.selectionSlice.cellsFormatted
+    const headers = withHeaders ? this.selectionSlice.columnKeys.map(k => this.gridController.localize.getLocalizedString(this.gridController.dataSource.getColumn(k)?.name ?? `loc${k}`)) : []
 
     return `
     <table>
       ${this.selectionSlice.columnKeys.map(key => `<col width="${this.gridController.column.GetColumnWidth.run(key)}" style='mso-width-source:userset;width:${this.gridController.column.GetColumnWidth.run(key)}px'>`).join('\r\n')}
-      ${cells.map((row, rowIndex) => {
-        return `<tr>${row.map((cell, colIndex) => this._formatValAsHTML(cell ?? '', colIndex, rowIndex)).join('')}</tr>`
-      }).join('\n')}
+      ${withHeaders ? `<tr>${headers.map(header => `<th>${header}</th>`).join('')}</tr>` : ''}
+      ${cells.map((row, rowIndex) => `<tr>${row.map((cell, colIndex) => this._formatValAsHTML(cell ?? '', colIndex, rowIndex)).join('')}</tr>`).join('\n')}
     </table>`
 
   }

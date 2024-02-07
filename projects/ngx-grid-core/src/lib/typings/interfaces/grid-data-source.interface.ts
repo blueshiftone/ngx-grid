@@ -6,25 +6,27 @@ import { ILocalization } from '../../services/localization.service'
 import { TColumnKey, TPrimaryKey } from '../types'
 import { IDestroyable } from './destroyable.interface'
 import { IGridRow } from './grid-row.interface'
+import { IKeyboardShortcut } from './keyboard-shortcut.interface'
 
 export interface IGridDataSource extends IDestroyable {
-  onChanges        : Observable<any>
-  dataSetName      : string
-  dataGridID       : string
-  columns          : IGridColumn[]
-  rows             : RowPipeline
-  primaryColumnKey : string
-  cellMeta         : Map<string, IGridCellMeta>
-  disabled         : boolean
-  canUpdate        : boolean
-  canDelete        : boolean
-  canInsert        : boolean
-  relatedData      : Map<string, IGridDataSource>
-  rowTemplateString: string
-  maskNewIds       : boolean
-  metadata         : IGridMetadataCollection
-  leafLevel        : number
-  localizations?   : ILocalization[]
+  onChanges         : Observable<any>
+  dataSetName       : string
+  dataGridID        : string
+  columns           : IGridColumn[]
+  rows              : RowPipeline
+  primaryColumnKey  : string
+  cellMeta          : Map<string, IGridCellMeta>
+  disabled          : boolean
+  canUpdate         : boolean
+  canDelete         : boolean
+  canInsert         : boolean
+  relatedData       : Map<string, IGridDataSource>
+  rowTemplateString : string
+  maskNewIds        : boolean
+  metadata          : IGridMetadataCollection
+  leafLevel         : number
+  localizations?    : ILocalization[]
+  keyboardShortcuts?: IKeyboardShortcut[]
 
   rowExists            (key: TPrimaryKey): boolean
   getRow               (key: TPrimaryKey): IGridRow | undefined

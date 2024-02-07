@@ -38,7 +38,7 @@ export class SetRowStatus extends Operation {
     }
 
     if (WithDefaultTrue(options?.emitEvent && statusChanged)) {
-      this.bufferEvents.next([[row]])
+      this.bufferEvents.next([row])
     }
 
   }

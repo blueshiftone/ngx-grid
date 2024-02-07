@@ -1,7 +1,5 @@
-import { TGridCmdKeys } from '../../controller/grid-operations/keybindings.operation'
-
 export interface IGridKeyboardEvent {
-  key        : TGridCmdKeys
+  key        : string
   valueOfKey?: string
   hasShiftKey: boolean
   hasCtrlKey : boolean

@@ -32,6 +32,7 @@ export interface ISelectionController extends TSelectionOperations, IDestroyable
     end?       (e: IGridKeyboardEvent): void;
     ctrlA?     (e: IGridKeyboardEvent): void;
     tab?       (e: IGridKeyboardEvent): void;
+    shiftTab?  (e: IGridKeyboardEvent): void;
     enter?     (e: IGridKeyboardEvent): void;
     space?     (e: IGridKeyboardEvent): void;
     any?       (e: IGridKeyboardEvent): void;

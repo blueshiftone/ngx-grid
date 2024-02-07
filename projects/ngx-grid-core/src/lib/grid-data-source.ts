@@ -11,10 +11,12 @@ import { GridImplementationFactory } from './typings/interfaces/implementations/
 import { TColumnKey } from './typings/types/column-key.type'
 import { TPrimaryKey } from './typings/types/primary-key.type'
 import { Randomish } from './utils/randomish'
+import { IKeyboardShortcut } from './typings/interfaces/keyboard-shortcut.interface'
 
 export class GridDataSource implements IGridDataSource {
 
   private _columns: IGridColumn[] = []
+  private _keyboardShortcuts: IKeyboardShortcut[] = []
 
   public get columns(): IGridColumn[] {
     return this._columnsSubset ?? this._columns
@@ -36,13 +38,13 @@ export class GridDataSource implements IGridDataSource {
 
   private _columnsSubset?: IGridColumn[]
 
-  public dataSetName      = ''
-  public dataGridID       = ''
-  public primaryColumnKey = 'ID'
-  public disabled         = false
-  public maskNewIds       = false
-  public leafLevel        = -1
-  public localizations    = undefined
+  public dataSetName       = ''
+  public dataGridID        = ''
+  public primaryColumnKey  = 'ID'
+  public disabled          = false
+  public maskNewIds        = false
+  public leafLevel         = -1
+  public localizations     = undefined
 
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
@@ -68,6 +70,10 @@ export class GridDataSource implements IGridDataSource {
       delete input.columns
     }
     if (input) Object.assign(this, input)
+
+    if (input?.keyboardShortcuts) {
+      this._keyboardShortcuts = input.keyboardShortcuts as IKeyboardShortcut[];
+    }
 
     for (const col of this.columns) this._colMap.set(col.columnKey, col)
 

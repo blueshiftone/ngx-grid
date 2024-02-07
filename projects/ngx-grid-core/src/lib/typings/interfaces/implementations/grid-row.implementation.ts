@@ -1,5 +1,6 @@
 import { GridCellCoordinates, GridCellValue, GridMetadataCollection } from '.'
-import { IGridCellValue, IGridMetadataCollection, IGridSeparator } from '..'
+import { IGridCellValue, IGridMetadataCollection, IGridMetadataInfo, IGridSeparator } from '..'
+import { DeepClone } from '../../../utils/deep-clone'
 import { EMetadataType, ERowStatus } from '../../enums'
 import { TColumnKey, TPrimaryKey, TRowValues } from '../../types'
 import { IGridRow, IGridRowFloatingTitle } from '../grid-row.interface'
@@ -66,12 +67,21 @@ export class GridRow implements IGridRow {
     return this.metadata.get<boolean>(EMetadataType.CanUpdate)
   }
 
-  public clone(): IGridRow {
+  public clone(newPrimaryKey?: TPrimaryKey): IGridRow {
     return new GridRow(
       this._primaryKeyColumn,
-      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => ([itm.columnKey, itm.value.clone()]))),
+      new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => {
+        var newValue = itm.value.clone()
+        if(newPrimaryKey) {
+            newValue.rowKey = newPrimaryKey
+            if (itm.columnKey === this._primaryKeyColumn) {
+                newValue.value = newPrimaryKey
+            }
+        }
+        return [itm.columnKey, newValue]
+      })),
       this.status,
-      new GridMetadataCollection(this.metadata.items)
+      new GridMetadataCollection(this.metadata.items.map<IGridMetadataInfo>(itm => DeepClone(itm)))
     )
   }
 

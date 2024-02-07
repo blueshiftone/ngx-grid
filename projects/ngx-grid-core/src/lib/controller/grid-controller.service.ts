@@ -21,6 +21,7 @@ import { ColumnOperationFactory } from './column-operations/_column-operation.fa
 import { GridOperationFactory } from './grid-operations/_grid-operation.factory'
 import { RowOperationFactory } from './row-operations/_row-operation.factory'
 import { GridSelectionController } from './selection/grid-selection.controller'
+import { DefaultKeyboardShortcuts } from './default-keyboard-shortcuts'
 
 export const DATA_GRIDS_FOCUSED_TREE: string[] = [] 
 
@@ -141,36 +142,6 @@ export class GridControllerService {
     // Update viewport size when data changes
     addSubscription(gridEvents.GridDataChangedEvent.on().subscribe(_ => {
       window.requestAnimationFrame(_ => this.grid.CheckViewportSize.run())
-    }))
-
-    // Handle action hotkeys
-    addSubscription(gridEvents.GridKeyCmdPressedEvent.on().subscribe(event => {
-      switch(event.key) {
-        
-        case 'Ctrl+C': this.selection.CopySelection.run(); break
-
-        case 'Delete': 
-          (this.selection.latestSelection()?.rowKeys ?? []).forEach(rowKey => this.row.DeleteRow.buffer(rowKey));
-        break
-
-        case 'Backspace': 
-          for (const coordinates of this.selection.latestSelection()?.allCellCoordinates() ?? []) {
-            if (this.cell.GetCellIsEditable.run(coordinates)) {
-              this.cell.CellComponents.findWithCoords(coordinates)?.setValue(null)
-              this.cell.SetCellDraftValue.buffer(coordinates)
-              this.cell.SetCellValue.run(coordinates, null)
-            }
-          }
-        break
-
-        // Toggle checkboxes
-        case 'Enter': 
-        case 'Space': 
-          const cell = this.cell.GetFocusedCell.run()
-          if (cell?.type.name === 'Boolean') cell.typeComponent?.setValue(!cell.typeComponent.value)
-        break
-
-      }
     }))
 
     // Setup file drag listeners

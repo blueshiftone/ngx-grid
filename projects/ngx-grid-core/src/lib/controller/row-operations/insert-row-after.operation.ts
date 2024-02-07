@@ -6,10 +6,10 @@ export class InsertRowAfter extends Operation {
 
   constructor(factory: IRowOperationFactory) { super(factory.gridController) }
 
-  public run(insertRow: IGridRow, referenceRow: IGridRow): void {
+  public run(insertRow: IGridRow, referenceRow: IGridRow): Promise<void> {
 
     const increment = 1
-    this.rowOperations.InsertRow.buffer(insertRow, { increment, referenceRow })
+    return this.rowOperations.InsertRow.buffer(insertRow, { increment, referenceRow })
     
   }
 

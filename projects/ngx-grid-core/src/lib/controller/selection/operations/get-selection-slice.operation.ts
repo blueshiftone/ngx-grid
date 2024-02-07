@@ -5,8 +5,7 @@ export class GetSelectionSlice {
   
   constructor(private readonly controller: ISelectionController) {}
 
-  public run(): IGridSelectionSlice | null {
-    const selection = this.controller.latestSelection()
+  public run(selection = this.controller.latestSelection()): IGridSelectionSlice | null {
     const columns   = this._getColumns()
     if (!selection || !columns || !columns.length) return null
     const utils = selection.globalUtils

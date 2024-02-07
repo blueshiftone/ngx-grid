@@ -49,19 +49,19 @@ export class GridSelectionController implements IDestroyable {
         if (this._gridViewPort) this.factory.attachGridBody(this._gridViewPort)
 
         this._subscriptions.add(this.gridController.gridEvents.GridKeyCmdPressedEvent.on().subscribe(e => {
-          switch(e?.key) {
-            case 'ArrowUp'   : this.factory.keyboardEvents.arrowUp?.(e); break
-            case 'ArrowRight': this.factory.keyboardEvents.arrowRight?.(e); break
-            case 'ArrowDown' : this.factory.keyboardEvents.arrowDown?.(e); break
-            case 'ArrowLeft' : this.factory.keyboardEvents.arrowLeft?.(e); break
-            case 'PageUp'    : this.factory.keyboardEvents.pageUp?.(e); break
-            case 'PageDown'  : this.factory.keyboardEvents.pageDown?.(e); break
-            case 'Home'      : this.factory.keyboardEvents.home?.(e); break
-            case 'End'       : this.factory.keyboardEvents.end?.(e); break
-            case 'Ctrl+A'    : this.factory.keyboardEvents.ctrlA?.(e); break
-            case 'Tab'       : this.factory.keyboardEvents.tab?.(e); break
-            case 'Enter'     : this.factory.keyboardEvents.enter?.(e); break
-            case 'Space'     : this.factory.keyboardEvents.space?.(e); break
+          switch (e.key) {
+            case 'arrowup'         : this.factory.keyboardEvents.arrowUp?.(e); break
+            case 'arrowright'      : this.factory.keyboardEvents.arrowRight?.(e); break
+            case 'arrowdown'       : this.factory.keyboardEvents.arrowDown?.(e); break
+            case 'arrowleft'       : this.factory.keyboardEvents.arrowLeft?.(e); break
+            case 'pageup'          : this.factory.keyboardEvents.pageUp?.(e); break
+            case 'pagedown'        : this.factory.keyboardEvents.pageDown?.(e); break
+            case 'home'            : this.factory.keyboardEvents.home?.(e); break
+            case 'end'             : this.factory.keyboardEvents.end?.(e); break
+            case 'ctrl+a'          : this.factory.keyboardEvents.ctrlA?.(e); break
+            case 'tab'             : this.factory.keyboardEvents.tab?.(e); break
+            case 'enter'           : this.factory.keyboardEvents.enter?.(e); break
+            case 'space'           : this.factory.keyboardEvents.space?.(e); break
           }
           if (e) this.factory.keyboardEvents.any?.(e);
         }))
