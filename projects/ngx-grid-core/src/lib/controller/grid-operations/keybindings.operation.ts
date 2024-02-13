@@ -57,6 +57,18 @@ export class KeyBindings extends Operation {
           if (actionMap.has(combination.toLowerCase())) {
             actionMap.get(combination.toLowerCase())?.(this.controller)
           }
+          return
+        }
+        if (e.key.length === 1 && (!e.metaKey && !e.ctrlKey && !e.altKey)) {
+          this.gridEvents.GridKeypressedEvent.emit({
+            key       : 'InputKey',
+            valueOfKey: e.key,
+            hasCtrlKey: false,
+            hasShiftKey: e.shiftKey
+          })
+          e.preventDefault()
+          e.stopPropagation()
+          return
         }
       }
     }))
