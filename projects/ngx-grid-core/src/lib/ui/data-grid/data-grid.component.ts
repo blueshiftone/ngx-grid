@@ -27,6 +27,10 @@ import { IGridConfiguration, IGridDataSource, IGridSelectionSlice } from '../../
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { WINDOW } from '../../utils/window'
+import { GridCellCoordinates } from '../../typings/interfaces/implementations'
+import { ExcelFormatter } from '../../utils/excel-formatter.class'
+import { Clipboard } from '../../utils/clipboard.class'
+import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
   selector: 'data-grid',
@@ -67,6 +71,38 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
 
   @ViewChild('rowThumb', { static: true }) private rowThumb!: ElementRef<HTMLDivElement>
 
+  async onRowThumbDblClick() {
+
+    // Copy entire grid + headers to clipboard
+    const firstRow = this.gridController.dataSource.rows.latestValue[0]
+    const lastRow = this.gridController.dataSource.rows.latestValue[this.gridController.dataSource.rows.latestValue.length - 1]
+
+    const firstColumn = this.gridController.dataSource.columns[0]
+    const lastColumn = this.gridController.dataSource.columns[this.gridController.dataSource.columns.length - 1]
+
+    const startPos = new GridCellCoordinates(firstRow.rowKey, firstColumn.columnKey)
+    const endPos   = new GridCellCoordinates(lastRow.rowKey, lastColumn.columnKey)
+
+    const selection = this.gridController.selection.CreateSelectionStateFromCoordinates.run([startPos, endPos])
+    selection.currentSelection.addRange(startPos, endPos)
+    const slice = this.gridController.selection.GetSelectionSlice.run(selection.currentSelection)
+
+    if (slice) {      
+      const formatter = new ExcelFormatter(this.gridController, slice)
+      const html = formatter.toExcelHTML(true)
+      const plain = formatter.toPlainText(true)
+      await new Clipboard()
+        .setHTML(html)
+        .setPlainText(plain)
+        .write()
+      this._gridEvents.GridDataCopiedEvent.emit(true)
+
+      this.snack.open(
+        this.localizations.getLocalizedString("locGridCopiedToClipboard"),
+        this.localizations.getLocalizedString("locClose"), { duration: 3000 });
+    }
+  }
+
   constructor(
     @Inject(WINDOW) private _window: Window,
     private readonly cd            : ChangeDetectorRef,
@@ -76,7 +112,8 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     public  readonly events        : GridEventsService,
     public  readonly localizations : LocalizationService,
     private readonly ctxService    : GridContextMenuService,
-    public  readonly multiEdit     : GridMultiCellEditService
+    public  readonly multiEdit     : GridMultiCellEditService,
+    public  readonly snack         : MatSnackBar
   ) { super() }
 
   ngOnInit(): void {

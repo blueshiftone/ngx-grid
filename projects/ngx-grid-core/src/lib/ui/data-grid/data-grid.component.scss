@@ -135,6 +135,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  user-select: none;
 
   &.has-groups {
     width: 54px;
@@ -167,6 +168,10 @@
       opacity: 0.6;
       color: var(--text-color);
     }
+  }
+
+  &:hover {
+    background-color: var(--highlight-color);
   }
 }
 

@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select'
 import { MatSidenavModule } from '@angular/material/sidenav'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 
 import { NgInitDirective } from './directives/ng-init.directive'
 import { FloatingWindowComponent } from './floating-window/floating-window.component'
@@ -33,6 +34,7 @@ const materialModules = [
   MatTooltipModule,
   MatDividerModule,
   MatSidenavModule,
+  MatSnackBarModule
 ]
 
 @NgModule({

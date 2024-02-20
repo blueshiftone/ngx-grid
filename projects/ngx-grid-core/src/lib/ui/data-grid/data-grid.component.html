@@ -1,4 +1,4 @@
-<div class="row-thumb" #rowThumb>
+<div class="row-thumb" #rowThumb (dblclick)="onRowThumbDblClick()">
   <div class="action" (click)="a.onClick()" *ngFor="let a of cornerActions | async" [title]="a.tooltip | async">
     <mat-icon [svgIcon]="(a.icon | async) ?? ''"></mat-icon>
   </div>
