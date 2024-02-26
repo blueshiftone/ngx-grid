@@ -26,5 +26,4 @@ export class GridCellValue implements IGridCellValue {
   public equals(other: IGridCellValue): boolean {
     return this.value === other.value
   }
-  public clone = () => new GridCellValue(new GridCellCoordinates(this.rowKey, this.columnKey), DeepClone(this.value))
 }

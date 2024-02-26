@@ -71,7 +71,7 @@ export class GridRow implements IGridRow {
     return new GridRow(
       this._primaryKeyColumn,
       new Map<TColumnKey, IGridCellValue>(this.valuesArray.map(itm => {
-        var newValue = itm.value.clone()
+        var newValue = new GridCellValue(new GridCellCoordinates(itm.value.rowKey, itm.value.columnKey), DeepClone(itm.value))
         if(newPrimaryKey) {
             newValue.rowKey = newPrimaryKey
             if (itm.columnKey === this._primaryKeyColumn) {
