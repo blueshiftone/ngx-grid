@@ -61,7 +61,6 @@
       left: 0;
       bottom: 0;
       right: 0;
-      background-color: var(--app-bg-contrasted);
       pointer-events: none;
       opacity: 0.06;
     }
@@ -74,11 +73,14 @@
       }
 
       .cell:not(.row-thumb) {
-        border-right-color: transparent;
+        background-color: var(--heavy-dull-highlight);
+
+        &:not(:last-of-type) {
+          border-right-color: transparent;
+        }
       }
     }
   }
-
 }
 
 .row-thumb,

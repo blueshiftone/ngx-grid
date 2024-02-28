@@ -94,7 +94,9 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
         removeNullish(),
         map(offset => offset.fromLeft),
         distinctUntilChanged()
-      ).subscribe(leftOffset => this.elRef.nativeElement.scrollLeft = leftOffset)
+      ).subscribe(leftOffset => {
+        this.elRef.nativeElement.style.transform = `translateX(-${leftOffset}px)`
+      })
     )
 
     this.addSubscription(this._gridEvents.CellSelectionChangedEvent.on().subscribe(selection => {
