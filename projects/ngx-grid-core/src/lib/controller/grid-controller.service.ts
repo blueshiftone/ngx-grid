@@ -21,7 +21,6 @@ import { ColumnOperationFactory } from './column-operations/_column-operation.fa
 import { GridOperationFactory } from './grid-operations/_grid-operation.factory'
 import { RowOperationFactory } from './row-operations/_row-operation.factory'
 import { GridSelectionController } from './selection/grid-selection.controller'
-import { DefaultKeyboardShortcuts } from './default-keyboard-shortcuts'
 
 export const DATA_GRIDS_FOCUSED_TREE: string[] = [] 
 

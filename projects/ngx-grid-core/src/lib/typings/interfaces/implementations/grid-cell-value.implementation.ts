@@ -1,6 +1,4 @@
-import { GridCellCoordinates } from '.'
 import { IGridCellCoordinates, IGridCellValue } from '..'
-import { DeepClone } from '../../../utils/deep-clone'
 import { TColumnKey, TPrimaryKey } from '../../types'
 
 export class GridCellValue implements IGridCellValue {
