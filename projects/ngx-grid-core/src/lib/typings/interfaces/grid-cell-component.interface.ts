@@ -22,6 +22,7 @@ export interface IGridCellComponent {
   rowKey          : TPrimaryKey
   overlays        : GridOverlayService
   viewContainerRef: ViewContainerRef | null
+  isDisconnected?: boolean
 
   toggleClass   (className: string, classState: boolean): void
   detectChanges ()                                      : void

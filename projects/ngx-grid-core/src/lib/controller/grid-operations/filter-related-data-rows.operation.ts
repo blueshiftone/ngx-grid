@@ -8,7 +8,7 @@ export class FilterRelatedDataRows extends Operation {
   constructor(factory: IGridOperationFactory) { super(factory.gridController) }
   
   public run(gridID: string, rowKeys: TPrimaryKey[]): IGridRow[] {
-    const source = this.gridOperations.relatedDataSources.get(gridID)
+    const source = this.gridOperations.GetRelatedData.run(gridID)
     const rows: IGridRow[] = []
     for (const primaryKey of rowKeys) {
       if (source?.rowExists(primaryKey)) {

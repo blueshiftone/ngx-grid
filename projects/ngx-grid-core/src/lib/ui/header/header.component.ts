@@ -110,12 +110,13 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
       distinctUntilChanged()).subscribe(hasGroups => this.elRef.nativeElement.classList.toggle('has-groups', hasGroups)))
 
     // close column menu when clicking outside of it
-    this.addSubscription(fromEvent<MouseEvent>(this.doc, 'mousedown').subscribe(e => {
+    this.addSubscription(merge(this.events.factory.CloseColumnMenuRequestedEvent.on(), fromEvent<MouseEvent>(this.doc, 'mousedown')).subscribe(e => {
       const menuIsOpen = (this.columnMenuTriggers ?? []).some(x => x.menuOpen)
       if (
         menuIsOpen &&
-        !HasParentOfClass('column-menu', e.target as HTMLElement) &&
-        !HasParentOfClass('col-dropdown-btn', e.target as HTMLElement)
+        (!e || 
+          (!HasParentOfClass('column-menu', e.target as HTMLElement) &&
+          !HasParentOfClass('col-dropdown-btn', e.target as HTMLElement)))
       ) {
         for (const t of this.columnMenuTriggers ?? []) {
           if (t.menuOpen) {        

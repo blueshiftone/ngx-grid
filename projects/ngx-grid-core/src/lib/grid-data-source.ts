@@ -16,7 +16,6 @@ import { IKeyboardShortcut } from './typings/interfaces/keyboard-shortcut.interf
 export class GridDataSource implements IGridDataSource {
 
   private _columns: IGridColumn[] = []
-  private _keyboardShortcuts: IKeyboardShortcut[] = []
 
   public get columns(): IGridColumn[] {
     return this._columnsSubset ?? this._columns
@@ -45,6 +44,7 @@ export class GridDataSource implements IGridDataSource {
   public maskNewIds        = false
   public leafLevel         = -1
   public localizations     = undefined
+  public keyboardShortcuts?: IKeyboardShortcut[]
 
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
@@ -70,10 +70,6 @@ export class GridDataSource implements IGridDataSource {
       delete input.columns
     }
     if (input) Object.assign(this, input)
-
-    if (input?.keyboardShortcuts) {
-      this._keyboardShortcuts = input.keyboardShortcuts as IKeyboardShortcut[];
-    }
 
     for (const col of this.columns) this._colMap.set(col.columnKey, col)
 
@@ -283,6 +279,11 @@ export class GridDataSource implements IGridDataSource {
     if (!subset) this._colMap.clear()
     for (const col of columns) this._colMap.set(col.columnKey, col)
     this._changesStream.next()
+  }
+
+  public addKnownColumn(col: IGridColumn)
+  {
+    this._colMap.set(col.columnKey, col)
   }
 
   public setRows(rows: IGridRow[]): void {

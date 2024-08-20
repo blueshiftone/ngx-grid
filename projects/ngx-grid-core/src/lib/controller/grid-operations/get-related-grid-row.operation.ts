@@ -9,6 +9,6 @@ export class GetRelatedGridRow extends Operation {
 
   public run(gridID?: string, rowKey?: TPrimaryKey): IGridRow | undefined {
     if (gridID === undefined || rowKey === undefined) return undefined
-    return this.gridOperations.relatedDataSources.get(gridID)?.getRow(rowKey)
+    return this.gridOperations.GetRelatedData.run(gridID)?.getRow(rowKey)
   }
 }

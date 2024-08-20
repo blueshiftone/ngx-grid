@@ -1,7 +1,7 @@
 import { OverlayModule } from '@angular/cdk/overlay'
 import { ScrollingModule } from '@angular/cdk/scrolling'
 import { CommonModule, DatePipe } from '@angular/common'
-import { HttpClientModule } from '@angular/common/http'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MatNativeDateModule } from '@angular/material/core'
@@ -112,6 +112,10 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
     LoadingDotsComponent,
     BottomPlusScrollbarDirective
   ],
+  exports: [
+    DataGridComponent,
+    RecordSelectorComponent
+  ],
   imports: [
     CommonModule,
     ScrollingModule,
@@ -121,15 +125,11 @@ GRID_OVERLAYS.set(EGridOverlayType.FileGridCellSelectedList, FileGridCellSelecte
     OverlayModule,
     MarkdownEditorModule,
     MatDatepickerModule,
-    MatNativeDateModule,
-    HttpClientModule,
+    MatNativeDateModule
   ],
   providers: [
-    DatePipe
-  ],
-  exports: [
-    DataGridComponent,
-    RecordSelectorComponent
+    DatePipe,
+    provideHttpClient(withInterceptorsFromDi())
   ]
 })
 export class NgxGridCoreModule { }

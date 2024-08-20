@@ -166,7 +166,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
       this._gridEvents.GridUIThemeChangedEvent.emit(theme)
     }))
 
-    this.addSubscription(fromEvent<MouseEvent>(this._el, 'click').subscribe(_ => this.gridController.grid.SetGridFocus.run()))
+    this.addSubscription(fromEvent<MouseEvent>(this._el, 'mousedown').subscribe(_ => this.gridController.grid.SetGridFocus.run()))
 
     this.addSubscription(this.gridController.dataSource.rows.output.pipe(
       map(rows => rows[0]?.floatingTitle?.isGroup === true),

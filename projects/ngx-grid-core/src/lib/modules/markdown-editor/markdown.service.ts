@@ -3,7 +3,7 @@ import { baseKeymap, chainCommands, lift, setBlockType, toggleMark, wrapIn } fro
 import { keymap } from 'prosemirror-keymap'
 import { DOMParser, DOMSerializer, Fragment, Mark, Schema, Slice } from 'prosemirror-model'
 import { addListNodes, liftListItem, wrapInList } from 'prosemirror-schema-list'
-import { Command, EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state'
+import { EditorState, Plugin, TextSelection, Transaction } from 'prosemirror-state'
 import { EditorView } from 'prosemirror-view'
 import { BehaviorSubject } from 'rxjs'
 
@@ -59,7 +59,7 @@ export class MarkdownService {
     },
     {
       name: 'Heading1',
-      command: (_, dispatch?) => {
+      command: (_:any, dispatch?:any) => {
         const isActive = this.activeActions.value.has('heading1')
         if (isActive || this.activeActions.value.has('heading')) setBlockType(customSchema.nodes['paragraph']) (this._editor!.state, dispatch)
         if (!isActive) setBlockType(customSchema.nodes['heading'], {level: 1})(this._editor!.state, dispatch)
@@ -69,7 +69,7 @@ export class MarkdownService {
     },
     {
       name: 'Heading2',
-      command: (_, dispatch?) => {
+      command: (_:any, dispatch?:any) => {
         const isActive = this.activeActions.value.has('heading2')
         if (isActive || this.activeActions.value.has('heading')) setBlockType(customSchema.nodes['paragraph']) (this._editor!.state, dispatch)
         if (!isActive) setBlockType(customSchema.nodes['heading'], {level: 2})(this._editor!.state, dispatch)
@@ -79,7 +79,7 @@ export class MarkdownService {
     },
     { 
       name: 'Blockquote',
-      command: (state, dispatch?) => {
+      command: (state: any, dispatch?: any) => {
         const isActive = this.activeActions.value.has('blockquote')
         if (isActive) {
           lift(state, dispatch)
@@ -98,7 +98,7 @@ export class MarkdownService {
     },
     {
       name: 'Link',
-      command: (state, dispatch?, attrs?) => {
+      command: (state: any, dispatch?: any, attrs?: any) => {
         
         if (!this._editor) return false
 
@@ -136,7 +136,7 @@ export class MarkdownService {
     },
     {
       name: 'OrderedList',
-      command: (_, dispatch?) => {
+      command: (_:any, dispatch?:any) => {
         const isActive = this.activeActions.value.has('ordered_list')
         if (isActive || this.activeActions.value.has('list_item')) liftNested(this._editor!.state, dispatch)
         if (!isActive) wrapInList(customSchema.nodes['ordered_list'])(this._editor!.state, dispatch)
@@ -146,7 +146,7 @@ export class MarkdownService {
     },
     { 
       name: 'BulletList',
-      command: (_, dispatch?: ((tr: Transaction) => void)) => {
+      command: (_: any, dispatch?: ((tr: Transaction) => void)) => {
         const isActive = this.activeActions.value.has('bullet_list') 
         if (isActive || this.activeActions.value.has('list_item')) liftNested(this._editor!.state, dispatch)
         if (!isActive) wrapInList(customSchema.nodes['bullet_list'])(this._editor!.state, dispatch)
@@ -326,7 +326,7 @@ export class MarkdownService {
 }
 
 export interface IMarkdownEditorAction {
-  command: Command,
+  command: any,
   name: string,
   isMark?: boolean,
   proseName: string,

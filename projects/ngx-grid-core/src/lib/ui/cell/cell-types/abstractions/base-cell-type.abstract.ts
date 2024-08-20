@@ -9,6 +9,7 @@ import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridOverlayOpe
 import { IGridDataType } from '../../../../typings/interfaces/grid-data-type.interface'
 import { HasParentOfClass } from '../../../../utils/find-parent-element-of-class'
 import { TO_ARRAY } from '../../../../utils/to-array'
+import { CELL_VALUE_PARSERS } from '../value-parsing'
 
 export abstract class BaseCellType implements IGridCellType {
 
@@ -57,6 +58,14 @@ export abstract class BaseCellType implements IGridCellType {
   }
 
   public setValue(value: any): boolean {
+    if (this.parentCell.isDisconnected) {
+      var parsed = CELL_VALUE_PARSERS[this.type.name].validate(value, this.gridController, this.coordinates)
+      if (parsed.isValid) {
+        this.receiveValue(parsed.transformedValue)
+        return true
+      }
+      return false
+    }
     if (this.gridController.cell.GetCellMeta.run(this.coordinates).activityState === ECellActivityState.Locked) {
       return false
     }

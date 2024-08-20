@@ -9,7 +9,7 @@ export class GetRelatedDataPreviewString extends Operation {
   ) { super(factory.gridController) }
 
   public run(gridID: string, rowKey: TPrimaryKey): string {
-    const source = this.gridOperations.relatedDataSources.get(gridID)
+    const source = this.gridOperations.GetRelatedData.run(gridID)
     return this.rowOperations.GetRowPreviewString.run(rowKey, source)    
   }
 }

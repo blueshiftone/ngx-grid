@@ -1,3 +1,4 @@
+import { ERowStatus } from '../../typings/enums'
 import { IGridCellCoordinates } from '../../typings/interfaces'
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { TPrimaryKey } from '../../typings/types'
@@ -37,7 +38,12 @@ export class SetCellDraftValue extends Operation {
       this.gridEvents.CellDraftValueChangedEvent.emit(cellValue)
     }
 
-    for (const key of rowKeys) promises.add(this.rowOperations.ResetRowStatus.buffer(key))
+    for (const key of rowKeys) {
+      const rowIsNew = this.rowOperations.GetRowStatus.run(key) === ERowStatus.New
+      if (!rowIsNew) {
+        promises.add(this.rowOperations.ResetRowStatus.buffer(key))
+      }
+    }
 
     await Promise.all(promises)
 

@@ -102,6 +102,7 @@ export class GridMultiCellEditService {
       setValue        : (val: any) => this._cellType?.receiveValue(val),
       overlays        : this.overlays,
       viewContainerRef: this.viewContainerRef,
+      isDisconnected  : true,
       rowComponent    : {
         columns          : [],
         detectChanges    : () => {},

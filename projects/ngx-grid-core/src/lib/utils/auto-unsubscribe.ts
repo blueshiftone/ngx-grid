@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs'
   Implement appOnDestroy for custom OnDestroy logic
 */
 
-@Component({ template: '' })
+@Component({ template: '', host: {'ngx-grid': '1'} })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export abstract class AutoUnsubscribe implements OnDestroy {
   private readonly subscriptions: Set<Subscription> = new Set()

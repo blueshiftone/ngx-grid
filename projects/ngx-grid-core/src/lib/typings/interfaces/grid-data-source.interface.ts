@@ -53,7 +53,14 @@ export interface IGridDataSource extends IDestroyable {
    * @param columns - The columns to replace the existing columns with
    *
    */
-  setColumns (columns: IGridColumn[], subset?: boolean): void
+  setColumns(columns: IGridColumn[], subset?: boolean): void
+
+  /**
+   * Adds a column to the datasource as a known column. Does not add the column for display.
+   * 
+   *  @param column - The column to add
+   */
+  addKnownColumn(column: IGridColumn): void
 
   clearColumnSubset    ()                                        : void
   upsertRows           (rows: IGridRow[])                        : void
