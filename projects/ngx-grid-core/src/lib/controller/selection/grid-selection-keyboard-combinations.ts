@@ -47,7 +47,8 @@ export const GridSelectionKeyboardCombinations: IKeyCombination[] = [
   },
   {
     combination: 'Tab',
-    ignoreShiftModifier: true
+    ignoreShiftModifier: true,
+    swallowEvents: true
   },
   {
     combination: 'Enter'
