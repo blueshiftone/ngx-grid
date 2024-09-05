@@ -5,5 +5,8 @@
 </div>
 <div class="grid" [ngClass]="{ Disabled: disabled === true, initialised: initialised }">
   <data-grid-header></data-grid-header>
-  <data-grid-body tabindex="0" [name]="name ?? data.dataSetName"></data-grid-body>
+  <data-grid-body tabindex="0" [name]="name ?? data.dataSetName">
+    <ng-content class="status-area-start" select=".status-area-start"></ng-content>
+    <ng-content class="status-area-end" select=".status-area-end"></ng-content>
+  </data-grid-body>
 </div>

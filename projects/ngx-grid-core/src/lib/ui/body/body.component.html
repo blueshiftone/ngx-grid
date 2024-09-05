@@ -8,7 +8,9 @@
   <div class="status-row mat-app-background" libAbsolutePositionMinusScrollbars [changes]="dataChanges"
     [viewport]="viewport">
     <div class="txt grid-name"><lib-localized-text>{{ name }}</lib-localized-text></div>
+    <ng-content select=".status-area-start"></ng-content>
     <div class="greedy"></div>
     <div class="txt records-count" *ngIf="underlyingRowCount > 0">{{ underlyingRowCount | number }} <lib-localized-text>locRecords</lib-localized-text></div>
+    <ng-content select=".status-area-end"></ng-content>
   </div>
 </div>

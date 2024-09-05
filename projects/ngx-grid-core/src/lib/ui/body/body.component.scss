@@ -4,9 +4,18 @@
   user-select: none;
   position: relative;
   z-index: 1;
+
   .virtual-scroll {
     height: 100%;
     width: 100%;
+  }
+
+  ::ng-deep {
+    .status-area-end {
+      display: flex;
+      height: 100%;
+      align-items: center;
+    }
   }
 }
 
