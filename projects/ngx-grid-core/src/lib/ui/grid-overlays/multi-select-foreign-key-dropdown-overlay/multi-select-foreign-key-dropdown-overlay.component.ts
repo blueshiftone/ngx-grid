@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inje
 import { FormControl } from '@angular/forms'
 import { debounceTime, distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators'
 
-import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GridDataSource } from '../../../grid-data-source'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { EForeignKeyDropdownState } from '../../../typings/enums'
@@ -26,8 +25,6 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
   public dataSource?: IGridDataSource
   public values: TPrimaryKey[] = []
   public searchCtrl = new FormControl()
-
-  public gridConfig = new DataGridConfigs().withRowMultiSelect().withConfigs({ scrollToPreselected: false })
 
   public loadingState = this.gridController.gridEvents
     .ForeignKeyDropdownStateChangedEvent

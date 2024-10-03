@@ -10,6 +10,7 @@ import { NumberCellType as Number } from './number.cell-type'
 import { RichTextCellType as RichText } from './rich-text.cell-type'
 import { TextCellType as Text } from './text.cell-type'
 import { ButtonCellType as Button } from './button.cell-type'
+import { IconCellType as Icon } from './icon.cell-type'
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const CELL_TYPES = {
@@ -24,7 +25,8 @@ const CELL_TYPES = {
   DropdownMultiSelect,
   File,
   Color,
-  Button
+  Button,
+  Icon
 }
 
 export default CELL_TYPES

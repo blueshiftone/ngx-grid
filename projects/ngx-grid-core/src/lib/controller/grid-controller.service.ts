@@ -21,6 +21,7 @@ import { ColumnOperationFactory } from './column-operations/_column-operation.fa
 import { GridOperationFactory } from './grid-operations/_grid-operation.factory'
 import { RowOperationFactory } from './row-operations/_row-operation.factory'
 import { GridSelectionController } from './selection/grid-selection.controller'
+import { MatIconRegistry } from '@angular/material/icon'
 
 export const DATA_GRIDS_FOCUSED_TREE: string[] = [] 
 
@@ -41,6 +42,9 @@ export class GridControllerService {
   
   private _subs : Set<Subscription> = new Set()
 
+  public iconClass = this.iconRegistry.getDefaultFontSetClass().filter((fontSetClass) => fontSetClass.includes('material') || fontSetClass.includes('symbols'))[0]
+  ??  this.iconRegistry.getDefaultFontSetClass()[0];
+
   constructor(
     private readonly events  : GridEventsService,
     public  readonly prefs   : LocalPreferencesService,
@@ -48,6 +52,7 @@ export class GridControllerService {
     public  readonly datePipe: DatePipe,
     public  readonly dialogs : MatDialog,
     public  readonly uploads : GridFileUploadService,
+    private readonly iconRegistry: MatIconRegistry,
     icons: IconsService,
   ) {
 

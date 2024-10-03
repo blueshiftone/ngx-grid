@@ -18,4 +18,5 @@ export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
   DateRange           : new ValueParser([parsers.Array]),
   NumberRange         : new ValueParser([parsers.Array]),
   Button              : new ValueParser([parsers.Button]),
+  Icon                : new ValueParser([parsers.Icon]),
 }

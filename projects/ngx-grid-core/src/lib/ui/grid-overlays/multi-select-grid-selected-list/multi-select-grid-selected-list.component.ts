@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 import { Subject } from 'rxjs'
 import { debounceTime, repeat, takeUntil } from 'rxjs/operators'
 
-import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GridDataSource } from '../../../grid-data-source'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
 import { IGridDataSource, IGridOverlayData, IGridRecordSelectedEvent } from '../../../typings/interfaces'
@@ -22,8 +21,6 @@ export class MultiSelectGridSelectedListComponent extends BaseOverlayComponent i
   public dataSource?: IGridDataSource
   public values     : TPrimaryKey[] = []
   public dataSetName                = ''
-
-  public gridConfig = new DataGridConfigs().withRowMultiSelect()
   
   private _valueUpdated = new Subject<void>()
   private _updateDataNext = new Subject<any>()

@@ -1,4 +1,4 @@
-import { fromEvent, merge, Subject } from 'rxjs'
+import { fromEvent, merge, Observable, Subject } from 'rxjs'
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators'
 
 import {
@@ -19,25 +19,24 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
   constructor(public readonly controller: ISelectionController) { }
 
   public attach(el: HTMLElement): void {
-    this._keyboardHandling()
     this.controller.addSubscription(fromEvent(window.document.documentElement, 'mouseup').subscribe(_ => this._mouseReleased.next(true)))
     this.controller.addSubscription(fromEvent<MouseEvent>(el, 'mousedown').subscribe(e => this._startSelection(e)))
+    this._keyboardHandling()
   }
 
   private _startSelection(e: MouseEvent): void {
-    // button 0 = Left Mouse Button
-    if (e.button !== 0 || !HasParentOfClass('cell', e.target as HTMLElement)) return
-    this._gridEvents.CellSelectionStartedEvent.emit(true)
-
-    let state = this.controller.CreateSelectionStateFromMouseEvent.run({
-      ctrlKey: !e.shiftKey && typeof this.controller.state?.previousSelection !== 'undefined',
-      shiftKey: e.shiftKey,
-      target: e.target
-    })
-
+    if (!HasParentOfClass('cell', e.target as HTMLElement)) return
+    let state = this.controller.CreateSelectionStateFromMouseEvent.run(e)
     if (!state) return
     
-    e.preventDefault() // stops native html element dragging 
+    const lastSelection = this.controller.latestSelection()
+    // button 2 = Right Mouse Button
+    if (e.button === 2 && lastSelection?.includes(state.startCellPos) === true) return
+    
+    this._gridEvents.CellSelectionStartedEvent.emit(true)
+    
+    // button 0 = Left Mouse Button
+    if (e.button === 0) e.preventDefault() // stops native html element dragging 
 
     this.controller.state = state
 
@@ -49,7 +48,9 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
     this.controller.CalculateNextSelection.run()
 
     const focusChanged = this.controller.EmitFocusedCell.run()
-    if (focusChanged) state.previousSelection = state.currentSelection.clone()
+    if (focusChanged) {
+      state.previousSelection = state.currentSelection.clone()
+    }
 
     this._continueSelection()
   }
@@ -59,12 +60,20 @@ export class MultiRowSelectionStrategy implements IGridSelectionStrategy {
     const state = this.controller.state
     if (!state) throw new Error('Selection state is undefined')
 
-    this._gridEvents.RowMouseEnteredEvent.on()
-      .pipe(removeNullish(), takeUntil(merge(this._windowFocusChanged, this._mouseReleased)))
-      .subscribe(rowComponent => {
+    const event: Observable<IGridCellCoordinates> = state.isRowSelection ?
+      this._gridEvents.RowMouseEnteredEvent.onWithInitialValue().pipe(removeNullish(), map(row => row.lastCellPosition)) :
+      this._gridEvents.CellMouseEnteredEvent.onWithInitialValue().pipe(removeNullish(), map(cell => new GridCellCoordinates( cell.rowComponent.rowKey, cell.column.columnKey )))
+
+    event
+      .pipe(takeUntil(merge(this._windowFocusChanged, this._mouseReleased)))
+      .subscribe(endCellPos => {
         const nextSelection = (state.hasShiftKey && state.previousSelection ? state.previousSelection : state.initialSelection).clone()
-        this.controller.CalculateNextSelection.run(nextSelection, state.startCellPos, rowComponent.lastCellPosition)
+        const columns = this.controller.gridController.dataSource.columns
+        const lastColumnKey = columns[columns.length - 1].columnKey
+        const firstColumnKey = columns[0].columnKey
+        this.controller.CalculateNextSelection.run(nextSelection, new GridCellCoordinates(state.startCellPos.rowKey, firstColumnKey), new GridCellCoordinates(endCellPos.rowKey, lastColumnKey))
         this._emitSelection(nextSelection)
+        this.controller.EmitNextSelectionSlice.run()
       })
       .add(() => {
         const finalSelection = this.controller.GetFinalSelection.run()

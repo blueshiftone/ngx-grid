@@ -8,6 +8,7 @@ import { NumberParser as Number } from './number.parser'
 import { StringParser as String } from './string.parser'
 import { AnyParser as Any } from './any.parser'
 import { ButtonParser as Button } from './button.parser'
+import { IconParser as Icon } from './icon.parser'
 
 export {
   Array,
@@ -19,5 +20,6 @@ export {
   File,
   Color,
   Any,
-  Button
+  Button,
+  Icon
 }

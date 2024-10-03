@@ -142,6 +142,9 @@ export class RowComponent extends AutoUnsubscribe implements OnInit, OnChanges, 
 
   @HostListener('mouseenter')
   public mouseEntered  = () => this.events.factory.RowMouseEnteredEvent.emit(this)
+
+  @HostListener('dblclick')
+  public dblClick = () => this.events.factory.RowDoubleClickedEvent.emit(this)
   
   public indexOf       = (columnKey: string) => { return this.columns.findIndex(c => c.columnKey === columnKey) }
   public cellColumnKey = (i: number) => this.columns[i]

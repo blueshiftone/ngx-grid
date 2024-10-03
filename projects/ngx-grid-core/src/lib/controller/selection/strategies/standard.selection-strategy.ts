@@ -18,7 +18,6 @@ export class StandardSelectionStrategy implements IGridSelectionStrategy {
   constructor(public readonly controller: ISelectionController) { }
 
   public attach(el: HTMLElement): void {
-
     this.controller.addSubscription(fromEvent(window.document.documentElement, 'mouseup').subscribe(_ => this._mouseReleased.next(true)))
     this.controller.addSubscription(fromEvent<MouseEvent>(el, 'mousedown').subscribe(e => this._startSelection(e)))
     this._keyboardHandling()
