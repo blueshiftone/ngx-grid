@@ -27,6 +27,11 @@ export class RemoveOrphanedRows {
         if (orphanedRowKeys.has(cell.rowKey)) nextSelection.remove(cell)
       }
 
+      const focusedRowKey = this.controller.gridEvents.CellFocusChangedEvent.state?.rowKey?.toString() ?? null
+      if (nextSelection.cellCount == 0 || focusedRowKey && orphanedRowKeys.has(focusedRowKey)) {
+        this.controller.gridEvents.CellFocusChangedEvent.emit(undefined)
+      }
+
       this.controller.EmitNextSelection.run(nextSelection.cellCount > 0 ? nextSelection : null)
       this.controller.EmitNextSelectionSlice.run()
 
