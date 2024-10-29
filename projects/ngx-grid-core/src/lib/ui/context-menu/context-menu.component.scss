@@ -1,6 +1,6 @@
 :host {
   display: block;
-  background-color: var(--app-bg);
+  background-color: var(--ngx-grid-app-background);
 }
 
 div.item {
@@ -36,7 +36,7 @@ button.item {
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background-color: var(--highlight-color);
+    background-color: var(--ngx-grid-context-menu-item-background-color);
     opacity: 0;
     transition: opacity 120ms ease-in;
     position: absolute;

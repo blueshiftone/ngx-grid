@@ -1,6 +1,6 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core'
-import { concat, interval } from 'rxjs'
+import { BehaviorSubject, concat, interval } from 'rxjs'
 import { distinctUntilChanged, map, startWith, switchMap, take } from 'rxjs/operators'
 
 import { GridControllerService } from '../../controller/grid-controller.service'
@@ -27,6 +27,8 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
   public rows: IGridRow[] = []
 
   public dataChanges = this.events.factory.GridDataChangedEvent.on()
+
+  public virtualScrollItemSize = new BehaviorSubject<number>(this.gridController.grid.GetGridElementSizes.getRowHeight())
 
   private readonly autoScrollConfigs: IGridViewportAutoScrollConfigs = {
     triggerAreaSize: 60,
@@ -75,6 +77,11 @@ export class BodyComponent extends AutoUnsubscribe implements OnInit {
       map(rows => rows[0]?.floatingTitle?.isGroup === true),
       distinctUntilChanged()).subscribe(hasGroups => this.viewPort.elementRef.nativeElement.classList.toggle('has-groups', hasGroups)))
 
+    this.addSubscription(this.gridController.gridEvents.GridThemeChangedEvent.onWithInitialValue().pipe(
+      map(theme => theme?.rowHeight ?? this.virtualScrollItemSize.value),
+      distinctUntilChanged()).subscribe(height => {
+        this.virtualScrollItemSize.next(height)
+      }))
   }
 
   public rowTrackBy = (_: number, row: IGridRow) => row.rowKey

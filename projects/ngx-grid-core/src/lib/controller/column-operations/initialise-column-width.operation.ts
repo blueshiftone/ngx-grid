@@ -54,10 +54,12 @@ export class InitialiseColumnWidth extends Operation {
       if (isTHeaderCloumnWidth(cellTypeOrColumnWidth)) {
         const [columnKey, width] = cellTypeOrColumnWidth
         if (existingColumnWidths.has(columnKey)) continue
+        const minWidth = this.dataSource.getColumn(columnKey)?.minWidth ?? 0
         this.columnWidthsMap.set(columnKey, Math.max(
           this.headerWidthsMap.get(columnKey) ?? 0,
           this.columnWidthsMap.get(columnKey) ?? 0,
-          width + this.commonCellPadding)
+          width + this.commonCellPadding,
+          minWidth)
         )
         this.headerWidthsMap.set(columnKey, Math.max(
           this.headerWidthsMap.get(columnKey) ?? 0,
@@ -67,10 +69,12 @@ export class InitialiseColumnWidth extends Operation {
       } else {
         const cellType = cellTypeOrColumnWidth
         if (existingColumnWidths.has(cellType.coordinates.columnKey)) continue
+        const minWidth = this.dataSource.getColumn(cellType.coordinates.columnKey)?.minWidth ?? 0
         this.columnWidthsMap.set(cellType.coordinates.columnKey, Math.max(
           this.headerWidthsMap.get(cellType.coordinates.columnKey) ?? 0,
           this.columnWidthsMap.get(cellType.coordinates.columnKey) ?? 0,
-          cellType.measureWidth() + this.commonCellPadding)
+          cellType.measureWidth() + this.commonCellPadding,
+          minWidth)
         )
         wasChanged = true
       }      

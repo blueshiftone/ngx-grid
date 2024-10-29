@@ -23,6 +23,8 @@ export class GetCellVisibility extends Operation {
         isFullyVisible: false,
       }
     } else {
+      const rowHeight = this.gridOperations.GetGridElementSizes.getRowHeight()
+      const thumbWidth = this.gridOperations.GetGridElementSizes.getThumbWidth()
       const leftScrollOffset    = viewPort.measureScrollOffset('left')
       const topScrollOffset     = viewPort.measureScrollOffset('top')
       const viewportWidth       = viewPort.getElementRef().nativeElement.clientWidth
@@ -33,14 +35,14 @@ export class GetCellVisibility extends Operation {
       const viewportRightBound  = leftScrollOffset + viewportWidth
       const cellWidth           = cellComponent.element.clientWidth
       const cellHeight          = cellComponent.element.clientHeight
-      const cellTopBound        = cellComponent.rowComponent.index * 25 // 25 is row height
+      const cellTopBound        = cellComponent.rowComponent.index * rowHeight
       const cellBottomBound     = cellTopBound + cellHeight
       const cellLeftBound       = cellComponent.element.offsetLeft
       const cellRightBound      = cellLeftBound + cellWidth
       const cellClippedTop      = cellTopBound < viewportTopBound
       const cellClippedBottom   = cellBottomBound > viewportBottomBound
       const cellClippedRight    = cellRightBound > viewportRightBound
-      const cellClippedLeft     = (cellLeftBound - 22) < viewportLeftBound // 22 is the size of row thumb
+      const cellClippedLeft     = (cellLeftBound - thumbWidth) < viewportLeftBound
       
       return  {
         clippedLeft   : cellClippedLeft,
@@ -51,9 +53,5 @@ export class GetCellVisibility extends Operation {
         isFullyVisible: !cellClippedLeft && !cellClippedRight && !cellClippedTop && !cellClippedBottom,
       }
     }
-
   }
-
 }
-
-

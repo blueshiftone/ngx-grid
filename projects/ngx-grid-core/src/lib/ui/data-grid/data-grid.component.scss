@@ -106,8 +106,8 @@
   overflow: auto;
   display: grid;
   grid-template-rows: 1fr;
-  border-top: 1px solid var(--divider-color);
-  border-left: 1px solid var(--divider-color);
+  border-top: var(--ngx-grid-grid-border-top-width) solid var(--ngx-grid-border-color);
+  border-left: var(--ngx-grid-grid-border-left-width) solid var(--ngx-grid-border-color);
 
   &.ctrl-or-shift-modifier {
     ::ng-deep {
@@ -123,11 +123,11 @@
 }
 
 .row-thumb {
-  height: 24px;
-  width: 21px;
-  border-right: 1px solid var(--divider-color);
-  border-bottom: 1px solid var(--divider-color);
-  background-color: var(--app-bg);
+  height: calc(var(--ngx-grid-row-height) - 1px);
+  width: calc(var(--ngx-grid-row-thumb-width) - 1px);
+  border-right: var(--ngx-grid-row-thumb-border-right-width) solid var(--ngx-grid-border-color);
+  border-bottom: var(--ngx-grid-row-thumb-border-bottom-width) solid var(--ngx-grid-border-color);
+  background-color: var(--ngx-grid-row-thumb-base-background-color);
   position: absolute;
   top: 0;
   left: 0;
@@ -148,7 +148,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--app-bg-contrasted);
+    background-color: var(--ngx-grid-row-thumb-background-color);
     z-index: -1;
     opacity: 0.102;
   }
@@ -160,24 +160,20 @@
   }
 
   .action {
-    color: var(--divider-color);
+    color: var(--ngx-grid-row-thumb-action-text-color);
     cursor: pointer;
     margin-left: 7px;
 
     &:hover {
       opacity: 0.6;
-      color: var(--text-color);
+      color: var(--ngx-grid-row-thumb-action-text-color-hover);
     }
-  }
-
-  &:hover {
-    background-color: var(--highlight-color);
   }
 }
 
 .grid {
   display: grid;
-  grid-template-rows: 25px 1fr;
+  grid-template-rows: var(--ngx-grid-row-height) 1fr;
   width: 100%;
   overflow: hidden;
   opacity: 0;
@@ -189,22 +185,9 @@
 
   &.SelectMode {
     ::ng-deep {
-      .cell {
-        &:not(.display) {
-          &:not(.selected):hover {
-            outline: none;
-            cursor: pointer;
-          }
-        }
-
-        >* {
-          pointer-events: none;
-        }
-      }
-
       data-grid-body {
-        .row:hover {
-          background-color: var(--highlight-color-10);
+        .row:not(.focused):not(.row-in-selection):hover {
+          background-color: var(--ngx-grid-row-background-color-hover);
         }
       }
     }
@@ -253,7 +236,7 @@ data-grid-body:focus {
 
   .file-dropzone {
     @include marching-ants-init(8px, 1px, 2s, 1);
-    @include marching-ants-color(var(--primary-color-themed), transparent);
+    @include marching-ants-color(var(--ngx-grid-file-dropzone-text-color), transparent);
     animation-play-state: running;
     position: absolute;
     top: 2px;
@@ -261,7 +244,7 @@ data-grid-body:focus {
     right: 2px;
     bottom: 2px;
     z-index: 1;
-    background-color: var(--highlight-color);
+    background-color: var(--ngx-grid-file-dropzone-backdrop-color);
     backdrop-filter: blur(5px);
 
     &:before {
@@ -271,7 +254,7 @@ data-grid-body:focus {
       left: 0px;
       right: 0px;
       bottom: 0px;
-      background-color: var(--app-bg-contrasted);
+      background-color: var(--ngx-grid-file-dropzone-background-color);
       z-index: -1;
       opacity: 0;
       transition: opacity 100ms linear;
@@ -283,8 +266,12 @@ data-grid-body:focus {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: var(--primary-color-themed);
+      color: var(--ngx-grid-file-dropzone-text-color);
       font-size: 10px;
     }
   }
+}
+
+:host ::ng-deep {
+  @import "./file-icons.scss";
 }

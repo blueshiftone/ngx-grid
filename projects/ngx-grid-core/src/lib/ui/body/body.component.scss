@@ -27,8 +27,8 @@
 .status-row {
   position: absolute;
   left: 0;
-  height: 25px;
-  border-top: 1px solid var(--divider-color);
+  height: var(--ngx-grid-row-height);
+  border-top: 1px solid var(--ngx-grid-border-color);
   display: flex;
   align-items: center;
 

@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostBinding,
   Inject,
   Input,
   OnChanges,
@@ -31,6 +32,7 @@ import { GridCellCoordinates } from '../../typings/interfaces/implementations'
 import { ExcelFormatter } from '../../utils/excel-formatter.class'
 import { Clipboard } from '../../utils/clipboard.class'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { nanoid } from 'nanoid'
 
 @Component({
   selector: 'data-grid',
@@ -69,7 +71,12 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
   private _preselectedRowsChanged = new Subject<void>()
   private _preselectedRowsUpdated = new Subject<void>()
 
+  private themeStyleElement: HTMLStyleElement = document.createElement('style')
+
   @ViewChild('rowThumb', { static: true }) private rowThumb!: ElementRef<HTMLDivElement>
+
+  private _uniqueId = `_${nanoid()}`
+  @HostBinding('id') private get _id() { return this._uniqueId }
 
   async onRowThumbDblClick() {
 
@@ -114,7 +121,10 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     private readonly ctxService    : GridContextMenuService,
     public  readonly multiEdit     : GridMultiCellEditService,
     public  readonly snack         : MatSnackBar
-  ) { super() }
+  ) {
+    super()
+    window.document.head.appendChild(this.themeStyleElement)
+  }
 
   ngOnInit(): void {
     if (typeof this.data === 'undefined') throw new Error('Data is a required @Input()')
@@ -143,6 +153,27 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
       .pipe(map(e => e.ctrlKey || e.shiftKey || e.metaKey === true), distinctUntilChanged())
       .subscribe(hasKeyModifier => this._el.classList.toggle('ctrl-or-shift-modifier', hasKeyModifier))
     )
+
+    this.addSubscription(this.config.gridTheme.subscribe(theme => {
+      const rowHeightPx = Number(theme.rowHeight.replace('px', ''))
+      const thumbWidthPx = Number(theme.rowThumbWidth.replace('px', ''))
+      this._gridEvents.GridThemeChangedEvent.emit({
+        theme,
+        rowHeight: rowHeightPx,
+        thumbWidth: thumbWidthPx
+      })
+      const css = [];
+      for (let [key, value] of Object.entries(theme)) {
+        const cssPropKey = `--ngx-grid-${key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}`
+        if (key === 'contextMenuItemBackgroundColor') {
+          // needs to be set at document-root level because the context menu is inserted outside of the grid element
+          this._window.document.documentElement.style.setProperty(cssPropKey, value)
+        } else {
+          css.push(`${cssPropKey}: ${value};`)
+        }
+      }
+      this.themeStyleElement.innerHTML = `#${this._id} { ${css.join('')} }`
+    }))
 
     this.addSubscription(this._windowFocusChanged.pipe(filter(val => val === false)).subscribe(_ => {
       this._el.classList.toggle('ctrl-or-shift-modifier', false)
@@ -180,6 +211,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     this.ctxService.onDestroy()
     this._gridEvents.onDestroy()
     this.multiEdit.onDestroy()
+    window.document.head.removeChild(this.themeStyleElement)
   }
 
   ngOnChanges(changes: SimpleChanges): void {   

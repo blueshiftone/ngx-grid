@@ -12,6 +12,8 @@ export interface IGridColumn {
   sortOrder? : number
   separators?: IGridSeparator[]
   metadata   : IGridMetadataCollection
+  isColumnMenuHidden?  : boolean
+  minWidth?  : number
   dropdownMenu?: {
     iconVisibility: BehaviorSubject<EColumnIconVisibility>
     icon: BehaviorSubject<string>

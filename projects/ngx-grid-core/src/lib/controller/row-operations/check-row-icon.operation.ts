@@ -25,13 +25,13 @@ export class CheckRowIcon extends Operation {
       const selection = this._preSelectedRow
       const isPreSelected = this._gridMode === 'SelectMode' && (selection === row.rowKey) 
       if (!isPreSelected) return false
-      if (this._rowIsSelected(row)) row.icon.next(EGridIcon.CheckedBox)
-      else                          row.icon.next(EGridIcon.CheckBox)
+      if (this._rowIsSelected(row)) row.icon.next(EGridIcon.CheckedCircle)
+      else                          row.icon.next(EGridIcon.CheckCircle)
       return true
     },
     selected: (row: IGridRowComponent) => {
       const isSelected = this._rowIsSelected(row)
-      if (isSelected) row.icon.next(EGridIcon.Check)
+      if (isSelected) row.icon.next(EGridIcon.CheckedCircle)
       return isSelected
     },
     deletedRow: (row: IGridRowComponent) => {

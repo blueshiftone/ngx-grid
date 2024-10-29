@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs'
 import { EColumnIconVisibility, IGridColumn, IGridDataType, IGridMetadataCollection, IGridSeparator } from '..'
 import { TColumnKey } from '../../types'
 import { GridImplementationFactory } from './grid-implementation.factory'
+import { EMetadataType } from '../../enums'
 
 export class GridColumn implements IGridColumn {
 
@@ -12,6 +13,16 @@ export class GridColumn implements IGridColumn {
   public sortOrder? : number
   public separators?: IGridSeparator[]
   public metadata   : IGridMetadataCollection
+  
+  public get isColumnMenuHidden()
+  {
+    return this.metadata.get(EMetadataType.ColumnMenuIsHidden) === true
+  }
+
+  public get minWidth()
+  {
+    return this.metadata.get<number>(EMetadataType.MinWidth) ?? undefined
+  }
 
   public dropdownMenu?: {
     icon: BehaviorSubject<string>

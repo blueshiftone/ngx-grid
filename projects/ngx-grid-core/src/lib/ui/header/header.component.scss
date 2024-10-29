@@ -71,6 +71,11 @@ button.col-dropdown-btn {
   }
 }
 
+.cell.display {
+  font-size: var(--ngx-grid-header-column-font-size);
+  font-weight: var(--ngx-grid-header-column-font-weight);
+}
+
 ::ng-deep {
   .mat-mdc-menu-panel.column-menu {
     margin-top: 1px;

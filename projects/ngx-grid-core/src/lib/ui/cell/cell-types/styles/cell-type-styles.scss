@@ -4,7 +4,7 @@
 .date-readonly,
 .color-readonly,
 .file-cell-type {
-  height: 100%;
+  height: min-content;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -19,7 +19,7 @@
   display: block;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: min-content;
   display: flex;
   font-size: inherit;
 
@@ -119,7 +119,7 @@ input[type="number"] {
     display: block;
     padding: 2px 4px;
     margin: 1.5px 0;
-    background: var(--primary-color-40);
+    background: var(--ngx-grid-chip-input-backdrop-color);
 
     width: fit-content;
     max-width: 100%;
@@ -246,14 +246,13 @@ button.grid-cell-button {
   padding: 0px;
   border: none;
   cursor: pointer;
-  background: var(--heavy-dull-highlight);
   font-weight: bold;
   text-transform: uppercase;
   font-size: 11px;
-  background: var(--primary-color-themed);
+  background: var(--ngx-grid-cell-button-background-color);
   color: #fff;
 
   &:hover {
-    background: var(--primary-color-contrast);
+    background: var(--ngx-grid-cell-button-background-color-hover);
   }
 }

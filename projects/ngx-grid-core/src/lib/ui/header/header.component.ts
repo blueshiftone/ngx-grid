@@ -183,7 +183,7 @@ export class HeaderComponent extends AutoUnsubscribe implements OnInit {
     const additionalWidth = 35
     this.columns.value.forEach(v => {
       const formattedValue = this.loc.getLocalizedString(v.name ?? v.columnKey)
-      this.gridController.column.InitialiseColumnWidth.bufferHeaderCellWidth([v.columnKey, CharacterSizer.measure(formattedValue, this._getFont()) + additionalWidth])
+      this.gridController.column.InitialiseColumnWidth.bufferHeaderCellWidth([v.columnKey, CharacterSizer.measure(formattedValue, this._getFont()) + (v.isColumnMenuHidden ? 0 : additionalWidth)])
     })
   }
 

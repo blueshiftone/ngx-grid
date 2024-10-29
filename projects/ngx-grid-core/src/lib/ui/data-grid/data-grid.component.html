@@ -3,7 +3,7 @@
     <mat-icon [svgIcon]="(a.icon | async) ?? ''"></mat-icon>
   </div>
 </div>
-<div class="grid" [ngClass]="{ Disabled: disabled === true, initialised: initialised }">
+<div class="grid {{ config.gridMode }}" [ngClass]="{ Disabled: disabled === true, initialised: initialised }">
   <data-grid-header></data-grid-header>
   <data-grid-body tabindex="0" [name]="name ?? data.dataSetName">
     <ng-content class="status-area-start" select=".status-area-start"></ng-content>

@@ -17,4 +17,5 @@ export const CELL_MULTI_EDITORS: {[key in TCellTypeName]: Array<new (cellValue: 
   Color               : [ editors.ClearValues ],
   Button              : [],
   Icon                : [],
+  FileSize            : []
 }

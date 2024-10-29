@@ -4,6 +4,16 @@
     width: 14px;
     height: 14px;
     transform: translateY(1px);
+
+    &.CheckedCircle {
+      width: 16px;
+      height: 16px;
+    }
+    &.CheckCircle
+    {
+      width: 15px;
+      height: 15px;
+    }
   } 
   .EditPen {
     color: orange;

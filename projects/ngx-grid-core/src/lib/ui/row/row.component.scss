@@ -1,14 +1,14 @@
 ::ng-deep {
 
   .title-icon {
-    color: var(--text-color);
+    color: var(--ngx-grid-text-color);
     position: absolute;
     left: 8px;
     width: 14px;
     height: 14px;
     top: 5px;
     box-sizing: border-box;
-    border: 1px solid var(--divider-color);
+    border: 1px solid var(--ngx-grid-border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,7 +29,7 @@
   .row-floating-title {
     position: absolute;
     top: 0;
-    left: 32px;
+    left: calc(var(--ngx-grid-row-thumb-width) + 7px);
     bottom: 1px;
     display: flex;
     align-items: center;
@@ -56,7 +56,7 @@
 
     &:hover {
       .hover {
-        background: var(--primary-color-10);
+        background: var(--ngx-grid-floating-title-background-color-hover);
       }
     }
   }
@@ -75,12 +75,12 @@
     justify-content: flex-end;
 
     .main {
-      width: 22px;
-      height: 24px;
+      width: var(--ngx-grid-row-thumb-width);
+      height: calc(var(--ngx-grid-row-height) - 1px);
       display: flex;
       align-items: center;
       justify-content: center;
-      border-bottom: 1px solid var(--divider-color);
+      border-bottom: 1px solid var(--ngx-grid-border-color);
     }
   }
 
@@ -89,27 +89,27 @@
     left: 12px;
     top: 0px;
     width: 1px;
-    background-color: var(--divider-color);
-    height: 25px;    
+    background-color: var(--ngx-grid-border-color);
+    height: var(--ngx-grid-row-height);
 
     &.last {
-      height: 12.5px
+      height: calc(var(--ngx-grid-row-height) / 2);
     }
 
     &.first {
       top: -6px;
-      height: 31px;
+      height: calc(var(--ngx-grid-row-height) + 6px);
     }
 
     &.last.first {
-      height: 19px;   
+      height: calc(var(--ngx-grid-row-height) - 6px);
     }
   }
 
   .level-cap {
     position: absolute;
     height: 1px;
-    background-color: var(--divider-color);
+    background-color: var(--ngx-grid-border-color);
     width: 5px;
     left: 13px;
     top: 11.5px;

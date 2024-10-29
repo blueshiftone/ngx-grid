@@ -6,6 +6,7 @@ import { ECellMode } from '../../../typings/enums/cell-mode.enum'
 import { IGridCellComponent } from '../../../typings/interfaces'
 import { BaseCellType } from './abstractions/base-cell-type.abstract'
 import { IIconCellValue } from '../../../typings/interfaces/icon-cell-value.interface'
+import { InitialiseColumnWidth } from '../../../controller/column-operations'
 
 export class IconCellType extends BaseCellType {
 
@@ -27,7 +28,8 @@ export class IconCellType extends BaseCellType {
     if (!this._displayNode) return;
     else 
     {
-      this._displayNode.innerText = value?.key ?? ''
+      this._displayNode.className = value?.isFileTypeIcon ? `fiv-hct fiv-icon-${value?.key?.toLowerCase()}` : this.gridController.iconClass
+      this._displayNode.innerText = value?.isFileTypeIcon ? '' : value?.key ?? ''
       this._displayNode.style.fontSize = value?.size + 'px'
     }
     if (!value) this._displayNode.style.display = 'none'
@@ -43,7 +45,7 @@ export class IconCellType extends BaseCellType {
   }
 
   public override measureWidth(): number {
-    return this.value?.size ?? 0
+    return (this.value?.size ?? 0)
   }
 
 }

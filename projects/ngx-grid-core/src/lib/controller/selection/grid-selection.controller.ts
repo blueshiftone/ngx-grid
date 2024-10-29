@@ -30,7 +30,7 @@ export class GridSelectionController implements IDestroyable {
       keyboardEvents : {},
       gridController,
 
-      pageSize: () => Math.floor((this._gridViewPort?.getViewportSize() || 0) / 25),
+      pageSize: () => Math.floor((this._gridViewPort?.getViewportSize() || 0) / this.gridController.grid.GetGridElementSizes.getRowHeight()),
 
       onDestroy: () => this.onDestroy(),
 

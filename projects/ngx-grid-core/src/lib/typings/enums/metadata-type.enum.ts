@@ -2,6 +2,8 @@ export enum EMetadataType {
   CanUpdate,
   CanDelete,
   CanInsert,
+  ColumnMenuIsHidden,
+  MinWidth,
   IsRequired,
   MaxLength,
   IsUnique,

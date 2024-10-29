@@ -13,19 +13,19 @@
   position: relative;
   display: block;
   white-space: nowrap;
-  height: 25px;
+  height: var(--ngx-grid-row-height);
   width: calc(100% + 999999px);
 
   &.focused {
-    background-color: var(--highlight-color-10);
+    background-color: var(--ngx-grid-row-background-color-focused);
   }
 
   &.row-in-selection:not(.focused) {
-    background-color: var(--highlight-color);
+    background-color: var(--ngx-grid-row-background-color-selected);
   }
 
-  &.pre-selected {
-    background-color: var(--light-dull-highlight);
+  &.pre-selected:not(.focused):not(.row-in-selection) {
+    background-color: var(--ngx-grid-row-background-color-pre-selected);
   }
 
   &.row-in-selection {
@@ -38,16 +38,16 @@
         left: -0.5px;
         bottom: -0.5px;
         pointer-events: none;
-        background-color: var(--highlight-color-10);
-        border-right: 2px solid var(--primary-color-vivid);
+        background-color: var(--ngx-grid-row-thumb-background-color-selected);
+        border-right: var(--ngx-grid-row-thumb-border-selected-width) solid var(--ngx-grid-row-thumb-border-color-selected);
       }
     }
   }
 
   ::ng-deep {
     .col-selected {
-      background-color: var(--highlight-color-10);
-      border-bottom: 2px solid var(--primary-color-vivid);
+      background-color: var(--ngx-grid-column-background-color-selected);
+      border-bottom: var(--ngx-grid-column-border-selected-width) solid var(--ngx-grid-column-border-color-selected);
     }
   }
 
@@ -73,7 +73,7 @@
       }
 
       .cell:not(.row-thumb) {
-        background-color: var(--heavy-dull-highlight);
+        background-color: var(--ngx-grid-cell-background-color);
 
         &:not(:last-of-type) {
           border-right-color: transparent;
@@ -92,7 +92,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--app-bg-contrasted);
+    background-color: var(--ngx-grid-row-thumb-background-color);
     z-index: -1;
     opacity: 0.102;
   }
@@ -105,13 +105,13 @@
   vertical-align: top;
   align-items: center;
   justify-content: center;
-  height: 25px;
-  border-right: 1px solid var(--divider-color-solid, #DCDCE0);
-  border-bottom: 1px solid var(--divider-color-solid, #DCDCE0);
-  font-size: 13px;
-  line-height: 13px;
+  height: var(--ngx-grid-row-height);
+  border-right: var(--ngx-grid-cell-border-vertical-width) solid var(--ngx-grid-cell-border-color, #DCDCE0);
+  border-bottom: var(--ngx-grid-cell-border-horizontal-width) solid var(--ngx-grid-cell-border-color, #DCDCE0);
+  font-size: var(--ngx-grid-font-size);
+  line-height: var(--ngx-grid-font-size);
   box-sizing: border-box;
-  cursor: cell;
+  cursor: var(--ngx-grid-cell-cursor);
 
   &.activity-locked {
     cursor: default;
@@ -120,14 +120,14 @@
   }
 
   &.row-thumb:hover {
-    background-color: var(--highlight-color);
+    background-color: var(--ngx-grid-row-thumb-background-color-hover);
     cursor: pointer;
   }
 
   &:not(.display) {
     &:not(.selected):hover {
-      outline: 1px solid var(--primary-color-40);
-      outline-offset: -1px;
+      outline: var(--ngx-grid-cell-outline-width) solid var(--ngx-grid-cell-outline-color-selected-hover);
+      outline-offset: calc(var(--ngx-grid-cell-outline-width) * -1);
       z-index: 2;
 
       &.sticky {
@@ -137,17 +137,17 @@
 
     &.is-editable {
       ::ng-deep .backdrop {
-        background-color: var(--primary-color-10);
+        background-color: var(--ngx-grid-cell-background-color-editable);
       }
     }
   }
 
   &.row-thumb {
-    background: var(--app-bg);
+    background: var(--ngx-grid-row-thumb-base-background-color);
     z-index: 4;
     position: sticky;
     left: 0;
-    width: 22px;
+    width: var(--ngx-grid-row-thumb-width);
   }
 
   &.selected,
@@ -159,12 +159,9 @@
     &.overlapping-selection:before {
       content: " ";
       position: absolute;
-      top: -0.5px;
-      right: -0.5px;
-      bottom: -0.5px;
-      left: -0.5px;
-      border-color: var(--primary-color-vivid);
-      border-width: 2px;
+      inset: var(--ngx-grid-selection-inset);
+      border-color: var(--ngx-grid-selection-overlapping-border-color);
+      border-width: var(--ngx-grid-selection-border-width);
       z-index: 3;
       pointer-events: none;
     }
@@ -173,44 +170,48 @@
 
       &.selected:after,
       &.overlapping-selection:before {
-        background-color: var(--primary-color-contrast-30);
+        background-color: var(--ngx-grid-selection-overlapping-background-color-selected);
       }
+    }
+
+    &.focused.selected:not(.subtracting):after {
+      background-color: var(--ngx-grid-selection-overlapping-background-color-focused-selected);
     }
 
     &.top-edge:not(.overlapping-selection):after,
     &.overlapping-top-edge:after {
-      border-top-style: solid;
+      border-top-style: var(--ngx-grid-selection-border-top-style);
     }
 
     &.bottom-edge:not(.overlapping-selection):after,
     &.overlapping-bottom-edge:after {
-      border-bottom-style: solid;
+      border-bottom-style: var(--ngx-grid-selection-border-bottom-style);
     }
 
     &.left-edge:not(.overlapping-selection):after,
     &.overlapping-left-edge:after {
-      border-left-style: solid;
+      border-left-style: var(--ngx-grid-selection-border-left-style);
     }
 
     &.right-edge:not(.overlapping-selection):after,
     &.overlapping-right-edge:after {
-      border-right-style: solid;
+      border-right-style: var(--ngx-grid-selection-border-right-style);
     }
 
     &.multi-select {
       &:after {
-        border-color: var(--heavy-dull-highlight);
-        border-width: 1px;
+        border-color: var(--ngx-grid-selection-multiselect-border-color);
+        border-width: var(--ngx-grid-selection-multiselect-border-width);
       }
 
       &.focused:before {
-        border: 1px solid var(--primary-color);
+        border: var(--ngx-grid-selection-multiselect-border-color-focused) solid var(--primary-color);
         content: " ";
         position: absolute;
-        top: 1px;
-        left: 1px;
-        bottom: 1px;
-        right: 1px;
+        top: var(--ngx-grid-selection-multiselect-border-width);
+        left: var(--ngx-grid-selection-multiselect-border-width);
+        bottom: var(--ngx-grid-selection-multiselect-border-width);
+        right: var(--ngx-grid-selection-multiselect-border-width);
         z-index: 2;
       }
     }
@@ -223,7 +224,7 @@
     }
     .app-bg {
       z-index: -2;
-      background-color: var(--app-bg);
+      background-color: var(--ngx-grid-app-background);
       display: none;
     }
     .backdrop {

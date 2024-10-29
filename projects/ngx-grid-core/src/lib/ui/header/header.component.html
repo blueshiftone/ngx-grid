@@ -19,7 +19,7 @@
       <span class="material-symbols-outlined sort-icon" *ngIf="columnHasSort(column)">{{ columnSortIconKey(column) }}</span>
       <data-grid-separator *ngFor="let s of separators(column.columnKey)" Axis="y" [separator]="s"></data-grid-separator>
       <div class="text-readonly"><lib-localized-text>{{ column.name ?? column.columnKey }}</lib-localized-text></div>
-      <button mat-icon-button class="col-dropdown-btn" *ngIf="column.dropdownMenu"
+      <button mat-icon-button class="col-dropdown-btn" *ngIf="!column.isColumnMenuHidden && column.dropdownMenu"
         (mousedown)="$event.stopPropagation()"
         (click)="$event.stopPropagation(); openMenu(column)"
         [matMenuTriggerFor]="columnMenu"

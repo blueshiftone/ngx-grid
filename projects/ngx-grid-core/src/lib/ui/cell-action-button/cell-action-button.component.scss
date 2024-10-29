@@ -15,12 +15,12 @@ button.action {
   place-content: center;
   line-height: 0;
   padding: 0;
-  background: var(--light-contrasting-15);
+  background: var(--ngx-grid-cell-action-button-background);
   transition: background-color 100ms linear;
   color: currentColor;
   &:hover,
   &.close:hover {
-    background: var(--light-contrasting-25);
+    background: var(--ngx-grid-cell-action-button-background-hover);
   }
   ::ng-deep {
     svg {

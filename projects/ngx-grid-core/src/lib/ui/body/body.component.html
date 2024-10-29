@@ -1,5 +1,5 @@
 <div style="position: relative; height: 100%;" [dataGridContextMenu]="getContextMenuItems">
-  <cdk-virtual-scroll-viewport class="virtual-scroll" itemSize="25" #viewport>
+  <cdk-virtual-scroll-viewport class="virtual-scroll" [itemSize]="virtualScrollItemSize | async" #viewport>
     <data-grid-row class="row" *cdkVirtualFor="let r of rows; trackBy: rowTrackBy; let index = index" [index]="index"
       [gridRow]="r"></data-grid-row>
     <div class="row status"></div>
