@@ -3,6 +3,7 @@ import { IGridCellCoordinates, IGridColumn, IGridDataType, INumberOptions } from
 import { ICellOperationFactory } from '../../typings/interfaces/grid-cell-operation-factory.interface'
 import { NumberOptionsParser } from '../../utils/number-format-parser/number-options-parser'
 import { ParseDate } from '../../utils/parse-date-string'
+import { ParseDateTime } from '../../utils/parse-datetime-string'
 import { Operation } from '../operation.abstract'
 
 export class GetFormattedValue extends Operation {
@@ -111,6 +112,13 @@ export class GetFormattedValue extends Operation {
           if (formattedDate) return formattedDate
         }
         break
+      case 'DateTime':
+        const dateTime = typeof value === 'string' ? ParseDateTime(value) : value
+        if (dateTime) {
+          const formattedDateTime = this.controller.datePipe.transform(dateTime, this._dateTimeFormat)
+          if (formattedDateTime) return formattedDateTime
+        }
+        break
       case 'File':
         if (typeof value === 'object' && value !== null && value.fileName !== undefined) return value.fileName
         break
@@ -138,6 +146,10 @@ export class GetFormattedValue extends Operation {
 
   private get _dateFormat(): string {
     return this.controller.getDateFormat()
+  }
+
+  private get _dateTimeFormat(): string {
+    return this.controller.getDateTimeFormat()
   }
 
 }

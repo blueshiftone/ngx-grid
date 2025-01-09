@@ -39,6 +39,7 @@ export class GridControllerService {
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
 
   public defaultDateFormat = 'yyyy/MM/dd'
+  public defaultDateTimeFormat = 'yyyy/MM/dd h:mm a'
   
   private _subs : Set<Subscription> = new Set()
 
@@ -222,8 +223,11 @@ export class GridControllerService {
   }
 
   public getDateFormat() {
-    const format = this.localize.getLocalizedString('dateFormat')
-    return format === 'dateFormat' ? this.defaultDateFormat : format
+    return this.defaultDateFormat
+  }
+
+  public getDateTimeFormat() {
+    return this.defaultDateTimeFormat
   }
 
 }

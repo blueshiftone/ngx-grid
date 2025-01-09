@@ -8,6 +8,7 @@ export class InitialiseColumnWidth extends Operation {
 
   private readonly columnWidthsMap   = new Map<TColumnKey, number>()
   private readonly headerWidthsMap   = new Map<TColumnKey, number>()
+  private readonly columnKeysBasedOnHeaderWidthOnly = new Set<string>()
   private readonly commonCellPadding = 14
   private readonly bufferOperation   = new BufferOperation((args: any) => this._measureCellWidth(args))
 
@@ -25,6 +26,7 @@ export class InitialiseColumnWidth extends Operation {
    */
   public reset() {
     this.columnWidthsMap.clear()
+    this.columnKeysBasedOnHeaderWidthOnly.clear()
   }
 
   /**
@@ -65,10 +67,11 @@ export class InitialiseColumnWidth extends Operation {
           this.headerWidthsMap.get(columnKey) ?? 0,
           width + this.commonCellPadding)
         )
+        this.columnKeysBasedOnHeaderWidthOnly.add(columnKey)
         wasChanged = true
       } else {
         const cellType = cellTypeOrColumnWidth
-        if (existingColumnWidths.has(cellType.coordinates.columnKey)) continue
+        if (existingColumnWidths.has(cellType.coordinates.columnKey) && (!cellType.value || !this.columnKeysBasedOnHeaderWidthOnly.has(cellType.coordinates.columnKey))) continue
         const minWidth = this.dataSource.getColumn(cellType.coordinates.columnKey)?.minWidth ?? 0
         this.columnWidthsMap.set(cellType.coordinates.columnKey, Math.max(
           this.headerWidthsMap.get(cellType.coordinates.columnKey) ?? 0,
@@ -76,6 +79,7 @@ export class InitialiseColumnWidth extends Operation {
           cellType.measureWidth() + this.commonCellPadding,
           minWidth)
         )
+        this.columnKeysBasedOnHeaderWidthOnly.delete(cellType.coordinates.columnKey)
         wasChanged = true
       }      
     }

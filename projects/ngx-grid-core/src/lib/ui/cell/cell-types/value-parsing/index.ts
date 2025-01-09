@@ -13,6 +13,7 @@ export const CELL_VALUE_PARSERS: {[key in TCellTypeName]: ICellValueParser} = {
   Color               : new ValueParser([parsers.String, parsers.Color]),
   Number              : new ValueParser([parsers.Number]),
   Date                : new ValueParser([parsers.Date]),
+  DateTime            : new ValueParser([parsers.DateTime]),
   DropdownSingleSelect: new ValueParser([parsers.MultiSelect]),
   DropdownMultiSelect : new ValueParser([parsers.Array, parsers.MultiSelect]),
   DateRange           : new ValueParser([parsers.Array]),
