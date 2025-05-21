@@ -29,7 +29,7 @@ export class FileSizeCellType extends BaseCellType {
     {
       this._displayNode.innerText = this._formatBytes(value)
     }
-    if (!value) this._displayNode.style.display = 'none'
+    if (value == null) this._displayNode.style.display = 'none'
     else this._displayNode.style.display = ''
   }
 
