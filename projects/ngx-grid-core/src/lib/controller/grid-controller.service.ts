@@ -159,22 +159,6 @@ export class GridControllerService {
       if (component) this.cell.SetCellStylesFromMeta.run(component)
     }))
 
-    // Listen to events to re-run column validators
-    addSubscription(
-      combineLatest([
-        gridEvents.RowStatusChangedEvent.onChanges().pipe(startWith([undefined, undefined] as const)),
-        gridEvents.RowsRevertedEvent.on().pipe(startWith<TPrimaryKey[]>([]))
-      ])
-      .subscribe(event => {
-        const [ statusChangeEvent, revertedEvent ] = event
-        const [prev, next] = statusChangeEvent
-        if ([...(prev??[]).map(m => m.status), ...(next??[]).map(m => m.status)].includes(ERowStatus.Deleted) || revertedEvent.length) {
-          for (const col of this.dataSource.columns) {
-            this.cell.ValidateCell.bufferColumnValidation.next([col.columnKey])
-          }
-        }
-      }))
-
     // React to metadata changes
     addSubscription(gridEvents.MetadataChangedEvent.on().subscribe(change => {
       let affectedCellComponents = new Set<IGridCellComponent>()
