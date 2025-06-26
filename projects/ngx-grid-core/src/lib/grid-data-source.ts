@@ -45,6 +45,7 @@ export class GridDataSource implements IGridDataSource {
   public leafLevel         = -1
   public localizations     = undefined
   public keyboardShortcuts?: IKeyboardShortcut[]
+  public moreDataExists  = false
 
   public relatedData: Map<string, IGridDataSource> = new Map()
   public cellMeta   : Map<string, IGridCellMeta>   = new Map()
@@ -102,7 +103,8 @@ export class GridDataSource implements IGridDataSource {
       columns         : g.columns,
       disabled        : g.disabled,
       metadata        : g.metadata,
-      cellMeta        : g.cellMeta
+      cellMeta        : g.cellMeta,
+      moreDataExists  : g.moreDataExists
     }
     if (typeof input?.dataGridID === 'undefined') {
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`
@@ -227,9 +229,9 @@ export class GridDataSource implements IGridDataSource {
       if (typeof row !== 'object') {
         const existingRow = this.getRow(row)
         if (!existingRow) {
-          console.warn(`Cannot remove row with key ${row} because it does not exist.`) 
+          console.warn(`Cannot remove row with key ${row} because it does not exist.`)
           return
-        } 
+        }
         row = existingRow
       }
       const { rowKey } = row

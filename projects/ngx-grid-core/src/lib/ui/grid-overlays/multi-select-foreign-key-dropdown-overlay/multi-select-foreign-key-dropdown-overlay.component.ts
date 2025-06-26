@@ -80,11 +80,17 @@ export class MultiSelectForeignKeyDropdownOverlayComponent extends BaseOverlayCo
         const source = this.dataSource = await this._getDataSource()
         source?.removeRows(...this.values)
         this.cd.detectChanges()
-        window.requestAnimationFrame(_ => this._searchEl.focus())        
+        window.requestAnimationFrame(_ => this._searchEl.focus())
       }))
 
     this.addSubscription(this.searchCtrl.valueChanges.pipe(debounceTime(100), distinctUntilChanged()).subscribe(value => {
       this.selectorComponent?.gridController.gridEvents.GridFilterStringChangedEvent.emit(value)
+    }))
+
+    this.addSubscription(this.searchCtrl.valueChanges.pipe(debounceTime(500)).subscribe(searchString => {
+      if (!this.dataSource) return
+      if (!this.dataSource.moreDataExists) return
+      this.gridController.gridEvents.SearchDropdownOptionsEvent.emit({ searchString, coordinates: this.data.currentCell.coordinates})
     }))
   }
 

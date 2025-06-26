@@ -10,10 +10,10 @@
       <span class="material-symbols-outlined">grid_on</span>
     </button>
   </div>
-  <lib-loading-dots [showText]="true" *ngIf="(dropdownState | async) === ForeignKeyDropdownState.Loading">
+  <lib-loading-dots [showText]="true" *ngIf="(dropdownState | async) != ForeignKeyDropdownState.Idle">
   </lib-loading-dots>
 
-  <cdk-virtual-scroll-viewport #virtualScrollViewport [itemSize]="itemHeight" *ngIf="(dropdownState | async) === ForeignKeyDropdownState.Idle">
+  <cdk-virtual-scroll-viewport #virtualScrollViewport [itemSize]="itemHeight" *ngIf="(dropdownState | async) != ForeignKeyDropdownState.Loading">
     <button mat-menu-item (click)="selectOption(op)" *cdkVirtualFor="let op of filteredOptions"
       [ngClass]="{highlighted: (selectedOption | async) === op}">
       <span class="bubble empty" *ngIf="op.value === null">&nbsp;</span>

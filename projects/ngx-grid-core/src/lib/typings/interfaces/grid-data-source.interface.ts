@@ -27,6 +27,7 @@ export interface IGridDataSource extends IDestroyable {
   leafLevel         : number
   localizations?    : ILocalization[]
   keyboardShortcuts?: IKeyboardShortcut[]
+  moreDataExists    : boolean;
 
   rowExists            (key: TPrimaryKey): boolean
   getRow               (key: TPrimaryKey): IGridRow | undefined
@@ -35,13 +36,13 @@ export interface IGridDataSource extends IDestroyable {
   getColumn            (key: TColumnKey) : IGridColumn | undefined
   hasColumnSubset      ()                : boolean
   getUnderlyingColumns ()                : IGridColumn[]
-  
+
   /**
    * Sets the columns in the grid from columnKeys
    *
    * @remarks
    * Re-uses existing column objects if they exist, otherwise creates new column objects
-   * 
+   *
    * @param columnKeys - The columns to replace the existing columns with
    *
    */
@@ -57,7 +58,7 @@ export interface IGridDataSource extends IDestroyable {
 
   /**
    * Adds a column to the datasource as a known column. Does not add the column for display.
-   * 
+   *
    *  @param column - The column to add
    */
   addKnownColumn(column: IGridColumn): void

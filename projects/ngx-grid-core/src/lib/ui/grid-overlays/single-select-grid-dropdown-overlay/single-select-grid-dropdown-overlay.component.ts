@@ -10,6 +10,8 @@ import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridDataSource, IGridOverlayData, IGridSelectionSlice } from '../../../typings/interfaces'
 import { DataGridComponent } from '../../data-grid/data-grid.component'
 import { BaseOverlayComponent } from '../base-grid-overlay.component'
+import {debounceTime, distinctUntilChanged, filter, startWith} from "rxjs/operators";
+import {EForeignKeyDropdownState} from "../../../typings/enums";
 
 @Component({
   selector: 'app-single-select-dropdown-overlay',
@@ -53,6 +55,11 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
         case 'enter'    : this.gridComponent.keyboard.enter(); this._stopEvent(e); break
       }
     }))
+    this.addSubscription(this.searchCtrl.valueChanges.pipe(debounceTime(500)).subscribe(searchString => {
+      if (!this.dataSource) return
+      if (!this.dataSource.moreDataExists) return
+      this.gridController.gridEvents.SearchDropdownOptionsEvent.emit({ searchString, coordinates: this.data.currentCell.coordinates})
+    }))
   }
 
   public rowSelected(change: IGridSelectionSlice | null) {
@@ -64,6 +71,15 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
     const pkIndex = this.dataSource.columns.findIndex(c => c.columnKey === this.dataSource!.primaryColumnKey)
     if (change.rows[0][pkIndex] !== this.value[0]) this._updateValue(change.rows[0][pkIndex])
   }
+
+  public dropdownState = this.gridController.gridEvents
+    .ForeignKeyDropdownStateChangedEvent
+    .on()
+    .pipe(
+      filter(event => event.coordinates.equals(this.cell.coordinates)),
+      map(event => event.state),
+      startWith(EForeignKeyDropdownState.Idle),
+      distinctUntilChanged())
 
   public openSimpleSelector(): void {
     this.close()
@@ -94,12 +110,22 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
   private async _getDataSource(): Promise<IGridDataSource | undefined> {
     const gridID = this.data.currentCell?.type.list?.relatedGridID
     if (!gridID) return undefined
-    let source = this.gridController.grid.GetRelatedData.run(gridID)
-    if (source) {
+    let originalSource = this.gridController.grid.GetRelatedData.run(gridID)
+    if (originalSource) {
       // clone the source to avoid changing the original
-      source = await GridDataSource.cloneSource(source)
-    }  
-    return source
+      const clonedSource = await GridDataSource.cloneSource(originalSource)
+
+      // Sync updates into this data source
+      this.addSubscription(originalSource.onChanges.subscribe(() => {
+        const rows = originalSource.rows.head?.value ?? [];
+        clonedSource.upsertRows(rows);
+        clonedSource.rows.head?.touch();
+      }))
+
+      return clonedSource
+    }
+    return originalSource
   }
 
+  protected readonly ForeignKeyDropdownState = EForeignKeyDropdownState;
 }

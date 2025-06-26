@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common'
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs'
-import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators'
+import {debounceTime, distinctUntilChanged, filter, map, startWith, take} from 'rxjs/operators'
 
 import { DataGridConfigs } from '../../../data-grid-configs.class'
 import { GRID_OVERLAY_DATA } from '../../../services/grid-overlay-service.service'
@@ -84,6 +84,11 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
     }))
 
     this.addSubscription(this.searchCtrl.valueChanges.subscribe(_ => this._filterOptions()))
+    this.addSubscription(this.searchCtrl.valueChanges.pipe(debounceTime(500)).subscribe(searchString => {
+      if (!this.dataSource) return
+      if (!this.dataSource.moreDataExists) return
+      this.gridController.gridEvents.SearchDropdownOptionsEvent.emit({ searchString, coordinates: this.data.currentCell.coordinates})
+    }))
     this.addSubscription(this.cell.valueChanged.pipe(startWith()).subscribe(_ => this._highlightSelected()))
 
     const keyboardEventPassedThrough = this.gridController.gridEvents.KeyPressPassedThroughEvent.state
@@ -149,14 +154,14 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
   }
 
   private _scrollIndexIntoView(index: number, direction: 'up' | 'down') {
-    
-    const viewportSize = (this.virtualScrollViewport?.getViewportSize() ?? 0) 
+
+    const viewportSize = (this.virtualScrollViewport?.getViewportSize() ?? 0)
 
     const viewportElement = this.virtualScrollViewport?.elementRef.nativeElement
 
     if (viewportElement) {
       window.requestAnimationFrame(_ => {
-        
+
         const highlightedElement = viewportElement.getElementsByClassName('highlighted')[0] as HTMLElement | undefined
 
         if (highlightedElement !== undefined) {
@@ -174,7 +179,7 @@ export class SingleSelectSimpleForeignKeyDropdownOverlayComponent extends BaseOv
               viewportElement?.scrollTo({ top: highlightedElementOffsetTop - this._scrollPadding })
             }
           }
-          
+
         } else {
           this.virtualScrollViewport?.scrollToIndex(index)
         }
