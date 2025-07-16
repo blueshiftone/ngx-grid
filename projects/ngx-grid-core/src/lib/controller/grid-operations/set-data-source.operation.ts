@@ -54,7 +54,10 @@ export class SetDataSource extends Operation {
         dataSetName,
         dataGridID,
         primaryColumnKey,
-        metadata: GridImplementationFactory.gridMetadataCollection([ { key: EMetadataType.RecordPreviewTemplateString, value: recordPreviewTemplateString } ])
+        metadata: GridImplementationFactory.gridMetadataCollection([ 
+          { key: EMetadataType.RecordPreviewTemplateString, value: recordPreviewTemplateString },
+          { key: EMetadataType.CanUpdate, value: false },
+         ])
       })
       this.gridOperations.SetRelatedData.run(dataGridID, relatedGrid)
       this._watchRelatedDataSource(dataGridID, relatedGrid)
