@@ -17,20 +17,18 @@
 
 .text-editable,
 .number-editable {
-  display: block;
   position: relative;
   width: 100%;
-  height: min-content;
+  height: 100%;
   display: flex;
   font-size: inherit;
 
   input {
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 0 7px;
     border: 0;
     background: transparent;
-    padding: 7px;
     font-size: inherit;
     font-family: inherit;
     outline: none;
