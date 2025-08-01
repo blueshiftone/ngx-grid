@@ -114,7 +114,6 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
     if (originalSource) {
       // clone the source to avoid changing the original
       const clonedSource = await GridDataSource.cloneSource(originalSource)
-
       // Sync updates into this data source
       this.addSubscription(originalSource.onChanges.subscribe(() => {
         const rows = originalSource.rows.head?.value ?? [];
@@ -125,6 +124,26 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
       return clonedSource
     }
     return originalSource
+  }
+
+  public setupTransformers() {
+    const gridID = this.data.currentCell?.type.list?.relatedGridID
+    if (!gridID) return undefined
+    let originalSource = this.gridController.grid.GetRelatedData.run(gridID)
+    let currentSource = this.dataSource
+    let transformer = originalSource?.rows.head;
+    let addedTransform = false
+    while (transformer !== undefined) {
+      if(!currentSource?.rows.hasTransform(transformer.name)) {
+        const clonedTransformer = transformer.clone(this.gridComponent?.gridController!)
+        currentSource?.rows.addTransformation(clonedTransformer)
+        addedTransform = true
+      }
+      transformer = transformer.next()
+    }
+    if (addedTransform) {
+      currentSource?.rows.head?.touch()
+    }
   }
 
   protected readonly ForeignKeyDropdownState = EForeignKeyDropdownState;

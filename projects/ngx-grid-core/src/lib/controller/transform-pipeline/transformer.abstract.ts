@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs'
+import { GridControllerService } from '../grid-controller.service'
 
 export abstract class Transformer<T> {
 
@@ -52,4 +53,5 @@ export abstract class Transformer<T> {
 
   public abstract run(): Promise<T[] | undefined>
 
+  public abstract clone(gridController: GridControllerService): Transformer<T>
 }

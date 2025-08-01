@@ -109,12 +109,13 @@ export class GridDataSource implements IGridDataSource {
     if (typeof input?.dataGridID === 'undefined') {
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`
     }
-    return new GridDataSource(Object.assign(props, input))
+    return new GridDataSource({... props, ... input})
   }
 
   public static async cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
     const source = GridDataSource.cloneMeta(g, input)
-    source.setRows((g.rows.firstValue).map(row => row.clone()))
+    const rows = [...g.rows.firstValue.map(row => row.clone())]
+    source.setRows(rows)
     source.setColumns(g.columns)
     await source.rows.whenIdle()
     return source

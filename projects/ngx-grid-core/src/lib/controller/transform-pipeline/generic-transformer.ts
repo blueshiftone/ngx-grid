@@ -1,3 +1,4 @@
+import { GridControllerService } from '../grid-controller.service'
 import { Transformer } from './transformer.abstract'
 
 export class GenericTransformer<T> extends Transformer<T> {
@@ -9,4 +10,8 @@ export class GenericTransformer<T> extends Transformer<T> {
     super()
   }
 
+  public clone(_: GridControllerService): Transformer<T>
+  {
+    return new GenericTransformer<T>(this.name, this.run)
+  }
 }

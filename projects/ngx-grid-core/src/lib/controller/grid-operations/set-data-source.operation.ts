@@ -3,7 +3,7 @@ import { map, pairwise, startWith } from 'rxjs/operators'
 
 import { GridDataSource } from '../../grid-data-source'
 import { EMetadataType } from '../../typings/enums'
-import { IGridDataSource } from '../../typings/interfaces'
+import { IGridDataSource, IGridMetadataCollection } from '../../typings/interfaces'
 import { IGridOperationFactory } from '../../typings/interfaces/grid-operation-factory.interface'
 import { GridImplementationFactory } from '../../typings/interfaces/implementations/grid-implementation.factory'
 import { TColumnKey } from '../../typings/types'
@@ -47,17 +47,15 @@ export class SetDataSource extends Operation {
     
   }
 
-  public getRelatedGrid(dataSetName: string, dataGridID: string, primaryColumnKey: TColumnKey, recordPreviewTemplateString: string): IGridDataSource {
+  public getRelatedGrid(dataSetName: string, dataGridID: string, primaryColumnKey: TColumnKey, metadata: IGridMetadataCollection): IGridDataSource {
     let relatedGrid = this.gridOperations.GetRelatedData.run(dataGridID)
     if (!relatedGrid) {
+      metadata.set(EMetadataType.CanUpdate, false)
       relatedGrid = new GridDataSource({
         dataSetName,
         dataGridID,
         primaryColumnKey,
-        metadata: GridImplementationFactory.gridMetadataCollection([ 
-          { key: EMetadataType.RecordPreviewTemplateString, value: recordPreviewTemplateString },
-          { key: EMetadataType.CanUpdate, value: false },
-         ])
+        metadata
       })
       this.gridOperations.SetRelatedData.run(dataGridID, relatedGrid)
       this._watchRelatedDataSource(dataGridID, relatedGrid)

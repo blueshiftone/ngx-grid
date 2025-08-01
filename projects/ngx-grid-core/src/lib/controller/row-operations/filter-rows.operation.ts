@@ -18,7 +18,7 @@ export class FilterRows extends Operation {
       .pipe(startWith(this.dataSource), filter(x => x !== undefined), distinctUntilChanged()))).subscribe(source => {
         const { rows } = (source as IGridDataSource)
         if (!rows.hasTransform(this._transformerName)) {
-          this._transformer = new GenericTransformer<IGridRow>(this._transformerName, async () => this._filterROws())
+          this._transformer = new GenericTransformer<IGridRow>(this._transformerName, async () => this._filterRows())
           rows.addTransformation(this._transformer)
         }
       })
@@ -32,7 +32,7 @@ export class FilterRows extends Operation {
     this._transformer?.touch()
   }
 
-  private _filterROws(): IGridRow[] | undefined {    
+  private _filterRows(): IGridRow[] | undefined {    
       const rows = this._transformer?.prev()?.value ?? []
       let filtered: IGridRow[] = []
       if (this._keywords) {

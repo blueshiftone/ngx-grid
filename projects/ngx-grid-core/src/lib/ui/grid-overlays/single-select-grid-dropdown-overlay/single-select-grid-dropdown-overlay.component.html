@@ -15,7 +15,7 @@
     </lib-loading-dots>
 
     <div class="grid" *ngIf="(dropdownState | async) != ForeignKeyDropdownState.Loading && dataSource">
-      <data-grid [data]="dataSource" [filterString]="searchCtrl.value" [preselectedRows]="value"
+      <data-grid [data]="dataSource" (ngInit)="setupTransformers()" [filterString]="searchCtrl.value" [preselectedRows]="value"
         (selectionChanged)="rowSelected($event)" [config]="gridConfig" #grid></data-grid>
     </div>
   </div>

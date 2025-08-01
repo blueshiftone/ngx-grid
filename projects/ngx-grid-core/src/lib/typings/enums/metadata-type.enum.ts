@@ -14,5 +14,6 @@ export enum EMetadataType {
   HideValue,
   NestingLevel,
   ValueLocalizationKey,
-  IsSticky
+  IsSticky,
+  EntitySort
 }
