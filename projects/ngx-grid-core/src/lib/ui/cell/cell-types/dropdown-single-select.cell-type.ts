@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs'
 
 import { GridControllerService } from '../../../controller/grid-controller.service'
 import { GridOverlayService } from '../../../services/grid-overlay-service.service'
-import { ECellMode, EPositionPreference } from '../../../typings/enums'
+import { ECellMode, EForeignKeyDropdownState, EPositionPreference } from '../../../typings/enums'
 import { EGridOverlayType } from '../../../typings/enums/grid-overlay-type.enum'
 import { IGridCellComponent, IGridCellType, IGridOverlayConfigs, IGridSelectListOption, TGridUITheme } from '../../../typings/interfaces'
 import { CharacterSizer } from '../../../utils/character-sizer'
@@ -34,10 +34,11 @@ export class DropdownSingleSelectCellType extends BaseCellType {
     if (!this._chipNode || !this._labelNode || !this._displayNode) return
     const val = this._displayValue
     this._setColor(this._chipNode)
-    this._displayNode.classList.toggle('empty', val === null || typeof val === 'undefined' || val === '')
+    const isEmpty = (val === null || typeof val === 'undefined' || val === '') && !this.isLoading
+    this._displayNode.classList.toggle('empty', isEmpty)
     this._displayNode.classList.toggle('related', this._isRelatedGrid)
     this._displayNode.classList.toggle('static', this._isStaticGrid)
-    if (val !== null && val == this.value && this._isRelatedGrid) {
+    if ((val !== null && val == this.value && this._isRelatedGrid) || this.isLoading) {
       this._labelNode.innerText = ``
       this._labelNode.append(this.createLoadingAnimation())
     } else {

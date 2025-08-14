@@ -17,6 +17,7 @@ export interface IGridCellType {
   type            : IGridDataType
   isOpen          : boolean
   isClosed        : boolean
+  isLoading       : boolean
   coordinates     : IGridCellCoordinates
   isEditable      : boolean
   valueHasChanged?: () => boolean

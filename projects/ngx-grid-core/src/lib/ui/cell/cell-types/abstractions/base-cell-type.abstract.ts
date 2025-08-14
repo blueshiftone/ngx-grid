@@ -22,6 +22,7 @@ export abstract class BaseCellType implements IGridCellType {
   public readonly type        : IGridDataType
   public value                : any = null
   public valueChanged = new Subject<void>()
+  public isLoading = false
 
   public readonly subscriptions = new Set<Subscription>()
 

@@ -52,7 +52,7 @@ private readonly readonlyCssClassName = 'multi-select-readonly'
     for (const value of (this.value || [])) {
       if (this._isRelatedGrid) {
         let previewValue = this.gridController.grid.GetRelatedDataPreviewString.run(this.type.list!.relatedGridID!, value)
-        if (value !== null && previewValue == value) {
+        if ((value !== null && previewValue == value) || this.isLoading) {
           previewValue = this.createLoadingAnimation().outerHTML
         }
         output.push(this._createChip(previewValue, this.type.list?.color))

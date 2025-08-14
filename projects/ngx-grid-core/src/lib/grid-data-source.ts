@@ -12,6 +12,7 @@ import { TColumnKey } from './typings/types/column-key.type'
 import { TPrimaryKey } from './typings/types/primary-key.type'
 import { Randomish } from './utils/randomish'
 import { IKeyboardShortcut } from './typings/interfaces/keyboard-shortcut.interface'
+import { IRecordPreviewTemplateString } from './typings/interfaces/record-preview-template-string.interface'
 
 export class GridDataSource implements IGridDataSource {
 
@@ -80,7 +81,8 @@ export class GridDataSource implements IGridDataSource {
   }
 
   public get rowTemplateString(): string {
-    return this.metadata.get<string>(EMetadataType.RecordPreviewTemplateString) ?? ""
+    const items = this.metadata.get<IRecordPreviewTemplateString[]>(EMetadataType.RecordPreviewTemplateString) ?? []
+    return items.find(x => x.isDefault === true)?.templateString ?? items[0]?.templateString ?? ""
   }
 
   public get canUpdate(): boolean {

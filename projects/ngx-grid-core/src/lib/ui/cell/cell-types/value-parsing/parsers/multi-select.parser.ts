@@ -14,23 +14,23 @@ import { BaseParser } from './base-parser.abstract'
 import { IParsingTest } from './parsing-test.interface'
 
 export class MultiSelectParser extends BaseParser implements IParsingTest {
-  constructor (public readonly initialValue: (TPrimaryKey | null)[] | (TPrimaryKey | null)) { super() }
+  constructor(public readonly initialValue: (TPrimaryKey | null)[] | (TPrimaryKey | null)) { super() }
 
-  public run(gridController: GridControllerService, cellCoords: TAtLeast<IGridCellCoordinates, 'columnKey'>): IGridValueParsingResult<TPrimaryKey[]> {
-    
-    const cellMeta = gridController.cell.GetCellMeta.run(new GridCellCoordinates(cellCoords.rowKey ?? '', cellCoords.columnKey,))
+  public run(gridController: GridControllerService, cellCoords: TAtLeast<IGridCellCoordinates, 'columnKey'>): IGridValueParsingResult<(TPrimaryKey | null)[] | TPrimaryKey | null> {
+
+    const cellMeta = gridController.cell.GetCellMeta.run(new GridCellCoordinates(cellCoords.rowKey ?? '', cellCoords.columnKey, ))
     const colMeta  = gridController.dataSource.getColumn(cellCoords.columnKey)
     const gridID   = cellMeta?.type?.list?.relatedGridID ?? colMeta?.type?.list?.relatedGridID
 
     if (typeof gridID !== 'undefined') return this._foreignKeyParser(gridController, cellMeta, colMeta)
     else return this._staticKeyParser(cellMeta, colMeta)
-    
+
   }
 
   private _staticKeyParser(
     cellMeta: IGridCellMeta | undefined,
     col: IGridColumn | undefined
-  ): IGridValueParsingResult<string[]> {
+  ): IGridValueParsingResult<(string | null)[] | string | null> {
 
     const options = cellMeta?.type?.list?.staticOptions ?? col?.type?.list?.staticOptions ?? []
 
@@ -51,7 +51,9 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
       })
       if (matchedIndex > -1) {
         const option = options[matchedIndex]
-        matchedOptions.push(option)
+        if (!matchedOptions.find(op => op.value === option.value)) {
+          matchedOptions.push(option)
+        }
       }
     }
 
@@ -70,14 +72,14 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
     gridController: GridControllerService,
     cellMeta: IGridCellMeta | undefined,
     col: IGridColumn | undefined
-  ): IGridValueParsingResult<TPrimaryKey[]> {
+  ): IGridValueParsingResult<(TPrimaryKey | null)[] | TPrimaryKey | null> {
 
-    const gridID   = cellMeta?.type?.list?.relatedGridID ?? col?.type?.list?.relatedGridID
+    const gridID = cellMeta?.type?.list?.relatedGridID ?? col?.type?.list?.relatedGridID
 
     if (!gridID) return this.failed()
-    
+
     const keys = (Array.isArray(this.initialValue) ? this.initialValue : [this.initialValue]).map(k => typeof k === 'string' ? k.trim() : k).filter(k => k !== null) as TPrimaryKey[]
-    const unmatchedKeys: TPrimaryKey[] = []
+    let unmatchedKeys: TPrimaryKey[] = [...keys]
 
     if (!keys.length) {
       return this.passed(Array.isArray(this.initialValue) ? [] : null)
@@ -85,43 +87,56 @@ export class MultiSelectParser extends BaseParser implements IParsingTest {
 
     const matchedRows: IGridRow[] = []
 
-    // parse an array of primaryKey values like [1, 2, 3]
-    for(let k of keys) {
-      if (typeof k === 'string' && k.match(/^[0-9\.]+$/)) k = parseInt(k)
-      const row = gridController.grid.GetRelatedGridRow.run(gridID, k)
+    // 1. Parse an array of primaryKey values like [1, 2, 3]
+    for (const k of [...unmatchedKeys]) {
+      let key = k
+      if (typeof key === 'string' && key.match(/^[0-9\.]+$/)) key = parseInt(key)
+      const row = gridController.grid.GetRelatedGridRow.run(gridID, key)
       if (typeof row !== 'undefined') {
-        matchedRows.push(row)
-      } else unmatchedKeys.push(k)
+        if (!matchedRows.find(r => r.rowKey === row.rowKey)) {
+          matchedRows.push(row)
+        }
+        unmatchedKeys = unmatchedKeys.filter(uk => uk !== k)
+      }
     }
 
     const relatedGridDataSource = gridController.grid.GetRelatedData.run(gridID)
 
-    // parse an array of row preview template strings values like ['Customer 1', 'Customer 2', 'Customer 3']
+    // 2. Parse an array of row preview template strings values like ['Customer 1', 'Customer 2', 'Customer 3']
     if (unmatchedKeys.length && typeof relatedGridDataSource !== 'undefined') {
 
       const previewStringMap = new Map<string, IGridRow>()
       const rows = relatedGridDataSource.rows
 
-      for(const row of rows.latestValue) {
-        const previewString = gridController.row.GetRowPreviewString.run(row.rowKey, relatedGridDataSource)
-        previewStringMap.set(previewString, row)
+      for (const row of rows.latestValue) {
+        // Get all possible preview strings for the current row
+        const previewStrings = gridController.row.GetRowPreviewString.getAll(row.rowKey, relatedGridDataSource)
+        // Map each preview string to the row
+        for (const previewString of previewStrings) {
+          if (!previewStringMap.has(previewString)) {
+            previewStringMap.set(previewString, row)
+          }
+        }
       }
 
-      for (const k of unmatchedKeys) {
+      for (const k of [...unmatchedKeys]) {
         const row = previewStringMap.get(k.toString())
         if (typeof row !== 'undefined') {
-          matchedRows.push(row)
+          if (!matchedRows.find(r => r.rowKey === row.rowKey)) {
+            matchedRows.push(row)
+          }
+          unmatchedKeys = unmatchedKeys.filter(uk => uk !== k)
         }
       }
 
     }
 
     if (matchedRows.length) {
-      const output = matchedRows.map(row => row.rowKey).filter(row => typeof row !== 'undefined')
+      const output = matchedRows.map(row => row.rowKey).filter(row => typeof row !== 'undefined') as TPrimaryKey[]
       if (Array.isArray(this.initialValue)) return this.passed(output)
       else return this.passed(output[0])
     }
 
-    return this.failed()  
+    return this.failed()
   }
 }

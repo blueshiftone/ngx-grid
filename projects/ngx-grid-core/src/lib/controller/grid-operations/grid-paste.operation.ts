@@ -96,6 +96,7 @@ export class GridPaste extends Operation {
 
       // Parse values and ignore column overflow
       const finalValues: any[][] = []
+      const potentialMissingForeignDropdownOptions: { [key:string]: any } = {}
       const columns = this.dataSource.columns
       for (const row of rowData) {
         let startColumn = startCell.columnKey
@@ -110,6 +111,10 @@ export class GridPaste extends Operation {
           const val    = type === 'RichText' ? (cellValue.html ?? cellValue.plainText) : (cellValue.plainText ?? cellValue.html)
 
           const validation = CELL_VALUE_PARSERS[type].validate(val, this.cellOperations.gridController, { columnKey: column.columnKey })
+          if ((type == 'DropdownMultiSelect' || type == 'DropdownSingleSelect') && validation.isInvalid)
+          {
+            potentialMissingForeignDropdownOptions[`${finalValues.length}_${column.columnKey}`] = val
+          }
           if (validation.isInvalid) finalRow.push(null)
           else finalRow.push(validation.transformedValue)
           colIndex++
@@ -122,7 +127,13 @@ export class GridPaste extends Operation {
       let rowKey: TPrimaryKey | null = null
       let isCreatingNewRows = false
       const newRows: IGridRow[] = []
-      
+
+      const parsingFailedCells: {
+        cellKey: IGridCellCoordinates
+        value: any
+      }[] = []
+
+      let rowIndex = 0
       for (const row of finalValues) {
         if (!isCreatingNewRows) {
           if (!rowKey) rowKey = startCell.rowKey
@@ -150,6 +161,12 @@ export class GridPaste extends Operation {
             }
             const cellCoordinates = new GridCellCoordinates(newPrimaryKey, column.columnKey)
             this._setCellProperties(cellCoordinates, cellValue)
+            if (potentialMissingForeignDropdownOptions[`${rowIndex}_${column.columnKey}`]) {
+              parsingFailedCells.push({
+                cellKey: new GridCellCoordinates(newPrimaryKey, column.columnKey),
+                value: potentialMissingForeignDropdownOptions[`${rowIndex}_${column.columnKey}`]
+              })
+            }
             colIndex++
           }
           newRows.push(newRow)
@@ -163,8 +180,19 @@ export class GridPaste extends Operation {
             colIndex++
             endCell.rowKey    = rowKey
             endCell.columnKey = column.columnKey
+            if (potentialMissingForeignDropdownOptions[`${rowIndex}_${column.columnKey}`]) {
+              parsingFailedCells.push({
+                cellKey: new GridCellCoordinates(rowKey, column.columnKey),
+                value: potentialMissingForeignDropdownOptions[`${rowIndex}_${column.columnKey}`]
+              })
+            }
           }
         }
+        rowIndex++
+      }
+
+      if (parsingFailedCells.length > 0) {
+        this.gridEvents.CellForeignValueParsingFailedEvent.emit(parsingFailedCells)
       }
 
       // Insert new rows
