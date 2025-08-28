@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common'
 import { Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { combineLatest, fromEvent, Subscription } from 'rxjs'
-import { filter, startWith, take } from 'rxjs/operators'
+import { fromEvent, Subscription } from 'rxjs'
+import { filter, take } from 'rxjs/operators'
 
 import { GridEventsService } from '../events/grid-events.service'
 import { GridDataSource } from '../grid-data-source'
@@ -10,10 +10,8 @@ import { GridFileUploadService } from '../services/grid-file-upload.service'
 import { IconsService } from '../services/icon.service'
 import { LocalPreferencesService } from '../services/local-preferences.service'
 import { LocalizationService } from '../services/localization.service'
-import { ERowStatus } from '../typings/enums'
 import { IGridCellComponent, IGridDataSource } from '../typings/interfaces'
 import { GridCellCoordinates } from '../typings/interfaces/implementations/grid-cell-coordinates.implementation'
-import { TPrimaryKey } from '../typings/types'
 import { DeleteFromArray } from '../utils/array-delete'
 import { HasParentOfClass } from '../utils/find-parent-element-of-class'
 import { CellOperationFactory } from './cell-operations/_cell-operation.factory'
@@ -38,9 +36,6 @@ export class GridControllerService {
 
   public keyboardTriggers = this.grid.KeyBindings.manualKeyboardTriggers
 
-  public defaultDateFormat = 'yyyy/MM/dd'
-  public defaultDateTimeFormat = 'yyyy/MM/dd h:mm a'
-  
   private _subs : Set<Subscription> = new Set()
 
   public iconClass = this.iconRegistry.getDefaultFontSetClass().filter((fontSetClass) => fontSetClass.includes('material') || fontSetClass.includes('symbols'))[0]
@@ -207,11 +202,47 @@ export class GridControllerService {
   }
 
   public getDateFormat() {
-    return this.defaultDateFormat
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+    const parts = new Intl.DateTimeFormat(navigator.language, options).formatToParts(new Date());
+
+    return parts
+    .map(part => {
+      switch (part.type) {
+        case 'year': return 'yyyy';
+        case 'month': return 'MM';
+        case 'day': return 'dd';
+        default: return part.value;
+      }
+    }).join('');
   }
 
   public getDateTimeFormat() {
-    return this.defaultDateTimeFormat
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: '2-digit',
+    };
+    const parts = new Intl.DateTimeFormat(navigator.language, options).formatToParts(new Date());
+    const is12Hour = parts.some(part => part.type === 'dayPeriod');
+    return parts
+    .map(part => {
+      switch (part.type) {
+        case 'year': return 'yyyy';
+        case 'month': return 'MM';
+        case 'day': return 'dd';
+        case 'hour': return is12Hour ? 'h' : 'HH';
+        case 'minute': return 'mm';
+        case 'dayPeriod': return 'a';
+        default: return part.value;
+      }
+    })
+    .join('');
   }
 
 }

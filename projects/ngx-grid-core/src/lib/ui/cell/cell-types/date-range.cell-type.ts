@@ -49,7 +49,7 @@ export class DateRangeCellType extends BaseCellType {
 
   private get _dateFormat(): string {
     const format = this.gridController.localize.getLocalizedString('dateFormat')
-    return format === 'dateFormat' ? this.gridController.defaultDateFormat : format
+    return format === 'dateFormat' ? this.gridController.getDateFormat() : format
   }
 
   public override measureWidth(): number {
