@@ -12,7 +12,7 @@ export interface IGridSelectionRange {
   columns           : Set<TColumnKey>
   rows              : Set<TPrimaryKey>
   cellCount         : number
-  rowIndexes        : Array<number>
+  getRowIndexes()        : Array<number>
   rowKeys           : Array<TPrimaryKey>
   columnIndexes     : Array<number>
   columnKeys        : Array<TColumnKey>

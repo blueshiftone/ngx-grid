@@ -15,27 +15,30 @@ export class RevertRecords extends Operation {
     const cellComponents: IGridCellComponent[] = []
 
     for (const row of rows) {
-      if (row.isDeleted) {
-        buffering.add(this.rowOperations.ResetRowStatus.buffer(row.rowKey))
-        const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(row.rowKey)
-        if (rowComponent) rowComponents.push(rowComponent)
-      }
-      if (row.isNew) buffering.add(this.rowOperations.DeleteRow.buffer(row.rowKey, { emitEvent: false }))
+      if (!row.isNew) {
+        if (row.isDeleted)
+        {
+            buffering.add(this.rowOperations.ResetRowStatus.buffer(row.rowKey))
+            const rowComponent = this.rowOperations.RowComponents.findWithPrimaryKey(row.rowKey)
+            if (rowComponent) rowComponents.push(rowComponent)
+        }
 
-      for (const col of columns) {
-        const cellCoords = new GridCellCoordinates(row.rowKey, col.columnKey)
-        const cellMeta   = this.cellOperations.GetCellMeta.run(cellCoords)
-        if (cellMeta && this.cellOperations.HasDraftValue.run(cellCoords)) {
-          this.cellOperations.ClearCellDraftValue.buffer(cellCoords)
-          const cellComponent = this.cellOperations.CellComponents.findWithCoords(cellCoords)
-          const rowComponent  = this.rowOperations.RowComponents.findWithPrimaryKey(cellMeta.coords.rowKey)
-          if (cellComponent) cellComponents.push(cellComponent)
-          if (rowComponent) rowComponents.push(rowComponent)
+        for (const col of columns) {
+          const cellCoords = new GridCellCoordinates(row.rowKey, col.columnKey)
+          const cellMeta   = this.cellOperations.GetCellMeta.run(cellCoords)
+          if (cellMeta && this.cellOperations.HasDraftValue.run(cellCoords)) {
+            this.cellOperations.ClearCellDraftValue.buffer(cellCoords)
+            const cellComponent = this.cellOperations.CellComponents.findWithCoords(cellCoords)
+            const rowComponent  = this.rowOperations.RowComponents.findWithPrimaryKey(cellMeta.coords.rowKey)
+            if (cellComponent) cellComponents.push(cellComponent)
+            if (rowComponent) rowComponents.push(rowComponent)
+          }
         }
       }
+      else {
+        buffering.add(this.rowOperations.DeleteRow.buffer(row.rowKey, { emitEvent: false }))
+      }
     }
-
-    this.gridEvents.RowsRevertedEvent.emit(rows.map(r => r.rowKey))
 
     await Promise.all(buffering)
 

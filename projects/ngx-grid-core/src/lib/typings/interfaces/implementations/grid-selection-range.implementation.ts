@@ -84,8 +84,9 @@ export class GridSelectionRange implements IGridSelectionRange {
       bottomRight: () => { return new GridCellCoordinates(0, '') },
       bottomLeft : () => { return new GridCellCoordinates(0, '') }
     }
-    const maxRowKey    = () => this.globalUtils.getRowKeyFromIndex(Math.max(...this.rowIndexes)) || ''
-    const minRowKey    = () => this.globalUtils.getRowKeyFromIndex(Math.min(...this.rowIndexes)) || ''
+    var rowIndexes = this.getRowIndexes()
+    const maxRowKey    = () => this.globalUtils.getRowKeyFromIndex(Math.max(...rowIndexes)) || ''
+    const minRowKey    = () => this.globalUtils.getRowKeyFromIndex(Math.min(...rowIndexes)) || ''
     const maxColumnKey = (rowKey: TPrimaryKey) => this.globalUtils.getColumnKeyFromIndex(Math.max(...[...this._rowMap.get(rowKey) || []].map(columnName => this.globalUtils.getColumnIndex(columnName))))
     const minColumnKey = (rowKey: TPrimaryKey) => this.globalUtils.getColumnKeyFromIndex(Math.min(...[...this._rowMap.get(rowKey) || []].map(columnName => this.globalUtils.getColumnIndex(columnName))))
     return {
@@ -140,8 +141,16 @@ export class GridSelectionRange implements IGridSelectionRange {
 
   public get rowKeys(): Array<TPrimaryKey> { return [...this._rowMap.keys()] }
   public get columnKeys()    : Array<TColumnKey> { return [...this._colMap.keys()] }
-  public get rowIndexes()    : Array<number> { return [...this._rowMap.keys()].map(rowKey => this.globalUtils.getRowIndex(rowKey)) }
   public get columnIndexes() : Array<number> { return [...this._colMap.keys()].map(columnKey => this.globalUtils.getColumnIndex(columnKey)) }
+  public getRowIndexes(): Array<number> {
+    const rowKeyMap = new Map<TPrimaryKey, number>()
+    let index = 0;
+    for (const row of this._source.rows.latestValue) {
+      rowKeyMap.set(row.rowKey, index)
+      index++
+    }
+    return [...this._rowMap.keys()].map(rowKey => rowKeyMap.get(rowKey) ?? -1)
+  }
 
   public getRange(start: IGridCellCoordinates, end: IGridCellCoordinates) {
     const output: IGridCellCoordinates[] = []

@@ -195,12 +195,13 @@ export class GridPaste extends Operation {
         this.gridEvents.CellForeignValueParsingFailedEvent.emit(parsingFailedCells)
       }
 
+      
       // Insert new rows
       if (newRows.length) {
         let index = visibleRows.length
+        dataSource.insertNewRows(newRows)
         for (const row of newRows) {
           this.rowOperations.SetRowStatus.run(row, ERowStatus.New)
-          dataSource.insertNewRows(row)
           this.gridEvents.RowInsertedEvent.emit(row)
           index++
         }
@@ -210,6 +211,13 @@ export class GridPaste extends Operation {
       this.selection.EmitNextSelectionSlice.run()
       this.selection.ScrollIntoView.run()
 
+      this.dataSource.rows.whenIdle().then(() => {
+        for (const cell of this.cellOperations.CellComponents.findForColumn(this.dataSource.primaryColumnKey))
+        {
+          cell.typeComponent?.receiveValue(cell.typeComponent.value)
+        }
+      })
+      
     }
 
   }

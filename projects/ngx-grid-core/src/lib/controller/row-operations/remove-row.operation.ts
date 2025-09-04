@@ -15,10 +15,10 @@ export class RemoveRow extends Operation {
 
   private  async _run(args: TPrimaryKey[][]): Promise<void> {
     
+    this.dataSource.removeRows(...args.map(x => x[0]))
     for (const arg of args) {
       const [rowKey] = arg
-      this.dataSource.removeRows(rowKey)
-      this.rowOperations.dirtyRowsMap.delete(rowKey)
+      this.rowOperations.dirtyRowsMap.delete(rowKey) 
     }
 
     this.selection.RemoveOrphanedRows.run()

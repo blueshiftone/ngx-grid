@@ -32,12 +32,12 @@ export const DefaultKeyboardShortcuts: IKeyboardShortcut[] = [
     // Revert records to saved version:
     {
         key: { combination: 'Ctrl+Z' },
-        action: controller => controller.grid.RevertSelected.run()
+        action: controller => controller.gridEvents.RevertSelectedEvent.emit()
     },
     // Commit changes to database:
     {
         key: { combination: 'Ctrl+S', swallowEvents: true },
-        action: controller => controller.grid.CommitAll.run({ dryRun: true })
+        action: controller => controller.gridEvents.SaveGridEvent.emit()
     },
     // Refresh data (unedited rows only):
     //   See: grid.component.ts

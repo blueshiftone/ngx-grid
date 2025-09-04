@@ -38,18 +38,18 @@ export class GridDataSource implements IGridDataSource {
 
   private _columnsSubset?: IGridColumn[]
 
-  public dataSetName       = ''
-  public dataGridID        = ''
-  public primaryColumnKey  = 'ID'
-  public disabled          = false
-  public maskNewIds        = false
-  public leafLevel         = -1
-  public localizations     = undefined
+  public dataSetName = ''
+  public dataGridID = ''
+  public primaryColumnKey = 'ID'
+  public disabled = false
+  public maskNewIds = false
+  public leafLevel = -1
+  public localizations = undefined
   public keyboardShortcuts?: IKeyboardShortcut[]
-  public moreDataExists  = false
+  public moreDataExists = false
 
   public relatedData: Map<string, IGridDataSource> = new Map()
-  public cellMeta   : Map<string, IGridCellMeta>   = new Map()
+  public cellMeta: Map<string, IGridCellMeta> = new Map()
 
   public metadata: IGridMetadataCollection = new GridMetadataCollection()
 
@@ -99,19 +99,19 @@ export class GridDataSource implements IGridDataSource {
 
   public static cloneMeta(g: IGridDataSource, input?: Partial<IGridDataSource>) {
     const props: Partial<IGridDataSource> = {
-      dataGridID      : g.dataGridID,
-      dataSetName     : g.dataSetName,
+      dataGridID: g.dataGridID,
+      dataSetName: g.dataSetName,
       primaryColumnKey: g.primaryColumnKey,
-      columns         : g.columns,
-      disabled        : g.disabled,
-      metadata        : g.metadata,
-      cellMeta        : g.cellMeta,
-      moreDataExists  : g.moreDataExists
+      columns: g.columns,
+      disabled: g.disabled,
+      metadata: g.metadata,
+      cellMeta: g.cellMeta,
+      moreDataExists: g.moreDataExists
     }
     if (typeof input?.dataGridID === 'undefined') {
       props.dataGridID = `${g.dataGridID}-clone-${Randomish()}`
     }
-    return new GridDataSource({... props, ... input})
+    return new GridDataSource({ ...props, ...input })
   }
 
   public static async cloneSource(g: IGridDataSource, input?: Partial<IGridDataSource>) {
@@ -228,33 +228,34 @@ export class GridDataSource implements IGridDataSource {
   public removeRows(...rows: (TPrimaryKey | IGridRow)[]): void {
     const effectiveTail = this.rows.getEffectiveTail()
 
-    for (let row of rows) {
-      if (typeof row !== 'object') {
-        const existingRow = this.getRow(row)
-        if (!existingRow) {
-          console.warn(`Cannot remove row with key ${row} because it does not exist.`)
-          return
-        }
-        row = existingRow
+    const rowKeysToRemove = new Set<TPrimaryKey>()
+    for (const row of rows) {
+      const key = typeof row !== 'object' ? row : row.rowKey;
+      rowKeysToRemove.add(key);
+      if (this._rowMap.has(key)) {
+        this._rowMap.delete(key);
       }
-      const { rowKey } = row
-
-      let transform: Transformer<IGridRow> | undefined = this.initialTransform
-      while (transform !== undefined) {
-        if (!transform.hasOwnValue) {
-          transform = transform.next()
-          continue
-        }
-        const index = transform.value.findIndex(r => r.rowKey === rowKey)
-        if (index > -1) transform.value.splice(index, 1)
-        if (transform === effectiveTail) {
-          this.rows.output.next([...transform.value])
-        }
-        transform = transform.next()
-      }
-      this._rowMap.has(row.rowKey)
-      this._rowMap.delete(row.rowKey)
     }
+
+    let transform: Transformer<IGridRow> | undefined = this.initialTransform
+    while (transform !== undefined) {
+      if (!transform.hasOwnValue) {
+        transform = transform.next()
+        continue
+      }
+      const newRows: IGridRow[] = []
+      for (const row of transform.value) {
+        if (!rowKeysToRemove.has(row.rowKey)) {
+          newRows.push(row)
+        }
+      }
+      transform.value = newRows
+      if (transform === effectiveTail) {
+        this.rows.output.next(newRows)
+      }
+      transform = transform.next()
+    }
+
     this._changesStream.next()
   }
 
@@ -286,8 +287,7 @@ export class GridDataSource implements IGridDataSource {
     this._changesStream.next()
   }
 
-  public addKnownColumn(col: IGridColumn)
-  {
+  public addKnownColumn(col: IGridColumn) {
     this._colMap.set(col.columnKey, col)
   }
 

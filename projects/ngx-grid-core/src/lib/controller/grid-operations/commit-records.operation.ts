@@ -58,16 +58,10 @@ export class CommitRecords extends Operation {
       cellComponents.forEach(cell => this.cellOperations.SetCellStylesFromMeta.run(cell))
       
     }
-
-    if (WithDefaultTrue(options.emitEvent) === true) {
-      this.gridEvents.RowsCommittedEvent.emit(rows.map(r => r.rowKey))
-    }
-
   }
 
 }
 
 export interface ICommitRecordsOptions {
-  emitEvent?: boolean,
   dryRun?: boolean
 }

@@ -89,7 +89,7 @@ export class GridContextMenuService {
       }
 
       const source = this.gridController.dataSource
-      const { canInsert, canDelete } = source
+      const { canInsert } = source
 
       if (canInsert) {
         output.push(...[
@@ -117,7 +117,7 @@ export class GridContextMenuService {
       if (canDeleteARow) {
         output.push({
           label: `locDeleteRecord(s)`,
-          action: () => selection.rowKeys.forEach(k => this.gridController.row.DeleteRow.buffer(k)),
+          action: () => this.gridController.gridEvents.DeleteSelectedEvent.emit(),
           icon: EGridIcon.Delete
         })
       }

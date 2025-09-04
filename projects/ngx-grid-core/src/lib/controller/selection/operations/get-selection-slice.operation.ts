@@ -19,7 +19,7 @@ export class GetSelectionSlice {
       columnKeys    : [],
       rowKeys       : []
     }
-    const rowIndexes = Array.from(selection.rowIndexes)
+    const rowIndexes = selection.getRowIndexes()
     const primaryKeys = selection.rowKeys
     const selectionRowsSorted = [...rowIndexes].sort((a, b) => a - b)
     const lastSlice = this._getLastSlice()

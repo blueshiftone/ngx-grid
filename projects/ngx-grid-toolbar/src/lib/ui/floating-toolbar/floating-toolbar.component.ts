@@ -91,15 +91,11 @@ export class FloatingToolbarComponent extends AutoUnsubscribe implements OnInit 
   }
 
   public deleteRecords(): void {
-    for (const pk of this._selectedRowKeys) this.toolbarService.gridController?.row.DeleteRow.buffer(pk)
+    this.toolbarService.gridController?.gridEvents.DeleteSelectedEvent.emit()
   }
 
   public clearSelection(): void {
     this.toolbarService.gridController?.selection.ClearSelection.run()
-  }
-
-  private get _selectedRowKeys(): TPrimaryKey[] {
-    return this.toolbarService.selectionSlice.value?.rowKeys ?? []
   }
 
   private _checkChanges(): void {
