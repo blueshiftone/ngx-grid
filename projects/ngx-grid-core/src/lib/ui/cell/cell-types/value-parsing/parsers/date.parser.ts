@@ -1,3 +1,4 @@
+import { GridControllerService } from '../../../../../controller/grid-controller.service'
 import { IGridValueParsingResult } from '../../../../../typings/interfaces'
 import { ParseDate } from '../../../../../utils/parse-date-string'
 import { BaseParser } from './base-parser.abstract'
@@ -6,13 +7,13 @@ import { IParsingTest } from './parsing-test.interface'
 export class DateParser extends BaseParser implements IParsingTest {
   constructor (public readonly initialValue: any) { super() }
 
-  public run(): IGridValueParsingResult<string> {
+  public run(gridController: GridControllerService): IGridValueParsingResult<string> {
 
     if (this.initialValue instanceof Date) return this.passed(this._dateToString(this.initialValue))
     
     if (typeof this.initialValue !== 'string') return this.failed()
 
-    const dateObj = ParseDate(this.initialValue)
+    const dateObj = ParseDate(this.initialValue, gridController.getDateFormat())
 
     if (typeof dateObj === 'undefined') return this.failed()
 

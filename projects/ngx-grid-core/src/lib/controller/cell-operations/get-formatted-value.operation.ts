@@ -106,7 +106,7 @@ export class GetFormattedValue extends Operation {
         }
         break
       case 'Date':
-        const date = typeof value === 'string' ? ParseDate(value) : value
+        const date = typeof value === 'string' ? ParseDate(value, this._dateFormat) : value
         if (date) {
           const formattedDate = this.controller.datePipe.transform(date, this._dateFormat)
           if (formattedDate) return formattedDate

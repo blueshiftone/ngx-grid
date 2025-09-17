@@ -16,15 +16,27 @@
   .sep {
     position: absolute;
     pointer-events: none;
-    top: 2px;
+    top: 0px;
     opacity: 0.85;
     z-index: 0;
   }
-  .sep-1 {
-    left: 45px;
+
+  &.y-m-d {
+    .sep-1 {
+      left: 45px;
+    }
+    .sep-2 {
+      left: 80px;
+    }
   }
-  .sep-2 {
-    left: 80px;
+
+  &.d-m-y,&.m-d-y {
+    .sep-1 {
+      left: 26px;
+    }
+    .sep-2 {
+      left: 59px;
+    }
   }
 }
 

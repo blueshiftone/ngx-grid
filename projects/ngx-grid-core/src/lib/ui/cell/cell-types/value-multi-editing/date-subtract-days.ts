@@ -8,10 +8,10 @@ export class DateSubtractDays extends BaseMultiEdit {
   constructor(cellValue: any, cellType: TCellTypeName) { super(cellValue, cellType) }
   public label = 'locSubtractDays'
   public run   = (input: any) => {
-    const dateTest   = new DateParser(this.cellValue).run()
+    const dateTest   = new DateParser(this.cellValue).run(this._gridController!)
     const numberTest = new NumberParser(input).run()
     if (dateTest.isValid && numberTest.isValid) {
-      const date = ParseDate(dateTest.transformedValue)
+      const date = ParseDate(dateTest.transformedValue, this._gridController!.getDateFormat())
       if (!date) return
       const days = numberTest.transformedValue
       date.setDate(date.getDate() - days)

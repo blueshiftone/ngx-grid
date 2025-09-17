@@ -9,7 +9,7 @@ export abstract class BaseMultiEdit implements IValueMultiEdit {
   public abstract run<T = any>(input: T): void
   public requiresInput  = true
 
-  private _gridController?: GridControllerService
+  protected _gridController?: GridControllerService
   private _cellCoordinates?          : IGridCellCoordinates
 
   constructor(public cellValue: any, public cellType: TCellTypeName) {}

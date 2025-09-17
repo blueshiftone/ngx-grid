@@ -43,7 +43,7 @@ export class DateRangeCellType extends BaseCellType {
   }
 
   private get _displayValue(): string {
-    const dates = [ParseDate(this.value?.[0]), ParseDate(this.value?.[0])]
+    const dates = [ParseDate(this.value?.[0], this.gridController.getDateFormat()), ParseDate(this.value?.[0], this.gridController.getDateFormat())]
     return dates.map(date => (date && this.gridController.datePipe.transform(date, this._dateFormat)) ?? date).join(' — ')
   }
 
