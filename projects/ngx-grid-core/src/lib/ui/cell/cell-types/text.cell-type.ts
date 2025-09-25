@@ -37,7 +37,7 @@ export class TextCellType extends BaseCellType {
         value = localizedValue
       }
     }
-    this._displayNode.innerText = value
+    this._displayNode.textContent = value
   }
 
   private _generateDisplayNode(): HTMLElement {
