@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common'
-import { Injectable } from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { fromEvent, Subscription } from 'rxjs'
 import { filter, take } from 'rxjs/operators'
@@ -20,8 +20,7 @@ import { GridOperationFactory } from './grid-operations/_grid-operation.factory'
 import { RowOperationFactory } from './row-operations/_row-operation.factory'
 import { GridSelectionController } from './selection/grid-selection.controller'
 import { MatIconRegistry } from '@angular/material/icon'
-
-export const DATA_GRIDS_FOCUSED_TREE: string[] = [] 
+import { FOCUS_TRACKER, IFocusTracker } from '../typings/interfaces/focus-tracker.interface'
 
 @Injectable()
 export class GridControllerService {
@@ -49,6 +48,9 @@ export class GridControllerService {
     public  readonly dialogs : MatDialog,
     public  readonly uploads : GridFileUploadService,
     private readonly iconRegistry: MatIconRegistry,
+
+    @Inject(FOCUS_TRACKER)
+    readonly focusTracker: IFocusTracker,
     icons: IconsService,
   ) {
 
@@ -185,7 +187,7 @@ export class GridControllerService {
     this.cell     .onDestroy()
     this.selection.onDestroy()
     this.dataSource.onDestroy()
-    DeleteFromArray(DATA_GRIDS_FOCUSED_TREE, this.grid.GetGridId.run())
+    this.focusTracker.clearFocus(this.grid.GetGridId.run())
     this.events.factory.GridDestroyedEvent.emit()
   }
 

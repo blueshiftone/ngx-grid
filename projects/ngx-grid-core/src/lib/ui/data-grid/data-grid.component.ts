@@ -5,6 +5,8 @@ import {
   ElementRef,
   EventEmitter,
   HostBinding,
+  HostListener,
+  inject,
   Inject,
   Input,
   OnChanges,
@@ -24,7 +26,7 @@ import { GridContextMenuService } from '../../services/grid-context-menu.service
 import { GridMultiCellEditService } from '../../services/grid-multi-cell-edit.service'
 import { GridOverlayService } from '../../services/grid-overlay-service.service'
 import { LocalizationService } from '../../services/localization.service'
-import { IGridConfiguration, IGridDataSource, IGridSelectionSlice } from '../../typings/interfaces'
+import { FOCUS_TRACKER, IGridConfiguration, IGridDataSource, IGridSelectionSlice } from '../../typings/interfaces'
 import { AutoUnsubscribe } from '../../utils/auto-unsubscribe'
 import { removeNullish } from '../../utils/custom-rxjs/remove-nullish'
 import { WINDOW } from '../../utils/window'
@@ -72,6 +74,16 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
   private _preselectedRowsUpdated = new Subject<void>()
 
   private themeStyleElement: HTMLStyleElement = document.createElement('style')
+
+  focusTracker = inject(FOCUS_TRACKER)
+
+  @HostListener('mousedown')
+  onClick() {
+    const id = this.gridController.grid.GetGridId.run()
+    if (!this.focusTracker.hasFocus(id)) {
+      this.focusTracker.setFocus(id);
+    }
+  }
 
   @ViewChild('rowThumb', { static: true }) private rowThumb!: ElementRef<HTMLDivElement>
 
@@ -197,8 +209,6 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
       this._gridEvents.GridUIThemeChangedEvent.emit(theme)
     }))
 
-    this.addSubscription(fromEvent<MouseEvent>(this._el, 'mousedown').subscribe(_ => this.gridController.grid.SetGridFocus.run()))
-
     this.addSubscription(this.gridController.dataSource.rows.output.pipe(
       map(rows => rows[0]?.floatingTitle?.isGroup === true),
       distinctUntilChanged()).subscribe(hasGroups => this.rowThumb.nativeElement.classList.toggle('has-groups', hasGroups)))
@@ -212,6 +222,7 @@ export class DataGridComponent extends AutoUnsubscribe implements OnInit, OnChan
     this._gridEvents.onDestroy()
     this.multiEdit.onDestroy()
     window.document.head.removeChild(this.themeStyleElement)
+    this.focusTracker.dispose(this._id)
   }
 
   ngOnChanges(changes: SimpleChanges): void {   
