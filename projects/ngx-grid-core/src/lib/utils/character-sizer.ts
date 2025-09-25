@@ -20,11 +20,11 @@ export class CharacterSizer {
    */
   public static measure(text: string, font: string, maxWidth = Infinity): number {
     let width = 0
+    if (!text) return width
     for (const char of text) {
       if (width > maxWidth) break
       if (!this._charCache.has(char)) this._charCache.set(char, this._measureChar(char, font))
       width += this._charCache.get(char)!
-
     }
     return width * this._scaleFactor
   }

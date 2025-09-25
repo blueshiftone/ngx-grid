@@ -93,6 +93,7 @@ export class SingleSelectGridDropdownOverlayComponent extends BaseOverlayCompone
 
   public checkGridSize(): void {
     this.gridComponent?.gridController.grid.CheckViewportSize.run()
+    this.gridComponent?.gridController.gridEvents.GridViewportSizeCheckedEvent.emit()
   }
 
   private _updateValue(v: any): void {
